@@ -1,0 +1,24 @@
+/* Tambahan khusus halaman Berita & Event (melengkapi admin.css) */
+.ri.up{position:relative;cursor:pointer;margin:0}
+.ri .cm{position:absolute;inset:0;background:#0f172acc;color:#fff;display:none;place-items:center}
+.ri.up:hover .cm{display:grid}
+.emp{text-align:center;padding:40px 16px;border:2px dashed var(--ln);border-radius:12px;color:var(--mu)}
+.pager{display:flex;justify-content:center;align-items:center;gap:14px;margin:18px 0}
+.b.dis{opacity:.45;pointer-events:none}
+.alert-error{padding:12px 16px;background:#fee2e2;color:#991b1b;border-radius:8px;margin-bottom:14px}
+.alert-error ul{margin:6px 0 0;padding-left:18px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+label.ck{display:flex;gap:8px;align-items:center}
+label em{color:var(--rd);font-style:normal}
+.fa{display:flex;gap:8px;margin-top:6px}
+.bk{margin-bottom:14px}
+.blk{border:1px solid var(--ln);border-radius:12px;padding:12px;margin:10px 0;background:var(--bg)}
+.bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bh .bn{display:inline-flex;align-items:center;gap:6px}
+.bh span{display:flex;gap:4px}
+.blk textarea,.blk input:not([type=hidden]):not([type=file]){background:var(--cd)}
+.blk .drop{margin-bottom:8px}
+.bh2{display:grid;place-items:center;gap:4px}
+#nThumbDrop img{max-height:160px}
+#tst{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0f172a;color:#fff;padding:10px 18px;border-radius:99px;z-index:99}
+@media(max-width:560px){.g2{grid-template-columns:1fr}}
