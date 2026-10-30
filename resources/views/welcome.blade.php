@@ -169,9 +169,9 @@ nav a:not(.btn):hover::after{width:100%}
 .news-card{flex:0 0 calc((100% - 56px)/3);scroll-snap-align:start;background:#fff;border-radius:14px;overflow:hidden;box-shadow:8px 8px 0 rgba(15,23,42,.14);display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease}
 .news-card:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 rgba(15,23,42,.18)}
 .news-date{padding:18px 24px 14px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
-.news-img{aspect-ratio:11/5;background:var(--bg);display:grid;place-items:center;overflow:hidden}
+.news-img{position:relative;aspect-ratio:11/5;background:var(--bg);display:grid;place-items:center;overflow:hidden}
 .news-img img{width:72%;height:auto;filter:drop-shadow(0 16px 18px rgba(0,0,0,.35))}
-.news-img.cover img{width:100%;height:100%;object-fit:cover;filter:none}
+.news-img.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:none}
 .news-body{padding:20px 24px 22px;display:flex;flex-direction:column;flex:1}
 .news-body h3{font:800 21px/1.2 var(--bd);letter-spacing:-.01em;margin:0 0 10px}
 .news-body p{margin:0 0 16px;color:var(--ink-muted);font-size:14px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -400,7 +400,7 @@ footer a:hover{color:var(--red-primary)}
         </div>
 
         <div class="news-ctrl">
-            <a class="btn btn-red news-all" href="berita.html">
+            <a class="btn btn-red news-all" href="{{ route('news.index') }}">
             Lihat Lainnya →
             </a>
             <button id="newsPrev" aria-label="Sebelumnya">‹</button>
@@ -420,7 +420,7 @@ footer a:hover{color:var(--red-primary)}
 
             <article class="news-card">
             <div class="news-date">
-                {{ $n->published_at?->format('d F Y') }}
+                {{ $n->dateLabel() }}
             </div>
 
             <div class="news-img {{ $n->thumbnail_url ? 'cover' : '' }}"
@@ -430,6 +430,7 @@ footer a:hover{color:var(--red-primary)}
                     src="{{ $n->thumbnail_url }}"
                     alt="{{ $n->tr('title', 'id') }}"
                     loading="lazy"
+                    onerror="this.remove()"
                 >
                 @endif
             </div>
@@ -441,7 +442,7 @@ footer a:hover{color:var(--red-primary)}
                 {{ $summary ?: 'Baca berita terbaru dari New Armada.' }}
                 </p>
 
-                <a class="news-more" href="#berita">
+                <a class="news-more" href="{{ route('news.show', $n->slug) }}">
                 Baca Selengkapnya <span>→</span>
                 </a>
             </div>
@@ -530,7 +531,7 @@ footer a:hover{color:var(--red-primary)}
     <div class="footer-grid">
       <div><a class="logo" href="#" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
       <div><h4>Produk</h4><ul><li><a href="produk.html?kategori=big-bus">Big Bus</a></li><li><a href="produk.html?kategori=medium-bus">Medium Bus</a></li><li><a href="produk.html?kategori=intercity">Intercity</a></li><li><a href="produk.html?kategori=microbus">Microbus</a></li><li><a href="produk.html?kategori=box-heavy-duty">Box &amp; Heavy Duty</a></li></ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#unit">Bisnis Unit</a></li><li><a href="#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="berita.html">Berita</a></li><li><a href="contact.html">Kontak</a></li></ul></div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#unit">Bisnis Unit</a></li><li><a href="#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="contact.html">Kontak</a></li></ul></div>
       <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
     </div>
     <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>

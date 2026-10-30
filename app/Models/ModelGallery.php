@@ -1,15 +1,16 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Category extends Model
+class ModelGallery extends Model
 {
     protected $guarded = ['id'];
 
-    public function models(): HasMany
+    public function productModel(): BelongsTo
     {
-        return $this->hasMany(ProductModel::class)->orderBy('sort_order');
+        return $this->belongsTo(ProductModel::class);
     }
 }

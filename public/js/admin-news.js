@@ -1,6 +1,6 @@
 /* Admin Berita & Event: drawer tambah/ubah, penyusun isi artikel, saklar tayang, hapus 2 langkah. */
 (function () {
-  var C = window.NEWS_CFG, LG = ['id', 'en', 'zh'], cur = 'id', MAXMB = 4;
+  var C = window.NEWS_CFG, LG = ['id', 'en', 'zh'], cur = 'id', MAXMB = 20;
   var $ = function (id) { return document.getElementById(id); };
   var drawer = $('nDr'), ov = $('nOv'), form = $('nForm'), blocks = $('nBlocks');
   var UP = '<svg class="i"><use href="#i-up"/></svg>';
@@ -113,10 +113,17 @@
   drawer.querySelector('.seg').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return; cur = b.dataset.lang; applyLang();
   });
-  $('nThumbDrop').addEventListener('click', function () { $('nThumb').click(); });
   $('nThumb').addEventListener('change', function () {
-    var f = checkSize(this); if (f) { setThumb(URL.createObjectURL(f)); }
-  });
+    var f = checkSize(this);
+    if (!f) return;
+    var url = URL.createObjectURL(f);
+    setThumb(url);
+    var im = new Image();
+    im.onload = function () {
+        toast('Foto ' + im.naturalWidth + ' × ' + im.naturalHeight + ' px. Di website akan dipotong tengah menjadi 880 × 400 px.');
+    };
+    im.src = url;
+});
 
   form.addEventListener('submit', function (e) {
     renumber();

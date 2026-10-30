@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NewsRequest;
 use App\Models\News;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -70,13 +71,13 @@ class NewsController extends Controller
     public function thumbnail(Request $request, News $news): RedirectResponse
     {
         $request->validate([
-            'thumbnail' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'thumbnail' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ], [], ['thumbnail' => 'Thumbnail']);
 
         $this->deleteFile($news->thumbnail_path);
-        $news->update(['thumbnail_path' => $request->file('thumbnail')->store('news', 'public')]);
+        $news->update(['thumbnail_path' => $this->storeThumbnail($request->file('thumbnail'))]);
 
-        return back()->with('success', 'Thumbnail diperbarui. Website sudah diperbarui.');
+                return back()->with('success', 'Thumbnail diperbarui. Website sudah diperbarui.');
     }
 
     // ------------------------------------------------------------------ helper
@@ -94,7 +95,7 @@ class NewsController extends Controller
         // thumbnail
         if ($request->hasFile('thumbnail')) {
             $this->deleteFile($news?->thumbnail_path);
-            $data['thumbnail_path'] = $request->file('thumbnail')->store('news', 'public');
+            $data['thumbnail_path'] = $this->storeThumbnail($request->file('thumbnail'));
         } elseif ($news && $request->boolean('remove_thumbnail')) {
             $this->deleteFile($news->thumbnail_path);
             $data['thumbnail_path'] = null;
@@ -163,6 +164,69 @@ class NewsController extends Controller
     {
         if ($path && ! str_starts_with($path, 'images/')) {
             Storage::disk('public')->delete($path);
+        }
+    }
+
+ /** Crop tengah + resize ke 880x400 px (rasio 11:5, sama dengan kartu di website). */
+    private function storeThumbnail(UploadedFile $file): string
+    {
+        try {
+            @ini_set('memory_limit', '512M');
+
+            $w = 880;
+            $h = 400;
+            $real = $file->getRealPath();
+
+            $src = match ($file->getMimeType()) {
+                'image/jpeg' => imagecreatefromjpeg($real),
+                'image/png'  => imagecreatefrompng($real),
+                'image/webp' => imagecreatefromwebp($real),
+                default      => false,
+            };
+            if (! $src) {
+                throw new \RuntimeException('Gagal membaca gambar.');
+            }
+
+            if ($file->getMimeType() === 'image/jpeg' && function_exists('exif_read_data')) {
+                $orient = @exif_read_data($real)['Orientation'] ?? 1;
+                $src = match ($orient) {
+                    3 => imagerotate($src, 180, 0),
+                    6 => imagerotate($src, -90, 0),
+                    8 => imagerotate($src, 90, 0),
+                    default => $src,
+                };
+            }
+
+            $sw = imagesx($src);
+            $sh = imagesy($src);
+            $scale = max($w / $sw, $h / $sh);
+            $cw = (int) round($w / $scale);
+            $ch = (int) round($h / $scale);
+            $sx = (int) max(0, ($sw - $cw) / 2);
+            $sy = (int) max(0, ($sh - $ch) / 2);
+
+            $dst = imagecreatetruecolor($w, $h);
+            imagefill($dst, 0, 0, imagecolorallocate($dst, 255, 255, 255));
+            imagecopyresampled($dst, $src, 0, 0, $sx, $sy, $w, $h, $cw, $ch);
+
+            ob_start();
+            imagejpeg($dst, null, 85);
+            $binary = ob_get_clean();
+
+            $path = 'news/' . Str::random(40) . '.jpg';
+
+            if (! $binary || ! Storage::disk('public')->put($path, $binary)) {
+                throw new \RuntimeException('Gagal menulis thumbnail ke storage.');
+            }
+
+            return $path;
+
+            return $path;
+        } catch (\Throwable $e) {
+            report($e);
+
+            // cadangan: simpan file asli, tampilan tetap dirapikan oleh CSS (object-fit: cover)
+            return $file->store('news', 'public');
         }
     }
 }

@@ -101,6 +101,11 @@
 
             {{-- thumbnail --}}
             <label>Thumbnail <small>tampil di slider berita dan daftar</small>
+                <small class="mu" style="display:block">
+                    Boleh upload foto ukuran berapa saja. Di website akan otomatis dipotong tengah dan
+                    disesuaikan menjadi <b>880 × 400 px</b> (rasio 11:5). Untuk hasil terbaik, upload foto
+                    dengan ukuran/rasio itu. JPG/PNG/WebP, maks. 8 MB.
+                </small>
                 <span class="drop" id="nThumbDrop">
                     <img id="nThumbImg" alt="" hidden>
                     <span id="nThumbHint"><svg class="i"><use href="#i-up"/></svg><b>Klik untuk unggah foto</b></span>

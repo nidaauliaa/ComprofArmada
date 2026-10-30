@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class News extends Model
 {
@@ -57,6 +58,39 @@ class News extends Model
     public function getThumbnailUrlAttribute(): ?string
     {
         return self::fileUrl($this->thumbnail_path);
+    }
+
+        public function dateLabel(): string
+    {
+        return $this->published_at
+            ? $this->published_at->copy()->locale('id')->translatedFormat('d F Y')
+            : '';
+    }
+
+        /** Ringkasan = paragraf pertama (bahasa ID), dipotong sesuai batas. */
+    public function summary(int $limit = 200): string
+    {
+        foreach ($this->blocks ?? [] as $b) {
+            if (($b['type'] ?? 'p') === 'p' && ($b['text']['id'] ?? '') !== '') {
+                return Str::limit($b['text']['id'], $limit);
+            }
+        }
+
+        return '';
+    }
+
+    /** Data ringkas untuk hero halaman Berita (dibaca JavaScript). */
+    public function toCardArray(): array
+    {
+        return [
+            'id'    => $this->id,
+            'url'   => route('news.show', $this->slug),
+            'title' => $this->tr('title', 'id'),
+            'desc'  => $this->summary(220),
+            'date'  => $this->dateLabel(),
+            'tag'   => $this->category,
+            'img'   => $this->thumbnail_url,
+        ];
     }
 
     /** Data untuk mengisi form "Ubah berita" di sisi kanan (dibaca JavaScript). */

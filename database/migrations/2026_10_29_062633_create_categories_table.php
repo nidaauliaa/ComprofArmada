@@ -1,33 +1,28 @@
 <?php
-namespace Database\Seeders;
 
-use App\Models\Category;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CategorySeeder extends Seeder
+return new class extends Migration
 {
-    public function run(): void
+    public function up(): void
     {
-        $categories = [
-            ['name' => 'Big Bus', 'short_text' => 'BIG', 'color_bg' => '#12274d', 'sort_order' => 1],
-            ['name' => 'Medium Bus', 'short_text' => 'MED', 'color_bg' => '#0c4a7a', 'sort_order' => 2],
-            ['name' => 'Intercity', 'short_text' => 'INTER', 'color_bg' => '#0a7bb8', 'sort_order' => 3],
-            ['name' => 'Microbus', 'short_text' => 'MICRO', 'color_bg' => '#4a7fa3', 'sort_order' => 4],
-            ['name' => 'Box & Heavy Duty', 'short_text' => 'HEAVY', 'color_bg' => '#b0574a', 'sort_order' => 5],
-        ];
-
-        foreach ($categories as $cat) {
-            Category::updateOrCreate(
-                ['slug' => Str::slug($cat['name'])],
-                [
-                    'name' => $cat['name'],
-                    'short_text' => $cat['short_text'],
-                    'color_bg' => $cat['color_bg'],
-                    'is_active' => true,
-                    'sort_order' => $cat['sort_order'],
-                ]
-            );
-        }
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('short_text')->nullable();
+            $table->string('image_path')->nullable();
+            $table->string('color_bg')->default('#12274d');
+            $table->boolean('is_active')->default(true);
+            $table->integer('sort_order')->default(0);
+            $table->timestamps();
+        });
     }
-}
+
+    public function down(): void
+    {
+        Schema::dropIfExists('categories');
+    }
+};

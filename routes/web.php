@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductFrontendController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Models\News;
+use App\Http\Controllers\NewsPageController;
 
 
 Route::get('/', function () {
@@ -52,6 +53,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->name('news.thumbnail');
 
 });
+
+// di bagian route publik (di luar grup admin):
+Route::get('/berita', [NewsPageController::class, 'index'])->name('news.index');
+Route::get('/berita/{slug}', [NewsPageController::class, 'show'])->name('news.show');
 
 require __DIR__.'/auth.php';
 

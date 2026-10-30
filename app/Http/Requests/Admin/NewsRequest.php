@@ -23,7 +23,7 @@ class NewsRequest extends FormRequest
             'category'                 => ['required', Rule::in(News::CATEGORIES)],
             'published_at'             => ['required', 'date'],
             'is_active'                => ['nullable', 'boolean'],
-            'thumbnail'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'thumbnail'                => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'remove_thumbnail'         => ['nullable', 'boolean'],
 
             'blocks'                   => ['nullable', 'array', 'max:60'],
@@ -31,7 +31,7 @@ class NewsRequest extends FormRequest
             'blocks.*.text.*'          => ['nullable', 'string', 'max:20000'],
             'blocks.*.caption.*'       => ['nullable', 'string', 'max:255'],
             'blocks.*.existing_image'  => ['nullable', 'string', 'max:255'],
-            'blocks.*.image'           => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'blocks.*.image'           => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
         ];
     }
 
@@ -51,11 +51,12 @@ class NewsRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'required'  => ':attribute wajib diisi.',
-            'image'     => ':attribute harus berupa gambar.',
-            'mimes'     => ':attribute harus berformat JPG, PNG, atau WebP.',
-            'max.file'  => ':attribute maksimal 4 MB.',
-            'max.string'=> ':attribute terlalu panjang.',
+            'required'   => ':attribute wajib diisi.',
+            'image'      => ':attribute harus berupa gambar.',
+            'mimes'      => ':attribute harus berformat JPG, PNG, atau WebP.',
+            'uploaded'   => ':attribute gagal diunggah. Kemungkinan ukuran file terlalu besar, coba kecilkan fotonya.',
+            'max.file'   => ':attribute maksimal 8 MB.',
+            'max.string' => ':attribute terlalu panjang.',
         ];
     }
 }
