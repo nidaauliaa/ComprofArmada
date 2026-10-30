@@ -507,6 +507,9 @@ footer a:hover{color:var(--red-primary)}
     </div>
   </section>
 
+  @php
+    $plants = \App\Models\Plant::active()->orderBy('sort_order')->orderBy('id')->get();
+  @endphp
   <section id="plant" class="plant-section">
     <div class="wrap">
       <div class="sec-head"><div><h2>Lokasi Plant</h2></div><p>Klik lokasi untuk melihat posisinya di peta.</p></div>
@@ -515,11 +518,22 @@ footer a:hover{color:var(--red-primary)}
           <div id="plantMap" class="plant-map" role="region" aria-label="Peta lokasi plant"></div>
         </div>
         <div class="plant-side">
-          <div class="plant-list" id="plantList"></div>
-          <div class="plant-actions">
-            <a class="btn btn-red" id="plantGmaps" href="https://maps.google.com" target="_blank" rel="noopener">Buka di Google Maps</a>
-            <button class="plant-all" id="plantAll" type="button">Lihat semua lokasi</button>
+          <div class="plant-list" id="plantList">
+            @forelse ($plants as $p)
+              <button type="button" class="plant-item">
+                <span class="pi-text"><strong>{{ $p->name }}</strong><span class="pi-addr">{{ $p->address }}</span></span>
+                <span class="pi-arrow">→</span>
+              </button>
+            @empty
+              <p style="color:var(--ink-muted)">Belum ada lokasi.</p>
+            @endforelse
           </div>
+          @if ($plants->isNotEmpty())
+            <div class="plant-actions">
+              <a class="btn btn-red" id="plantGmaps" href="https://maps.google.com" target="_blank" rel="noopener">Buka di Google Maps</a>
+              <button class="plant-all" id="plantAll" type="button">Lihat semua lokasi</button>
+            </div>
+          @endif
         </div>
       </div>
     </div>
@@ -540,64 +554,57 @@ footer a:hover{color:var(--red-primary)}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-// Peta plant (Leaflet + OpenStreetMap)
+// Peta plant (Leaflet + OpenStreetMap), data dari database
 (function(){
   var el=document.getElementById('plantMap');
-  if(!el||!window.L)return;
-  var places=[
-    {name:'Magelang (HQ)',addr:'Jl. Mayjen Bambang Soegeng No. 7, Mertoyudan, Magelang, Jawa Tengah',ll:[-7.4950,110.2200]},
-    {name:'Tambun',addr:'Alamat contoh (dummy), Tambun, Bekasi, Jawa Barat',ll:[-6.2640,107.0560]},
-    {name:'Jakarta Utara',addr:'Alamat contoh (dummy), Jakarta Utara, DKI Jakarta',ll:[-6.1384,106.8630]}
-  ];
+  var places=@json($plants->map(fn ($p) => $p->toMapArray())->values());
+  if(!el||!window.L||!places.length)return;
+
   var map=L.map(el,{scrollWheelZoom:false});
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
 
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   function pin(color,w){
     var h=Math.round(w*32/24);
     return L.divIcon({className:'plant-pin',iconSize:[w,h],iconAnchor:[w/2,h],popupAnchor:[0,-h],
       html:'<svg viewBox="0 0 24 32" width="'+w+'" height="'+h+'"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 20 12 20s12-11 12-20C24 5.4 18.6 0 12 0z" fill="'+color+'" stroke="#fff" stroke-width="1.5"/><circle cx="12" cy="12" r="4.5" fill="#fff"/></svg>'});
   }
   var NORMAL='#12274d',ACTIVE='#ff5733';
-  var list=document.getElementById('plantList'),items=[],markers=[],cur=-1;
+  var items=document.querySelectorAll('#plantList .plant-item'),markers=[];
 
   places.forEach(function(p,i){
-    var b=document.createElement('button');
-    b.type='button';b.className='plant-item';
-    b.innerHTML='<span class="pi-text"><strong></strong><span class="pi-addr"></span></span><span class="pi-arrow">→</span>';
-    b.querySelector('strong').textContent=p.name;
-    b.querySelector('.pi-addr').textContent=p.addr;
-    b.addEventListener('click',function(){select(i,true)});
-    list.appendChild(b);items.push(b);
-
+    if(items[i])items[i].addEventListener('click',function(){select(i,true)});
     var m=L.marker(p.ll,{icon:pin(NORMAL,30),title:p.name}).addTo(map);
-    m.bindPopup('<strong></strong><br><span></span>');
+    m.bindPopup('');
     m.on('click',function(){select(i,true)});
     markers.push(m);
   });
 
   function select(i,fly){
-    cur=i;
     items.forEach(function(b,k){b.classList.toggle('active',k===i)});
     markers.forEach(function(m,k){
       m.setIcon(k===i?pin(ACTIVE,40):pin(NORMAL,30));
       m.setZIndexOffset(k===i?1000:0);
     });
     var p=places[i];
-    var pop=markers[i].getPopup();
-    pop.setContent('<strong>'+p.name+'</strong><br>'+p.addr);
-    document.getElementById('plantGmaps').href='https://www.google.com/maps/search/?api=1&query='+p.ll[0]+','+p.ll[1];
+    markers[i].getPopup().setContent('<strong>'+esc(p.name)+'</strong><br>'+esc(p.addr)+(p.phone?'<br>Telp: '+esc(p.phone):''));
+    document.getElementById('plantGmaps').href=(p.maps&&/^https?:\/\//i.test(p.maps))?p.maps:'https://www.google.com/maps/search/?api=1&query='+p.ll[0]+','+p.ll[1];
     if(fly){map.flyTo(p.ll,12,{duration:1.1});markers[i].openPopup()}
   }
 
   var bounds=L.latLngBounds(places.map(function(p){return p.ll}));
-  function showAll(){map.closePopup();map.flyToBounds(bounds,{padding:[70,70],duration:1.1})}
+  function showAll(){
+    map.closePopup();
+    if(places.length>1)map.flyToBounds(bounds,{padding:[70,70],duration:1.1});
+    else map.flyTo(places[0].ll,12,{duration:1.1});
+  }
   document.getElementById('plantAll').addEventListener('click',showAll);
 
   // scroll-zoom hanya aktif setelah peta diklik, supaya scroll halaman nggak terganggu
   map.on('click',function(){map.scrollWheelZoom.enable()});
   el.addEventListener('mouseleave',function(){map.scrollWheelZoom.disable()});
 
-  map.fitBounds(bounds,{padding:[70,70]});
+  if(places.length>1)map.fitBounds(bounds,{padding:[70,70]});else map.setView(places[0].ll,12);
   select(0,false);
 })();
 </script>

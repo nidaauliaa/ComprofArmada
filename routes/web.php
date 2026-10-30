@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Models\News;
 use App\Http\Controllers\NewsPageController;
+use App\Http\Controllers\Admin\PlantController;
 
 
 Route::get('/', function () {
@@ -52,11 +53,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::patch('news/{news}/thumbnail', [NewsController::class, 'thumbnail'])
         ->name('news.thumbnail');
 
+    // Lokasi
+    Route::resource('plants', PlantController::class)
+        ->except(['create', 'edit', 'show']);
+    Route::patch('plants/{plant}/toggle', [PlantController::class, 'toggle'])
+        ->name('plants.toggle');
+
 });
 
 // di bagian route publik (di luar grup admin):
 Route::get('/berita', [NewsPageController::class, 'index'])->name('news.index');
 Route::get('/berita/{slug}', [NewsPageController::class, 'show'])->name('news.show');
+
 
 require __DIR__.'/auth.php';
 
