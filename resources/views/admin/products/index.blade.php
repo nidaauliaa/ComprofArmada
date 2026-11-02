@@ -88,7 +88,7 @@
                     <input type="color" name="color_bg" id="cColor" value="#12274d" style="height:44px;padding:4px">
                 </label>
                 <label>
-                    Foto poster kategori <small>foto bus landscape untuk tampilan di Home</small>
+                    Foto poster kategori <small>foto bus landscape untuk tampilan di Home, maks. 50 MB</small>
                     <div class="drop" id="cDrop">
                         <span id="cImgText">Klik untuk unggah foto</span>
                         <img id="cImg" src="" alt="" hidden>

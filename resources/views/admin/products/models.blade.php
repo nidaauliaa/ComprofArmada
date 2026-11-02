@@ -99,7 +99,7 @@
                 </label>
 
                 <label>
-                    Foto utama <small>foto bus landscape (maks. 5 MB)</small>
+                    Foto utama <small>foto bus landscape (maks. 50 MB)</small>
                     <div class="drop" id="mDrop">
                         <span id="mImgText">Klik untuk unggah foto</span>
                         <img id="mImg" src="" alt="" hidden>

@@ -88,7 +88,7 @@ class CategoryController extends Controller
             'name'       => 'required|string|max:255',
             'short_text' => 'nullable|string|max:255',
             'color_bg'   => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
-            'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:51200',
         ];
     }
 
