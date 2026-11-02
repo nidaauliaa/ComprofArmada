@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\ProductFrontendController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\ProductModelController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Models\News;
 use App\Http\Controllers\NewsPageController;
@@ -30,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::view('/kontak', 'contact')->name('contact');
+
 Route::get('/produk', [ProductFrontendController::class, 'index'])->name('product.index');
 Route::get('/produk/{slug}', [ProductFrontendController::class, 'show'])->name('product.show');
 
@@ -40,8 +44,23 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::post('banners/{banner}/toggle', [BannerController::class, 'toggle'])
         ->name('banners.toggle');
 
-    // Produk
-    Route::resource('products', AdminProductController::class);
+    // Produk: daftar kategori
+    Route::get('products', [AdminProductController::class, 'index'])->name('products.index');
+
+    // Kategori (tambah / ubah / hapus / tayang-sembunyi)
+    Route::post('products/categories', [CategoryController::class, 'store'])->name('products.categories.store');
+    Route::put('products/categories/{category}', [CategoryController::class, 'update'])->name('products.categories.update');
+    Route::patch('products/categories/{category}/toggle', [CategoryController::class, 'toggle'])->name('products.categories.toggle');
+    Route::delete('products/categories/{category}', [CategoryController::class, 'destroy'])->name('products.categories.destroy');
+
+    // Produk / model di dalam satu kategori
+    Route::get('products/categories/{category}', [ProductModelController::class, 'index'])->name('products.models.index');
+    Route::post('products/categories/{category}/models', [ProductModelController::class, 'store'])->name('products.models.store');
+    Route::put('products/models/{productModel}', [ProductModelController::class, 'update'])->name('products.models.update');
+    Route::patch('products/models/{productModel}/toggle', [ProductModelController::class, 'toggle'])->name('products.models.toggle');
+    Route::delete('products/models/{productModel}', [ProductModelController::class, 'destroy'])->name('products.models.destroy');
+    Route::delete('products/galleries/{gallery}', [ProductModelController::class, 'destroyGallery'])->name('products.galleries.destroy');
+
 
     // Berita & Event
     Route::resource('news', NewsController::class)
