@@ -148,9 +148,9 @@ class ProductModelController extends Controller
             'width'       => 'nullable|string|max:255',
             'length'      => 'nullable|string|max:255',
             'description' => 'nullable|string|max:5000',
-            'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:51200',
             'galleries'   => 'nullable|array|max:20',
-            'galleries.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120',
+            'galleries.*' => 'image|mimes:jpeg,png,jpg,webp|max:51200',
         ];
     }
 

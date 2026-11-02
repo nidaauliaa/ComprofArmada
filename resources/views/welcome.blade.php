@@ -227,7 +227,7 @@ footer a:hover{color:var(--red-primary)}
       <a href="#berita">Berita</a>
       <a href="#plant">Lokasi</a>
       <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="contact.html">Hubungi Kami</a>
+      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
     </nav>
   </div>
 </header>
@@ -297,39 +297,24 @@ footer a:hover{color:var(--red-primary)}
     </div>
 
     <div class="cats-fullscreen">
-        <div class="cat-card" data-href="{{ url('/produk?kategori=big-bus') }}" data-color="#12274d" style="--card-bg:#12274d">
+        @php
+            $cats = \App\Models\Category::where('is_active', true)->orderBy('sort_order')->orderBy('id')->get();
+        @endphp
+        @foreach ($cats as $c)
+        @php
+            $bg    = $c->color_bg ?: '#12274d';
+            $short = $c->short_text ?: explode(' ', $c->name)[0];
+        @endphp
+        <div class="cat-card" data-href="{{ route('product.index', ['kategori' => $c->slug]) }}" data-color="{{ $bg }}" style="--card-bg:{{ $bg }}">
         <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        <img class="cat-bus-poster" src="images/BIGBUS-DOUBLEDECKER.png" alt="Big Bus double decker">
-        <span class="cat-big-text" data-short="BIG" data-full="BIG BUS"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>Big Bus</h3></div>
+        @if ($c->image_path)
+        <img class="cat-bus-poster" src="{{ asset('storage/' . $c->image_path) }}" alt="{{ $c->name }}">
+        @endif
+        <span class="cat-big-text" data-short="{{ \Illuminate\Support\Str::upper($short) }}" data-full="{{ \Illuminate\Support\Str::upper($c->name) }}"></span>
+        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>{{ $c->name }}</h3></div>
         <span class="cat-arrow">→</span>
         </div>
-        <div class="cat-card" data-href="{{ url('/produk?kategori=medium-bus') }}" data-color="#0c4a7a" style="--card-bg:#0c4a7a">
-        <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        <img class="cat-bus-poster" src="images/MEDIUM-BUS.png" alt="Medium bus Tourista">
-        <span class="cat-big-text" data-short="MED" data-full="MEDIUM"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>Medium Bus</h3></div>
-        <span class="cat-arrow">→</span>
-        </div>
-        <div class="cat-card" data-href="{{ url('/produk?kategori=intercity') }}" data-color="#0a7bb8" style="--card-bg:#0a7bb8">
-        <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        <img class="cat-bus-poster" src="images/INTERCITY-2.png" alt="Intercity Citouro">
-        <span class="cat-big-text" data-short="INTER" data-full="INTERCITY"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>Intercity</h3></div>
-        <span class="cat-arrow">→</span>
-        </div>
-        <div class="cat-card" data-href="{{ url('/produk?kategori=microbus') }}" data-color="#4a7fa3" style="--card-bg:#4a7fa3">
-        <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        <span class="cat-big-text" data-short="MICRO" data-full="MICROBUS"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>Microbus</h3></div>
-        <span class="cat-arrow">→</span>
-        </div>
-        <div class="cat-card" data-href="{{ url('/produk?kategori=box-heavy-duty') }}" data-color="#b0574a" style="--card-bg:#b0574a">
-        <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        <span class="cat-big-text" data-short="HEAVY" data-full="HEAVY DUTY"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>Box &amp; Heavy Duty</h3></div>
-        <span class="cat-arrow">→</span>
-        </div>
+        @endforeach
     </div>
     </section>
 
@@ -544,8 +529,8 @@ footer a:hover{color:var(--red-primary)}
   <div class="wrap">
     <div class="footer-grid">
       <div><a class="logo" href="#" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul><li><a href="produk.html?kategori=big-bus">Big Bus</a></li><li><a href="produk.html?kategori=medium-bus">Medium Bus</a></li><li><a href="produk.html?kategori=intercity">Intercity</a></li><li><a href="produk.html?kategori=microbus">Microbus</a></li><li><a href="produk.html?kategori=box-heavy-duty">Box &amp; Heavy Duty</a></li></ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#unit">Bisnis Unit</a></li><li><a href="#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="contact.html">Kontak</a></li></ul></div>
+      <div><h4>Produk</h4><ul><li><a href="{{ url('/produk?kategori=big-bus') }}">Big Bus</a></li><li><a href="{{ url('/produk?kategori=medium-bus') }}">Medium Bus</a></li><li><a href="{{ url('/produk?kategori=intercity') }}">Intercity</a></li><li><a href="{{ url('/produk?kategori=microbus') }}">Microbus</a></li><li><a href="{{ url('/produk?kategori=box-heavy-duty') }}">Box &amp; Heavy Duty</a></li></ul></div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#unit">Bisnis Unit</a></li><li><a href="#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
       <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
     </div>
     <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
