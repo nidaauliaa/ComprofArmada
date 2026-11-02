@@ -2,31 +2,50 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+use App\Models\ProductModel;
 use Illuminate\Http\Request;
 
 class ProductFrontendController extends Controller
 {
+    /** Halaman produk: tab kategori + daftar model di kategori terpilih (?kategori=slug). */
     public function index(Request $request)
     {
-        $kategori = $request->query('kategori', 'medium-bus');
+        $categories = $this->activeCategories();
 
-        // Ubah format slug jadi nama kategori yang rapi
-        $categories = [
-            'big-bus' => 'Big Bus',
-            'medium-bus' => 'Medium Bus',
-            'intercity' => 'Intercity',
-            'microbus' => 'Microbus',
-            'box-heavy-duty' => 'Box & Heavy Duty'
-        ];
+        $category = $categories->firstWhere('slug', $request->query('kategori')) ?? $categories->first();
 
-        $currentCategoryName = $categories[$kategori] ?? 'Medium Bus';
+        $models = $category
+            ? $category->models()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->orderBy('id')
+                ->get()
+            : collect();
 
-        return view('product-category', compact('kategori', 'currentCategoryName'));
+        return view('product-category', compact('categories', 'category', 'models'));
     }
 
-    public function show($slug)
+    /** Halaman detail satu produk (/produk/{slug}). */
+    public function show(string $slug)
     {
-        // Di sini nantinya bisa mengambil data dari database berdasarkan slug produk
-        return view('product-detail', compact('slug'));
+        $model = ProductModel::with(['category', 'galleries'])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->whereHas('category', fn ($q) => $q->where('is_active', true))
+            ->firstOrFail();
+
+        $category   = $model->category;
+        $categories = $this->activeCategories();
+
+        return view('product-detail', compact('model', 'category', 'categories'));
+    }
+
+    private function activeCategories()
+    {
+        return Category::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get();
     }
 }

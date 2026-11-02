@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hubungi Kami – New Armada</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--blue-primary:#3b82f6;--blue-hover:#2563eb;--red-primary:#ff5733;--red-hover:#e03e1b;--white:#fff;--bg-light:#f8fafc;--ink-primary:#0f172a;--ink-muted:#64748b;--line-color:rgba(226,232,240,.8);--hd:'Barlow Condensed','Arial Narrow',sans-serif;--bd:'Barlow',system-ui,sans-serif;box-sizing:border-box}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg-light);color:var(--ink-primary);font:400 16px/1.6 var(--bd);overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+.wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 32px}
+section{padding:90px 0}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:40px;flex-wrap:wrap}
+.sec-head h2{font:800 clamp(36px,4vw,52px)/1 var(--hd);text-transform:uppercase;color:var(--ink-primary);margin:0}
+.sec-head p{margin:0;max-width:48ch;color:var(--ink-muted);font-size:16px}
+.sec-head.center{justify-content:center;text-align:center}
+.sec-head.center h2{color:var(--white)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue-primary);color:var(--white);padding:14px 30px;border-radius:8px;border:none;cursor:pointer;font:600 15px/1 var(--bd);transition:all .25s ease;box-shadow:0 4px 14px rgba(59,130,246,.25)}
+.btn:hover{background:var(--blue-hover);transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,130,246,.35)}
+.btn.btn-red{background:var(--red-primary);box-shadow:0 4px 14px rgba(255,87,51,.25)}
+.btn.btn-red:hover{background:var(--red-hover);box-shadow:0 6px 20px rgba(255,87,51,.35)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--red-primary);outline-offset:3px}
+
+/* HEADER */
+header{position:absolute;top:0;left:0;right:0;z-index:100;background:transparent}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+.logo{font:800 26px/1 var(--hd);letter-spacing:.03em;display:flex;align-items:center;gap:10px;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.logo-icon{width:14px;height:18px;background:var(--red-primary);transform:skewX(-18deg);border-radius:2px}
+nav{display:flex;gap:32px;align-items:center;font-weight:600;font-size:15px}
+nav a:not(.btn){position:relative;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.4);padding:6px 0;transition:color .25s ease}
+nav a:not(.btn)::after{content:"";position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--red-primary);transition:width .3s ease}
+nav a:not(.btn):hover{color:var(--red-primary)}
+nav a:not(.btn):hover::after{width:100%}
+.lang{font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.14);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.35)}
+@media(max-width:900px){nav a:not(.btn):not(.lang){display:none}}
+.brand{display:flex;align-items:center;gap:12px;color:#fff}
+.brand img{display:block;height:52px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+.brand-text{font:800 26px/1 var(--hd);letter-spacing:.03em;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+@media(max-width:560px){.brand-text{display:none}}
+
+
+/* HEADER versi halaman dalam: solid */
+header{position:relative;background:#12274d}
+/* HALAMAN KONTAK */
+.page-hero{position:relative;overflow:hidden;background:#12274d;color:#fff;padding:56px 0 120px}
+.page-hero::before{content:"KONTAK";position:absolute;left:50%;top:62%;transform:translate(-50%,-50%);font:800 clamp(120px,24vw,360px)/.85 var(--hd);color:rgba(255,255,255,.08);white-space:nowrap;pointer-events:none;user-select:none}
+.page-hero .wrap{position:relative;z-index:1}
+.page-hero h1{font:800 clamp(44px,6vw,76px)/1 var(--hd);text-transform:uppercase;margin:0 0 12px}
+.page-hero p{margin:0;max-width:52ch;color:rgba(255,255,255,.8);font-size:18px}
+.contact{background:var(--bg-light);padding:0 0 90px}
+.contact-grid{position:relative;z-index:2;margin-top:-64px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:start}
+.c-card{background:#fff;border-radius:14px;padding:36px;box-shadow:0 22px 40px rgba(15,23,42,.14)}
+.c-card h2{font:800 clamp(28px,3vw,38px)/1 var(--hd);text-transform:uppercase;margin:0 0 22px}
+.c-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.c-field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.c-field label{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
+.c-field input,.c-field textarea{width:100%;border:1.5px solid rgba(15,23,42,.15);border-radius:10px;padding:14px 16px;font:500 16px var(--bd);color:var(--ink-primary);background:#fff;outline:none;transition:border-color .25s,box-shadow .25s}
+.c-field textarea{min-height:150px;resize:vertical}
+.c-field input:focus,.c-field textarea:focus{border-color:var(--blue-primary);box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.c-note{margin:14px 0 0;font-size:14px;color:var(--ink-muted)}
+.c-info{background:#12274d;color:#fff}
+.c-info h2{color:#fff}
+.c-item{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-top:1px solid rgba(255,255,255,.15)}
+.c-item:first-of-type{border-top:0;padding-top:0}
+.c-ico{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center}
+.c-ico svg{width:20px;height:20px;stroke:#fff;fill:none;stroke-width:1.8}
+.c-item small{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.65);margin-bottom:4px}
+.c-item p{margin:0;font-size:15px;line-height:1.6;color:rgba(255,255,255,.92)}
+.c-item a:hover{color:var(--red-primary)}
+.c-phones{display:grid;gap:4px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.92)}
+.c-info .btn{margin-top:8px;width:100%}
+@media(max-width:900px){.contact-grid{grid-template-columns:1fr}.c-row{grid-template-columns:1fr}.c-card{padding:26px}}
+/* FOOTER */
+footer{background:#0b172c;color:#94a3b8;padding:70px 0 30px}
+.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}
+footer h4{font:700 18px var(--hd);color:var(--white);margin:0 0 16px;text-transform:uppercase;letter-spacing:.05em}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:15px}
+footer a:hover{color:var(--red-primary)}
+.footer-bottom{margin-top:50px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <div class="wrap nav">
+    <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
+      <img src="{{ asset('images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
+      <span class="brand-text">NEW ARMADA</span>
+    </a>
+    <nav>
+      <a href="{{ url('/') }}#produk">Produk</a>
+      <a href="{{ url('/') }}#unit">Bisnis Unit</a>
+      <a href="{{ route('news.index') }}">Berita</a>
+      <a href="{{ url('/') }}#plant">Lokasi</a>
+      <span class="lang">ID | EN</span>
+      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero" style="padding-bottom:120px">
+    <div class="wrap">
+      <h1>Hubungi Kami</h1>
+      <p>Punya pertanyaan soal produk, kerja sama, atau layanan? Kirim pesan dan tim kami akan menghubungi kamu kembali.</p>
+    </div>
+  </section>
+
+  <section class="contact">
+    <div class="wrap">
+      <div class="contact-grid">
+        <div class="c-card">
+          <h2>Kirim Pesan</h2>
+          <form id="contactForm">
+            <div class="c-row">
+              <div class="c-field"><label for="cNama">Nama</label><input id="cNama" name="nama" type="text" required autocomplete="name"></div>
+              <div class="c-field"><label for="cTelp">Telepon</label><input id="cTelp" name="telp" type="tel" autocomplete="tel"></div>
+            </div>
+            <div class="c-field"><label for="cEmail">Email</label><input id="cEmail" name="email" type="email" required autocomplete="email"></div>
+            <div class="c-field"><label for="cSubjek">Subjek</label><input id="cSubjek" name="subjek" type="text" placeholder="Contoh: Penawaran Medium Bus"></div>
+            <div class="c-field"><label for="cPesan">Pesan</label><textarea id="cPesan" name="pesan" required></textarea></div>
+            <button class="btn btn-red" type="submit">Kirim Pesan</button>
+            <p class="c-note" id="cNote">Saat ditekan, aplikasi email kamu akan terbuka dengan pesan yang sudah terisi.</p>
+          </form>
+        </div>
+
+        <aside class="c-card c-info">
+          <h2>Kantor Pusat</h2>
+          <div class="c-item">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
+            <div><small>Alamat</small><p>Jl. Mayjen Bambang Soegeng No. 7, Mertoyudan, Magelang, Jawa Tengah.</p></div>
+          </div>
+          <div class="c-item">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
+            <div><small>Telepon</small>
+              <div class="c-phones">
+                <a href="tel:+62293363591">(0293) 363591</a>
+                <a href="tel:+62293364371">(0293) 364371</a>
+                {{-- TODO: ganti 2 nomor di bawah dengan nomor asli --}}
+                <a href="tel:+62293000003">(0293) 000003</a>
+              </div>
+            </div>
+          </div>
+          <div class="c-item">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+            <div><small>Email</small><p><a href="mailto:marketing@newarmada.co.id">marketing@newarmada.co.id</a></p></div>
+          </div>
+          <div class="c-item">
+            <span class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <div><small>Jam Kerja</small><p>Senin–Jumat, 08.00–16.00 WIB</p></div>
+          </div>
+          <a class="btn" href="{{ url('/') }}#plant">Lihat Lokasi di Peta</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div><a class="logo" href="{{ url('/') }}" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
+      <div><h4>Produk</h4><ul><li><a href="{{ url('/produk?kategori=big-bus') }}">Big Bus</a></li><li><a href="{{ url('/produk?kategori=medium-bus') }}">Medium Bus</a></li><li><a href="{{ url('/produk?kategori=intercity') }}">Intercity</a></li><li><a href="{{ url('/produk?kategori=microbus') }}">Microbus</a></li><li><a href="{{ url('/produk?kategori=box-heavy-duty') }}">Box &amp; Heavy Duty</a></li></ul></div>
+      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="{{ url('/') }}#unit">Bisnis Unit</a></li><li><a href="{{ url('/') }}#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
+      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
+  </div>
+</footer>
+
+<script>
+// Isi subjek otomatis jika datang dari halaman detail produk (?produk=...)
+(function(){var q=new URLSearchParams(location.search).get('produk');if(q)document.getElementById('cSubjek').value='Penawaran '+q})();
+// Form kontak: membuka aplikasi email dengan isi pesan (belum ada backend)
+(function(){
+  var f=document.getElementById('contactForm');
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var d=f.elements;
+    var subject=d.subjek.value.trim()||('Pesan dari '+d.nama.value.trim());
+    var body='Nama: '+d.nama.value.trim()+'\nEmail: '+d.email.value.trim()+'\nTelepon: '+d.telp.value.trim()+'\n\n'+d.pesan.value.trim();
+    window.location.href='mailto:marketing@newarmada.co.id?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+  });
+})();
+</script>
+</body>
+</html>
