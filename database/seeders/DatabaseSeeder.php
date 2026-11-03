@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Tim Marketing New Armada',
             'email' => 'marketing@newarmada.co.id',
-            'password' => Hash::make('marketing789'), 
+            'password' => Hash::make('marketing789'),
         ]);
     }
 }
