@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" style="--c: {{ $category->color_bg ?: '#12274d' }}">
+<html lang="{{ app()->getLocale() }}" style="--c: {{ $category->color_bg ?: '#12274d' }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{{ $model->name }} – {{ $category->name }} – New Armada</title>
+<title>{{ $model->name }} – {{ $category->t('name') }} – New Armada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -111,60 +111,46 @@ footer a:hover{color:var(--red-primary)}
 @media(max-width:560px){.wrap{padding:0 20px}.gal-track{padding:0 20px;scroll-padding:0 20px}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
 
-<header id="siteHeader">
-  <div class="wrap nav">
-    <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
-      <img src="{{ asset('images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
-      <span class="brand-text">NEW ARMADA</span>
-    </a>
-    <nav>
-      <a href="{{ url('/') }}#produk">Produk</a>
-      <a href="{{ url('/') }}#unit">Bisnis Unit</a>
-      <a href="{{ route('news.index') }}">Berita</a>
-      <a href="{{ url('/') }}#plant">Lokasi</a>
-      <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
-    </nav>
-  </div>
-</header>
+@include('partials.public-header', ['brand' => 'img', 'cur' => 'products'])
 
 <main>
   @php
-    $mainImg = $model->image_path ?: $category->image_path;
+    $mainImg = $model->image_path ?: $category->posterPath();
     $specs = array_filter([
-        'Merek'   => $model->brand ?: 'New Armada',
-        'Model'   => $model->name,
-        'Tipe'    => $model->subtitle,
-        'Tinggi'  => $model->height,
-        'Lebar'   => $model->width,
-        'Panjang' => $model->length,
+        __('site.spec_brand')   => $model->brand ?: 'New Armada',
+        __('site.spec_model')   => $model->name,
+        __('site.spec_type')    => $model->t('subtitle'),
+        __('site.spec_height')  => $model->height,
+        __('site.spec_width')   => $model->width,
+        __('site.spec_length')  => $model->length,
     ]);
   @endphp
 
   <section class="dh">
-    <span class="dh-word" aria-hidden="true">{{ \Illuminate\Support\Str::upper($category->name) }}</span>
+    <span class="dh-word" aria-hidden="true">{{ \Illuminate\Support\Str::upper($category->t('name')) }}</span>
     <div class="wrap">
-      <div class="dh-kicker">{{ $category->name }}</div>
+      <div class="dh-kicker">{{ $category->t('name') }}</div>
       <h1>{{ $model->name }}</h1>
     </div>
   </section>
 
   <div class="crumb-wrap">
     <div class="crumb" role="navigation" aria-label="Breadcrumb">
-      <a href="{{ url('/') }}" aria-label="Beranda"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
+      <a href="{{ url('/') }}" aria-label="{{ __('site.home') }}"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
       <span class="sep">›</span>
-      <a class="muted" href="{{ route('product.index', ['kategori' => $category->slug]) }}">{{ $category->name }}</a>
+      <a class="muted" href="{{ route('product.index', ['kategori' => $category->slug]) }}">{{ $category->t('name') }}</a>
       <span class="sep">›</span>
       <span>{{ $model->name }}</span>
     </div>
   </div>
 
-  <div class="tabs"><div class="wrap"><div class="tabs-in" aria-label="Kategori produk">
+  <div class="tabs"><div class="wrap"><div class="tabs-in" aria-label="{{ __('site.categories') }}">
     @foreach ($categories as $c)
-      <a class="tab" href="{{ route('product.index', ['kategori' => $c->slug]) }}" @if ($c->id === $category->id) aria-current="page" @endif>{{ $c->name }}</a>
+      <a class="tab" href="{{ route('product.index', ['kategori' => $c->slug]) }}" @if ($c->id === $category->id) aria-current="page" @endif>{{ $c->t('name') }}</a>
     @endforeach
   </div></div></div>
 
@@ -172,11 +158,11 @@ footer a:hover{color:var(--red-primary)}
     <div class="wrap dt-grid">
       <div class="dt-text">
         <h2>{{ $model->name }}</h2>
-        @if ($model->description)
-          <p>{!! nl2br(e($model->description)) !!}</p>
+        @if ($model->t('description'))
+          <p>{!! nl2br(e($model->t('description'))) !!}</p>
         @endif
         @if ($model->galleries->count())
-          <a class="btn btn-red" href="#galeri">Lihat lebih banyak gambar</a>
+          <a class="btn btn-red" href="#galeri">{{ __('site.see_more_images') }}</a>
         @endif
       </div>
       <div class="spec">
@@ -185,7 +171,7 @@ footer a:hover{color:var(--red-primary)}
             <div class="row"><dt>{{ $label }}</dt><dd>{{ $value }}</dd></div>
           @endforeach
         </dl>
-        <a class="btn btn-red" href="{{ route('contact', ['produk' => $model->name]) }}">Minta Penawaran</a>
+        <a class="btn btn-red" href="{{ route('contact', ['produk' => $model->name]) }}">{{ __('site.request_quote') }}</a>
       </div>
       <div class="dt-visual">
         @if ($mainImg)
@@ -197,16 +183,16 @@ footer a:hover{color:var(--red-primary)}
 
   @if ($model->galleries->count())
   <section class="gal" id="galeri">
-    <h2>Galeri</h2>
+    <h2>{{ __('site.gallery') }}</h2>
     <div class="gal-track" id="galTrack">
       @foreach ($model->galleries as $g)
         @php $isPng = strtolower(pathinfo($g->image_path, PATHINFO_EXTENSION)) === 'png'; @endphp
-        <div class="gal-item"><img class="{{ $isPng ? '' : 'photo' }}" src="{{ asset('storage/' . $g->image_path) }}" alt="{{ $model->name }} – foto {{ $loop->iteration }}" loading="lazy"></div>
+        <div class="gal-item"><img class="{{ $isPng ? '' : 'photo' }}" src="{{ asset('storage/' . $g->image_path) }}" alt="{{ $model->name }} – {{ __('site.photo') }} {{ $loop->iteration }}" loading="lazy"></div>
       @endforeach
     </div>
     <div class="gal-nav">
-      <button type="button" id="galPrev" aria-label="Sebelumnya"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
-      <button type="button" id="galNext" aria-label="Berikutnya"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+      <button type="button" id="galPrev" aria-label="{{ __('site.prev') }}"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></button>
+      <button type="button" id="galNext" aria-label="{{ __('site.next') }}"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
     </div>
   </section>
   @endif
@@ -214,29 +200,15 @@ footer a:hover{color:var(--red-primary)}
   <section class="cta">
     <div class="wrap cta-in">
       <div>
-        <h2>Tertarik dengan {{ $model->name }}?</h2>
-        <p>Tim kami siap membantu penawaran, konfigurasi, dan jadwal pengerjaan.</p>
+        <h2>{{ __('site.interested_in', ['name' => $model->name]) }}</h2>
+        <p>{{ __('site.cta_sub') }}</p>
       </div>
-      <a class="btn btn-red" href="{{ route('contact', ['produk' => $model->name]) }}">Hubungi Kami →</a>
+      <a class="btn btn-red" href="{{ route('contact', ['produk' => $model->name]) }}">{{ __('site.contact_arrow') }}</a>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div><a class="logo" href="{{ url('/') }}" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul>
-        @foreach ($categories as $c)
-        <li><a href="{{ route('product.index', ['kategori' => $c->slug]) }}">{{ $c->name }}</a></li>
-        @endforeach
-      </ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="{{ url('/') }}#unit">Bisnis Unit</a></li><li><a href="{{ url('/') }}#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
-      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
-  </div>
-</footer>
+@include('partials.public-footer')
 
 <script>
 // Carousel galeri
@@ -256,5 +228,7 @@ footer a:hover{color:var(--red-primary)}
   sync();
 })();
 </script>
+@include('partials.search-overlay')
+<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
 </body>
 </html>

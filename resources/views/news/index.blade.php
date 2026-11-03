@@ -7,9 +7,9 @@
     <section class="nh">
         <div class="wrap nh-grid" style="grid-template-columns:1fr">
             <div class="nh-main">
-                <span class="nh-tag">Berita</span>
-                <h1>Belum ada berita</h1>
-                <p class="desc">Kabar terbaru dari New Armada akan tampil di sini.</p>
+                <span class="nh-tag">{{ __('site.news') }}</span>
+                <h1>{{ __('site.no_news_title') }}</h1>
+                <p class="desc">{{ __('site.no_news_sub') }}</p>
             </div>
         </div>
     </section>
@@ -23,16 +23,16 @@
 
         <div class="wrap nh-grid">
             <div class="nh-main">
-                <span class="nh-tag" id="nhTag">Terbaru</span>
-                <h1 id="nhTitle">{{ $first->tr('title', 'id') }}</h1>
+                <span class="nh-tag" id="nhTag">{{ __('site.latest') }}</span>
+                <h1 id="nhTitle">{{ $first->tr('title') }}</h1>
                 <p class="desc" id="nhDesc">{{ $first->summary(220) }}</p>
                 <div class="nh-date" id="nhDate">{{ $first->dateLabel() }}</div>
-                <a class="btn" id="nhLink" href="{{ route('news.show', $first->slug) }}">Baca Selengkapnya →</a>
+                <a class="btn" id="nhLink" href="{{ route('news.show', $first->slug) }}">{{ __('site.read_more') }} →</a>
 
                 @if ($popular->isNotEmpty())
                     <div class="nh-trend">
                         <h4 class="nh-label">
-                            <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Terpopuler
+                            <svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>{{ __('site.popular') }}
                         </h4>
                         <div class="nh-trend-row">
                             @foreach ($popular as $n)
@@ -40,7 +40,7 @@
                                     <span class="th">
                                         @if ($n->thumbnail_url)<img src="{{ $n->thumbnail_url }}" alt="" loading="lazy" onerror="this.remove()">@endif
                                     </span>
-                                    <h5>{{ $n->tr('title', 'id') }}</h5>
+                                    <h5>{{ $n->tr('title') }}</h5>
                                 </button>
                             @endforeach
                         </div>
@@ -50,7 +50,7 @@
 
             <aside class="nh-side">
                 <h4 class="nh-label">
-                    <svg viewBox="0 0 24 24"><path d="M4 10v4l12 5V5z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>Berita Terkini
+                    <svg viewBox="0 0 24 24"><path d="M4 10v4l12 5V5z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>{{ __('site.latest_news') }}
                 </h4>
                 <div id="nhSide">
                     @foreach ($latest as $n)
@@ -59,7 +59,7 @@
                                 @if ($n->thumbnail_url)<img src="{{ $n->thumbnail_url }}" alt="" loading="lazy" onerror="this.remove()">@endif
                             </span>
                             <span>
-                                <h5>{{ $n->tr('title', 'id') }}</h5>
+                                <h5>{{ $n->tr('title') }}</h5>
                                 <small>{{ $n->dateLabel() }}</small>
                             </span>
                         </button>
@@ -74,12 +74,12 @@
 <section class="all-news" id="semua">
     <div class="wrap">
         <div class="sec-head">
-            <div><h2>Semua Berita</h2></div>
-            <p>Kumpulan kabar terbaru dari New Armada.</p>
+            <div><h2>{{ __('site.all_news') }}</h2></div>
+            <p>{{ __('site.all_news_sub') }}</p>
         </div>
 
         @if ($all->isEmpty())
-            <p style="color:var(--ink-muted)">Belum ada berita yang dipublikasikan.</p>
+            <p style="color:var(--ink-muted)">{{ __('site.no_news') }}</p>
         @else
             <div class="news-grid">
                 @foreach ($all as $n)
@@ -90,15 +90,15 @@
             @if ($all->hasPages())
                 <div class="pg">
                     @if ($all->onFirstPage())
-                        <span class="dis">‹ Sebelumnya</span>
+                        <span class="dis">{{ __('site.prev_page') }}</span>
                     @else
-                        <a href="{{ $all->previousPageUrl() }}">‹ Sebelumnya</a>
+                        <a href="{{ $all->previousPageUrl() }}">{{ __('site.prev_page') }}</a>
                     @endif
-                    <span class="pg-i">Halaman {{ $all->currentPage() }} dari {{ $all->lastPage() }}</span>
+                    <span class="pg-i">{{ __('site.page_of', ['current' => $all->currentPage(), 'last' => $all->lastPage()]) }}</span>
                     @if ($all->hasMorePages())
-                        <a href="{{ $all->nextPageUrl() }}">Berikutnya ›</a>
+                        <a href="{{ $all->nextPageUrl() }}">{{ __('site.next_page') }}</a>
                     @else
-                        <span class="dis">Berikutnya ›</span>
+                        <span class="dis">{{ __('site.next_page') }}</span>
                     @endif
                 </div>
             @endif

@@ -11,6 +11,11 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Models\News;
 use App\Http\Controllers\NewsPageController;
 use App\Http\Controllers\Admin\PlantController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SocialFeedController;
+use App\Http\Controllers\Admin\SocialPostController;
+use App\Http\Controllers\Admin\SettingController;
 
 
 Route::get('/', function () {
@@ -33,6 +38,12 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::view('/kontak', 'contact')->name('contact');
+
+// Bahasa (ID/EN/中文), pencarian, JSON sosial media
+Route::get('/bahasa/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
+Route::get('/cari', [SearchController::class, 'index'])->name('search');
+Route::get('/cari/saran', [SearchController::class, 'suggest'])->middleware('throttle:60,1')->name('search.suggest');
+Route::get('/api/social', [SocialFeedController::class, 'index'])->middleware('throttle:60,1')->name('api.social');
 
 Route::get('/produk', [ProductFrontendController::class, 'index'])->name('product.index');
 Route::get('/produk/{slug}', [ProductFrontendController::class, 'show'])->name('product.show');
@@ -77,6 +88,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         ->except(['create', 'edit', 'show']);
     Route::patch('plants/{plant}/toggle', [PlantController::class, 'toggle'])
         ->name('plants.toggle');
+
+    // Instagram & Sosial Media (link share / kode embed oEmbed / JSON -> tampil di Home)
+    Route::get('social', [SocialPostController::class, 'index'])->name('social.index');
+    Route::post('social', [SocialPostController::class, 'store'])->name('social.store');
+    Route::put('social/{post}', [SocialPostController::class, 'update'])->name('social.update');
+    Route::patch('social/{post}/toggle', [SocialPostController::class, 'toggle'])->name('social.toggle');
+    Route::patch('social/{post}/move/{dir}', [SocialPostController::class, 'move'])->whereIn('dir', ['up', 'down'])->name('social.move');
+    Route::delete('social/{post}', [SocialPostController::class, 'destroy'])->name('social.destroy');
+
+    // Pengaturan Situs
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
 
 });
 

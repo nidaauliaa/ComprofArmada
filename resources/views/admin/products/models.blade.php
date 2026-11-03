@@ -93,6 +93,7 @@
                     Subjudul <small>contoh: Medium Bus · Executive</small>
                     <input type="text" name="subtitle" id="mSub">
                 </label>
+                <x-lang-tabs name="subtitle" mode="suffix" id-base="mSub" label="Terjemahan subjudul" :only="['en','zh']" />
                 <label>
                     Merek
                     <input type="text" name="brand" id="mBrand" placeholder="NEW ARMADA">
@@ -117,6 +118,7 @@
                     Deskripsi
                     <textarea name="description" id="mDesc" rows="4"></textarea>
                 </label>
+                <x-lang-tabs name="description" mode="suffix" id-base="mDesc" type="textarea" :rows="4" label="Terjemahan deskripsi" :only="['en','zh']" help="Kosong = website memakai Bahasa Indonesia." />
 
                 <div>
                     <b>Galeri foto</b>
@@ -189,6 +191,7 @@
             $('mMethod').disabled = true;
             setImg(null);
             clearGal();
+            form.dispatchEvent(new Event('input', { bubbles: true }));
             $('mGalHint').hidden = true;
             openDr('Tambah produk');
         });
@@ -207,6 +210,11 @@
             $('mW').value = d.width || '';
             $('mL').value = d.length || '';
             $('mDesc').value = d.description || '';
+            $('mSubEn').value = d.subtitle_en || '';
+            $('mSubZh').value = d.subtitle_zh || '';
+            $('mDescEn').value = d.description_en || '';
+            $('mDescZh').value = d.description_zh || '';
+            form.dispatchEvent(new Event('input', { bubbles: true }));
             setImg(d.image);
             clearGal();
             renderOldGallery(d.galleries || []);

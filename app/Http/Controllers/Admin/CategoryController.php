@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
         if ($request->hasFile('image')) {
             if ($category->image_path) {
-                Storage::disk('public')->delete($category->image_path);
+                $this->deletePublicFile($category->image_path);
             }
             $data['image_path'] = $request->file('image')->store('categories', 'public');
         }
@@ -66,14 +66,14 @@ class CategoryController extends Controller
         // Database ikut menghapus model & galeri (cascade), tapi file fotonya harus dihapus manual.
         foreach ($category->models()->with('galleries')->get() as $model) {
             foreach ($model->galleries as $g) {
-                Storage::disk('public')->delete($g->image_path);
+                $this->deletePublicFile($g->image_path);
             }
             if ($model->image_path) {
-                Storage::disk('public')->delete($model->image_path);
+                $this->deletePublicFile($model->image_path);
             }
         }
         if ($category->image_path) {
-            Storage::disk('public')->delete($category->image_path);
+            $this->deletePublicFile($category->image_path);
         }
 
         $category->delete();
@@ -86,6 +86,8 @@ class CategoryController extends Controller
     {
         return [
             'name'       => 'required|string|max:255',
+            'name_en'    => 'nullable|string|max:255',
+            'name_zh'    => 'nullable|string|max:255',
             'short_text' => 'nullable|string|max:255',
             'color_bg'   => ['nullable', 'regex:/^#[0-9a-fA-F]{6}$/'],
             'image'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:51200',
@@ -96,6 +98,8 @@ class CategoryController extends Controller
     {
         return [
             'name'       => 'Nama kategori',
+            'name_en'    => 'Nama kategori (EN)',
+            'name_zh'    => 'Nama kategori (中文)',
             'short_text' => 'Teks singkat',
             'color_bg'   => 'Warna latar',
             'image'      => 'Foto poster',

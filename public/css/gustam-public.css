@@ -1,0 +1,25 @@
+/* ===== Tambahan fitur Gustam (PIC): pengalih bahasa, pencarian, sosial media embed ===== */
+
+/* pengalih bahasa & tombol cari (memakai gaya pill ".lang" milik tim) */
+.lang-wrap{position:relative;display:inline-block}
+.lang{cursor:pointer;font-family:inherit}
+button.lang.icon{display:inline-grid;place-items:center;width:36px;height:34px;padding:0}
+button.lang.icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:140px;background:#fff;border-radius:10px;padding:6px;box-shadow:0 18px 40px rgba(15,23,42,.25);display:none;z-index:50}
+.lang-wrap.open .lang-menu{display:block}
+.lang-menu a{display:block!important;padding:9px 12px!important;border-radius:6px;color:#0f172a!important;text-shadow:none!important;font-weight:600;font-size:14px}
+.lang-menu a.on,.lang-menu a:hover{background:#f1f5f9;color:#ff5733!important}
+.lang-menu a::after{display:none!important}
+@media(max-width:900px){.lang-wrap,.lang,button.lang.icon{display:inline-block}nav .lang-wrap{display:inline-block!important}}
+
+/* pencarian */
+.search-pop{position:fixed;inset:0;z-index:300;background:rgba(8,15,32,.78);backdrop-filter:blur(6px);padding:12vh 20px 0}
+.search-pop[hidden]{display:none}
+.search-box{max-width:680px;margin:0 auto;background:#fff;border-radius:14px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.4);color:#0f172a}
+.search-box form{display:flex;gap:10px}
+.search-box input{flex:1;font:500 18px 'Barlow',sans-serif;padding:14px 16px;border:1px solid #cbd5e1;border-radius:10px}
+.search-box input:focus{outline:3px solid rgba(59,130,246,.35);border-color:#3b82f6}
+.sug{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px}
+.sug a{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:8px;color:#0f172a}
+.sug a:hover{background:#f1f5f9}
+.sug small{color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:700}

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -85,31 +85,18 @@ footer a:hover{color:var(--red-primary)}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
 
-<header id="siteHeader">
-  <div class="wrap nav">
-    <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
-      <img src="{{ asset('images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
-      <span class="brand-text">NEW ARMADA</span>
-    </a>
-    <nav>
-      <a href="{{ url('/') }}#produk">Produk</a>
-      <a href="{{ url('/') }}#unit">Bisnis Unit</a>
-      <a href="{{ route('news.index') }}">Berita</a>
-      <a href="{{ url('/') }}#plant">Lokasi</a>
-      <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
-    </nav>
-  </div>
-</header>
+@include('partials.public-header', ['brand' => 'img', 'cur' => 'contact'])
 
+@php $mail = $site['email_marketing'] ?? 'marketing@newarmada.co.id'; @endphp
 <main>
   <section class="page-hero" style="padding-bottom:120px">
     <div class="wrap">
-      <h1>Hubungi Kami</h1>
-      <p>Punya pertanyaan soal produk, kerja sama, atau layanan? Kirim pesan dan tim kami akan menghubungi kamu kembali.</p>
+      <h1>{{ __('site.contact_us') }}</h1>
+      <p>{{ __('site.contact_hero') }}</p>
     </div>
   </section>
 
@@ -117,78 +104,70 @@ footer a:hover{color:var(--red-primary)}
     <div class="wrap">
       <div class="contact-grid">
         <div class="c-card">
-          <h2>Kirim Pesan</h2>
+          <h2>{{ __('site.send_message') }}</h2>
           <form id="contactForm">
             <div class="c-row">
-              <div class="c-field"><label for="cNama">Nama</label><input id="cNama" name="nama" type="text" required autocomplete="name"></div>
-              <div class="c-field"><label for="cTelp">Telepon</label><input id="cTelp" name="telp" type="tel" autocomplete="tel"></div>
+              <div class="c-field"><label for="cNama">{{ __('site.f_name') }}</label><input id="cNama" name="nama" type="text" required autocomplete="name"></div>
+              <div class="c-field"><label for="cTelp">{{ __('site.f_phone') }}</label><input id="cTelp" name="telp" type="tel" autocomplete="tel"></div>
             </div>
-            <div class="c-field"><label for="cEmail">Email</label><input id="cEmail" name="email" type="email" required autocomplete="email"></div>
-            <div class="c-field"><label for="cSubjek">Subjek</label><input id="cSubjek" name="subjek" type="text" placeholder="Contoh: Penawaran Medium Bus"></div>
-            <div class="c-field"><label for="cPesan">Pesan</label><textarea id="cPesan" name="pesan" required></textarea></div>
-            <button class="btn btn-red" type="submit">Kirim Pesan</button>
-            <p class="c-note" id="cNote">Saat ditekan, aplikasi email kamu akan terbuka dengan pesan yang sudah terisi.</p>
+            <div class="c-field"><label for="cEmail">{{ __('site.f_email') }}</label><input id="cEmail" name="email" type="email" required autocomplete="email"></div>
+            <div class="c-field"><label for="cSubjek">{{ __('site.f_subject') }}</label><input id="cSubjek" name="subjek" type="text" placeholder="{{ __('site.subject_placeholder') }}"></div>
+            <div class="c-field"><label for="cPesan">{{ __('site.f_message') }}</label><textarea id="cPesan" name="pesan" required></textarea></div>
+            <button class="btn btn-red" type="submit">{{ __('site.send_message') }}</button>
+            <p class="c-note" id="cNote">{{ __('site.send_note') }}</p>
           </form>
         </div>
 
         <aside class="c-card c-info">
-          <h2>Kantor Pusat</h2>
+          <h2>{{ __('site.head_office') }}</h2>
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-            <div><small>Alamat</small><p>Jl. Mayjen Bambang Soegeng No. 7, Mertoyudan, Magelang, Jawa Tengah.</p></div>
+            <div><small>{{ __('site.f_address') }}</small><p>{{ $site['address'] ?? 'Jl. Mayjen Bambang Soegeng No. 7, Mertoyudan, Magelang, Jawa Tengah.' }}</p></div>
           </div>
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
-            <div><small>Telepon</small>
+            <div><small>{{ __('site.f_phone') }}</small>
               <div class="c-phones">
-                <a href="tel:+62293363591">(0293) 363591</a>
-                <a href="tel:+62293364371">(0293) 364371</a>
-                {{-- TODO: ganti 2 nomor di bawah dengan nomor asli --}}
-                <a href="tel:+62293000003">(0293) 000003</a>
+                @php $phones = !empty($site['phone']) ? array_filter(array_map('trim', explode(',', $site['phone']))) : ['(0293) 363591', '(0293) 364371']; @endphp
+                @foreach ($phones as $ph)
+                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $ph) }}">{{ $ph }}</a>
+                @endforeach
               </div>
             </div>
           </div>
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
-            <div><small>Email</small><p><a href="mailto:marketing@newarmada.co.id">marketing@newarmada.co.id</a></p></div>
+            <div><small>Email</small><p><a href="mailto:{{ $mail }}">{{ $mail }}</a></p></div>
           </div>
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-            <div><small>Jam Kerja</small><p>Senin–Jumat, 08.00–16.00 WIB</p></div>
+            <div><small>{{ __('site.f_hours') }}</small><p>{{ $site['working_hours'] ?? 'Senin–Jumat, 08.00–16.00 WIB' }}</p></div>
           </div>
-          <a class="btn" href="{{ url('/') }}#plant">Lihat Lokasi di Peta</a>
+          <a class="btn" href="{{ url('/') }}#plant">{{ __('site.see_map') }}</a>
         </aside>
       </div>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div><a class="logo" href="{{ url('/') }}" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul><li><a href="{{ url('/produk?kategori=big-bus') }}">Big Bus</a></li><li><a href="{{ url('/produk?kategori=medium-bus') }}">Medium Bus</a></li><li><a href="{{ url('/produk?kategori=intercity') }}">Intercity</a></li><li><a href="{{ url('/produk?kategori=microbus') }}">Microbus</a></li><li><a href="{{ url('/produk?kategori=box-heavy-duty') }}">Box &amp; Heavy Duty</a></li></ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="{{ url('/') }}#unit">Bisnis Unit</a></li><li><a href="{{ url('/') }}#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
-      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
-  </div>
-</footer>
+@include('partials.public-footer')
 
 <script>
 // Isi subjek otomatis jika datang dari halaman detail produk (?produk=...)
-(function(){var q=new URLSearchParams(location.search).get('produk');if(q)document.getElementById('cSubjek').value='Penawaran '+q})();
+(function(){var q=new URLSearchParams(location.search).get('produk');if(q)document.getElementById('cSubjek').value=@json(__('site.quote_prefix'))+' '+q})();
 // Form kontak: membuka aplikasi email dengan isi pesan (belum ada backend)
 (function(){
   var f=document.getElementById('contactForm');
   f.addEventListener('submit',function(e){
     e.preventDefault();
     var d=f.elements;
-    var subject=d.subjek.value.trim()||('Pesan dari '+d.nama.value.trim());
+    var subject=d.subjek.value.trim()||(@json(__('site.mail_from'))+' '+d.nama.value.trim());
     var body='Nama: '+d.nama.value.trim()+'\nEmail: '+d.email.value.trim()+'\nTelepon: '+d.telp.value.trim()+'\n\n'+d.pesan.value.trim();
-    window.location.href='mailto:marketing@newarmada.co.id?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    window.location.href='mailto:'+@json($mail)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
   });
 })();
 </script>
+@include('partials.search-overlay')
+<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
 </body>
 </html>

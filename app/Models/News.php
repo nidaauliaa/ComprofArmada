@@ -45,25 +45,39 @@ class News extends Model
         return (string) (($value[$locale] ?? '') !== '' ? $value[$locale] : ($value['id'] ?? ''));
     }
 
-    /** URL file. Path "images/..." = file bawaan di public/images, selain itu di storage/public. */
+    /** Teks dari larik {id,en,zh} sesuai bahasa aktif; kosong -> Bahasa Indonesia. */
+    public function localized($value, ?string $locale = null): string
+    {
+        $value = is_array($value) ? $value : [];
+        $locale = $locale ?: app()->getLocale();
+
+        return (string) (($value[$locale] ?? '') !== '' ? $value[$locale] : ($value['id'] ?? ''));
+    }
+
+    /** URL file. Semua file (termasuk bawaan "images/...") ada di storage/app/public, dilayani lewat /storage. */
     public static function fileUrl(?string $path): ?string
     {
         if (! $path) {
             return null;
         }
 
-        return str_starts_with($path, 'images/') ? asset($path) : asset('storage/' . $path);
+        return asset('storage/' . $path);
     }
 
     public function getThumbnailUrlAttribute(): ?string
     {
+        if ($this->thumbnail_path && ! \App\Support\StorageImage::exists($this->thumbnail_path)) {
+            // file unggahan belum ada di storage ini: pakai gambar bawaan sesuai judul
+            return asset('storage/'.\App\Support\StorageImage::guess($this->slug));
+        }
+
         return self::fileUrl($this->thumbnail_path);
     }
 
         public function dateLabel(): string
     {
         return $this->published_at
-            ? $this->published_at->copy()->locale('id')->translatedFormat('d F Y')
+            ? $this->published_at->copy()->locale(app()->getLocale())->translatedFormat('d F Y')
             : '';
     }
 
@@ -71,8 +85,8 @@ class News extends Model
     public function summary(int $limit = 200): string
     {
         foreach ($this->blocks ?? [] as $b) {
-            if (($b['type'] ?? 'p') === 'p' && ($b['text']['id'] ?? '') !== '') {
-                return Str::limit($b['text']['id'], $limit);
+            if (($b['type'] ?? 'p') === 'p' && $this->localized($b['text'] ?? []) !== '') {
+                return Str::limit($this->localized($b['text'] ?? []), $limit);
             }
         }
 
@@ -85,7 +99,7 @@ class News extends Model
         return [
             'id'    => $this->id,
             'url'   => route('news.show', $this->slug),
-            'title' => $this->tr('title', 'id'),
+            'title' => $this->tr('title'),
             'desc'  => $this->summary(220),
             'date'  => $this->dateLabel(),
             'tag'   => $this->category,

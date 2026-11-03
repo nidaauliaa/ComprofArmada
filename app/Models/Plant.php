@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\Translatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Plant extends Model
 {
-    protected $fillable = ['name', 'address', 'phone', 'maps_url', 'lat', 'lng', 'is_active', 'sort_order'];
+    use Translatable;
+
+    protected $fillable = [
+        'name', 'name_en', 'name_zh', 'address', 'address_en', 'address_zh',
+        'phone', 'maps_url', 'lat', 'lng', 'is_active', 'sort_order',
+    ];
 
     protected $casts = [
         'lat'        => 'float',
@@ -26,8 +32,8 @@ class Plant extends Model
     {
         return [
             'id'    => $this->id,
-            'name'  => $this->name,
-            'addr'  => $this->address,
+            'name'  => $this->t('name'),
+            'addr'  => $this->t('address'),
             'phone' => $this->phone,
             'maps'  => $this->maps_url,
             'll'    => [$this->lat, $this->lng],
@@ -41,7 +47,11 @@ class Plant extends Model
             'id'         => $this->id,
             'update_url' => route('admin.plants.update', $this),
             'name'       => $this->name,
+            'name_en'    => $this->name_en,
+            'name_zh'    => $this->name_zh,
             'address'    => $this->address,
+            'address_en' => $this->address_en,
+            'address_zh' => $this->address_zh,
             'phone'      => $this->phone,
             'maps_url'   => $this->maps_url,
             'lat'        => $this->lat,

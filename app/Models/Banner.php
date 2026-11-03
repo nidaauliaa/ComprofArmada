@@ -13,6 +13,12 @@ class Banner extends Model
         'sort_order'
     ];
 
+    /** Gambar banner; bila file unggahan tidak ada di storage, pakai gambar bawaan. */
+    public function imageUrl(): ?string
+    {
+        return $this->image_path ? \App\Support\StorageImage::url($this->image_path, $this->title) : null;
+    }
+
     // Helper untuk mengambil teks sesuai bahasa aktif (default: id)
     public function t($field)
     {

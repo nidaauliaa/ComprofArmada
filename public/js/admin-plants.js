@@ -18,6 +18,11 @@
     $('pMethod').disabled = !edit;
     form.elements.name.value       = edit ? (item.name || '') : '';
     form.elements.address.value    = edit ? (item.address || '') : '';
+    form.elements.name_en.value    = edit ? (item.name_en || '') : '';
+    form.elements.name_zh.value    = edit ? (item.name_zh || '') : '';
+    form.elements.address_en.value = edit ? (item.address_en || '') : '';
+    form.elements.address_zh.value = edit ? (item.address_zh || '') : '';
+    form.dispatchEvent(new Event('input', { bubbles: true }));
     form.elements.phone.value      = edit ? (item.phone || '') : '';
     form.elements.maps_url.value   = edit ? (item.maps_url || '') : '';
     form.elements.lat.value        = edit ? item.lat : '';

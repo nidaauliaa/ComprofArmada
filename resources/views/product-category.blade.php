@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="id" style="--c: {{ optional($category)->color_bg ?: '#12274d' }}">
+<html lang="{{ app()->getLocale() }}" style="--c: {{ optional($category)->color_bg ?: '#12274d' }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{{ $category ? $category->name . ' – ' : '' }}Produk – New Armada</title>
+<title>{{ $category ? $category->t('name') . ' – ' : '' }}Produk – New Armada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -97,39 +97,25 @@ footer a:hover{color:var(--red-primary)}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 </style>
+<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
 
-<header id="siteHeader">
-  <div class="wrap nav">
-    <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
-      <img src="{{ asset('images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
-      <span class="brand-text">NEW ARMADA</span>
-    </a>
-    <nav>
-      <a href="{{ url('/') }}#produk">Produk</a>
-      <a href="{{ url('/') }}#unit">Bisnis Unit</a>
-      <a href="{{ route('news.index') }}">Berita</a>
-      <a href="{{ url('/') }}#plant">Lokasi</a>
-      <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
-    </nav>
-  </div>
-</header>
+@include('partials.public-header', ['brand' => 'img', 'cur' => 'products'])
 
 <main>
   @if ($category)
   <section class="pb" id="banner">
-    <span class="pb-word" aria-hidden="true">{{ \Illuminate\Support\Str::upper($category->name) }}</span>
+    <span class="pb-word" aria-hidden="true">{{ \Illuminate\Support\Str::upper($category->t('name')) }}</span>
     <div class="wrap">
       <div class="pb-text">
-        <span class="pb-kicker">Kategori</span>
-        <h1>{{ $category->name }}</h1>
+        <span class="pb-kicker">{{ __('site.category') }}</span>
+        <h1>{{ $category->t('name') }}</h1>
       </div>
-      @php $heroImg = $category->image_path ?: optional($models->first())->image_path; @endphp
+      @php $heroImg = $category->posterPath() ?: optional($models->first())->image_path; @endphp
       <div class="pb-img">
         @if ($heroImg)
-          <img src="{{ asset('storage/' . $heroImg) }}" alt="{{ $category->name }}">
+          <img src="{{ asset('storage/' . $heroImg) }}" alt="{{ $category->t('name') }}">
         @endif
       </div>
     </div>
@@ -137,29 +123,29 @@ footer a:hover{color:var(--red-primary)}
 
   <div class="crumb-wrap">
     <div class="crumb" role="navigation" aria-label="Breadcrumb">
-      <a href="{{ url('/') }}" aria-label="Beranda"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
+      <a href="{{ url('/') }}" aria-label="{{ __('site.home') }}"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg></a>
       <span class="sep">›</span>
-      <a href="{{ url('/') }}#produk">Produk</a>
+      <a href="{{ url('/') }}#produk">{{ __('site.products') }}</a>
       <span class="sep">›</span>
-      <span>{{ $category->name }}</span>
+      <span>{{ $category->t('name') }}</span>
     </div>
   </div>
 
-  <div class="tabs"><div class="wrap"><div class="tabs-in" role="tablist" aria-label="Kategori produk">
+  <div class="tabs"><div class="wrap"><div class="tabs-in" role="tablist" aria-label="{{ __('site.categories') }}">
     @foreach ($categories as $c)
-      <a class="tab" role="tab" href="{{ route('product.index', ['kategori' => $c->slug]) }}" aria-selected="{{ $c->id === $category->id ? 'true' : 'false' }}">{{ $c->name }}</a>
+      <a class="tab" role="tab" href="{{ route('product.index', ['kategori' => $c->slug]) }}" aria-selected="{{ $c->id === $category->id ? 'true' : 'false' }}">{{ $c->t('name') }}</a>
     @endforeach
   </div></div></div>
 
   <section class="models">
     <div class="wrap">
       <div class="models-head">
-        <h2>Model {{ $category->name }}</h2>
-        <p>Pilih model untuk membuka halaman detail dan spesifikasinya.</p>
+        <h2>{{ __('site.models_of', ['name' => $category->t('name')]) }}</h2>
+        <p>{{ __('site.models_hint') }}</p>
       </div>
       <div class="mgrid">
         @forelse ($models as $m)
-          @php $img = $m->image_path ?: $category->image_path; @endphp
+          @php $img = $m->image_path ?: $category->posterPath(); @endphp
           <a class="mcard" href="{{ route('product.show', $m->slug) }}" style="--i: {{ $loop->index }}">
             <div class="mimg">
               @if ($img)
@@ -167,11 +153,11 @@ footer a:hover{color:var(--red-primary)}
               @endif
             </div>
             <h3>{{ $m->name }}</h3>
-            <p class="mspec">{{ $m->subtitle }}</p>
-            <span class="mmore">Lihat Model</span>
+            <p class="mspec">{{ $m->t('subtitle') }}</p>
+            <span class="mmore">{{ __('site.view_model') }}</span>
           </a>
         @empty
-          <p style="grid-column:1/-1;text-align:center;color:var(--ink-muted)">Belum ada produk di kategori ini.</p>
+          <p style="grid-column:1/-1;text-align:center;color:var(--ink-muted)">{{ __('site.no_products') }}</p>
         @endforelse
       </div>
     </div>
@@ -179,27 +165,15 @@ footer a:hover{color:var(--red-primary)}
   @else
   <section class="models" style="padding-top:120px">
     <div class="wrap">
-      <div class="models-head"><h2>Produk</h2><p>Belum ada kategori produk yang ditayangkan.</p></div>
+      <div class="models-head"><h2>{{ __('site.products') }}</h2><p>{{ __('site.no_categories') }}</p></div>
     </div>
   </section>
   @endif
 </main>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div><a class="logo" href="{{ url('/') }}" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul>
-        @foreach ($categories as $c)
-        <li><a href="{{ route('product.index', ['kategori' => $c->slug]) }}">{{ $c->name }}</a></li>
-        @endforeach
-      </ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="{{ url('/') }}#unit">Bisnis Unit</a></li><li><a href="{{ url('/') }}#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
-      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
-  </div>
-</footer>
+@include('partials.public-footer')
 
+@include('partials.search-overlay')
+<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
 </body>
 </html>

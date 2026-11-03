@@ -5,7 +5,7 @@
         ['route' => 'admin.products.index', 'active' => 'admin.products.*',  'icon' => 'bus',   'label' => 'Produk'],
         ['route' => 'admin.news.index',     'active' => 'admin.news.*',      'icon' => 'news',  'label' => 'Berita & Event'],
         ['route' => 'admin.plants.index',   'active' => 'admin.plants.*',    'icon' => 'pin',   'label' => 'Lokasi Plant'],
-        ['route' => 'admin.instagram.index','active' => 'admin.instagram.*', 'icon' => 'ig',    'label' => 'Instagram'],
+        ['route' => 'admin.social.index',   'active' => 'admin.social.*',    'icon' => 'ig',    'label' => 'Instagram'],
         ['route' => 'admin.settings.index', 'active' => 'admin.settings.*',  'icon' => 'gear',  'label' => 'Pengaturan Situs'],
         ['route' => 'admin.account.index',  'active' => 'admin.account.*',   'icon' => 'user',  'label' => 'Akun'],
     ];

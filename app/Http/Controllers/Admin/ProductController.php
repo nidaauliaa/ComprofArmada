@@ -19,6 +19,8 @@ class ProductController extends Controller
         $editData = $categories->mapWithKeys(fn (Category $c) => [$c->id => [
             'id'         => $c->id,
             'name'       => $c->name,
+            'name_en'    => $c->name_en,
+            'name_zh'    => $c->name_zh,
             'short_text' => $c->short_text,
             'color_bg'   => $c->color_bg ?: '#12274d',
             'image'      => $c->image_path ? asset('storage/' . $c->image_path) : null,

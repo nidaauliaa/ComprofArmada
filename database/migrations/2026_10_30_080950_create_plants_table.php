@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('plants')) {
+            return; // sudah ada (mis. dari impor SQL)
+        }
+
         Schema::create('plants', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);                       // contoh: Magelang (HQ)

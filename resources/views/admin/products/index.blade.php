@@ -79,6 +79,7 @@
                     Nama kategori <small>wajib diisi</small>
                     <input type="text" name="name" id="cName" placeholder="Contoh: Medium Bus" required>
                 </label>
+                <x-lang-tabs name="name" mode="suffix" id-base="cName" label="Terjemahan nama kategori" :only="['en','zh']" help="Kosong = website memakai Bahasa Indonesia." />
                 <label>
                     Teks singkat <small>untuk kartu di Home, contoh: MED</small>
                     <input type="text" name="short_text" id="cShort" placeholder="MED">
@@ -134,6 +135,7 @@
             $('cMethod').disabled = true;
             $('cColor').value = '#12274d';
             setImg(null);
+            form.dispatchEvent(new Event('input', { bubbles: true }));
             openDr('Tambah kategori');
         });
     });
@@ -145,6 +147,9 @@
             form.action = d.update_url;
             $('cMethod').disabled = false;
             $('cName').value = d.name || '';
+            $('cNameEn').value = d.name_en || '';
+            $('cNameZh').value = d.name_zh || '';
+            form.dispatchEvent(new Event('input', { bubbles: true }));
             $('cShort').value = d.short_text || '';
             $('cColor').value = d.color_bg || '#12274d';
             setImg(d.image);

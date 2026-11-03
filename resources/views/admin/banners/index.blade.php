@@ -102,7 +102,7 @@
                         <option value="#unit">Bisnis Unit</option>
                         <option value="#berita">Berita</option>
                         <option value="#plant">Lokasi Plant</option>
-                        <option value="contact.html">Halaman Kontak</option>
+                        <option value="/kontak">Halaman Kontak</option>
                     </select>
                 </label>
             </div>

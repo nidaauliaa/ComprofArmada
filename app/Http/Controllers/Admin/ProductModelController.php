@@ -29,11 +29,15 @@ class ProductModelController extends Controller
             'id'          => $m->id,
             'name'        => $m->name,
             'subtitle'    => $m->subtitle,
+            'subtitle_en' => $m->subtitle_en,
+            'subtitle_zh' => $m->subtitle_zh,
             'brand'       => $m->brand,
             'height'      => $m->height,
             'width'       => $m->width,
             'length'      => $m->length,
             'description' => $m->description,
+            'description_en' => $m->description_en,
+            'description_zh' => $m->description_zh,
             'image'       => $m->image_path ? asset('storage/' . $m->image_path) : null,
             'galleries'   => $m->galleries->map(fn (ModelGallery $g) => [
                 'id'  => $g->id,
@@ -79,7 +83,7 @@ class ProductModelController extends Controller
 
         if ($request->hasFile('image')) {
             if ($productModel->image_path) {
-                Storage::disk('public')->delete($productModel->image_path);
+                $this->deletePublicFile($productModel->image_path);
             }
             $data['image_path'] = $request->file('image')->store('products', 'public');
         }
@@ -104,10 +108,10 @@ class ProductModelController extends Controller
         $name = $productModel->name;
 
         foreach ($productModel->galleries as $g) {
-            Storage::disk('public')->delete($g->image_path);
+            $this->deletePublicFile($g->image_path);
         }
         if ($productModel->image_path) {
-            Storage::disk('public')->delete($productModel->image_path);
+            $this->deletePublicFile($productModel->image_path);
         }
 
         $productModel->delete();
@@ -119,7 +123,7 @@ class ProductModelController extends Controller
     /** Hapus satu foto galeri (dipanggil lewat fetch dari form ubah). */
     public function destroyGallery(ModelGallery $gallery): JsonResponse
     {
-        Storage::disk('public')->delete($gallery->image_path);
+        $this->deletePublicFile($gallery->image_path);
         $gallery->delete();
 
         return response()->json(['deleted' => true]);
@@ -143,11 +147,15 @@ class ProductModelController extends Controller
         return [
             'name'        => 'required|string|max:255',
             'subtitle'    => 'nullable|string|max:255',
+            'subtitle_en' => 'nullable|string|max:255',
+            'subtitle_zh' => 'nullable|string|max:255',
             'brand'       => 'nullable|string|max:255',
             'height'      => 'nullable|string|max:255',
             'width'       => 'nullable|string|max:255',
             'length'      => 'nullable|string|max:255',
             'description' => 'nullable|string|max:5000',
+            'description_en' => 'nullable|string|max:5000',
+            'description_zh' => 'nullable|string|max:5000',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,webp|max:51200',
             'galleries'   => 'nullable|array|max:20',
             'galleries.*' => 'image|mimes:jpeg,png,jpg,webp|max:51200',
@@ -159,11 +167,15 @@ class ProductModelController extends Controller
         return [
             'name'        => 'Nama produk',
             'subtitle'    => 'Subjudul',
+            'subtitle_en' => 'Subjudul (EN)',
+            'subtitle_zh' => 'Subjudul (中文)',
             'brand'       => 'Merek',
             'height'      => 'Tinggi',
             'width'       => 'Lebar',
             'length'      => 'Panjang',
             'description' => 'Deskripsi',
+            'description_en' => 'Deskripsi (EN)',
+            'description_zh' => 'Deskripsi (中文)',
             'image'       => 'Foto utama',
             'galleries'   => 'Foto galeri',
             'galleries.*' => 'Foto galeri',

@@ -31,6 +31,11 @@ class BannerController extends Controller
             'headline_en' => 'nullable|string|max:255',
             'description_en' => 'nullable|string',
             'button_text_en' => 'nullable|string|max:255',
+            'title_zh' => 'nullable|string|max:255',
+            'tag_zh' => 'nullable|string|max:255',
+            'headline_zh' => 'nullable|string|max:255',
+            'description_zh' => 'nullable|string',
+            'button_text_zh' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {
@@ -57,6 +62,11 @@ class BannerController extends Controller
             'headline_en' => 'nullable|string|max:255',
             'description_en' => 'nullable|string',
             'button_text_en' => 'nullable|string|max:255',
+            'title_zh' => 'nullable|string|max:255',
+            'tag_zh' => 'nullable|string|max:255',
+            'headline_zh' => 'nullable|string|max:255',
+            'description_zh' => 'nullable|string',
+            'button_text_zh' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('image')) {

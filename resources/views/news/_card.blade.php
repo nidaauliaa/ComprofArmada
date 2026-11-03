@@ -8,8 +8,8 @@
     </a>
 
     <div class="news-body">
-        <h3>{{ $n->tr('title', 'id') }}</h3>
-        <p>{{ $n->summary(160) ?: 'Baca berita terbaru dari New Armada.' }}</p>
-        <a class="news-more" href="{{ route('news.show', $n->slug) }}">Baca Selengkapnya <span>→</span></a>
+        <h3>{{ $n->tr('title') }}</h3>
+        <p>{{ $n->summary(160) ?: __('site.news_fallback') }}</p>
+        <a class="news-more" href="{{ route('news.show', $n->slug) }}">{{ __('site.read_more') }} <span>→</span></a>
     </div>
 </article>

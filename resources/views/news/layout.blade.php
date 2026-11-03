@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -129,40 +129,26 @@ footer a:hover{color:var(--red-primary)}
 .footer-bottom{margin-top:50px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+.brand{display:flex;align-items:center;gap:12px;color:#fff}
+.brand img{display:block;height:52px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+.brand-text{font:800 26px/1 var(--hd);letter-spacing:.03em;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+@media(max-width:560px){.brand-text{display:none}}
+nav a.cur::after{width:100%}
 </style>
+<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
 
-<header>
-  <div class="wrap nav">
-    <a class="logo" href="{{ url('/') }}"><span class="logo-icon"></span>NEW ARMADA</a>
-    <nav>
-      <a href="{{ url('/') }}#produk">Produk</a>
-      <a href="{{ url('/') }}#unit">Bisnis Unit</a>
-      <a href="{{ route('news.index') }}" class="cur">Berita</a>
-      <a href="{{ url('/') }}#plant">Lokasi</a>
-      <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="contact.html">Hubungi Kami</a>
-    </nav>
-  </div>
-</header>
+@include('partials.public-header', ['brand' => 'img', 'cur' => 'news'])
 
 <main>
 @yield('content')
 </main>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div><a class="logo" href="{{ url('/') }}" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul><li><a href="produk.html?kategori=big-bus">Big Bus</a></li><li><a href="produk.html?kategori=medium-bus">Medium Bus</a></li><li><a href="produk.html?kategori=intercity">Intercity</a></li><li><a href="produk.html?kategori=microbus">Microbus</a></li><li><a href="produk.html?kategori=box-heavy-duty">Box &amp; Heavy Duty</a></li></ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="{{ url('/') }}#unit">Bisnis Unit</a></li><li><a href="{{ url('/') }}#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="contact.html">Kontak</a></li></ul></div>
-      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
-    </div>
-    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
-  </div>
-</footer>
+@include('partials.public-footer')
 
 @stack('scripts')
+@include('partials.search-overlay')
+<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
 </body>
 </html>

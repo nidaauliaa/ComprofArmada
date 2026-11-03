@@ -8,6 +8,9 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasColumn('plants', 'maps_url')) {
+            return;
+        }
         Schema::table('plants', function (Blueprint $table) {
             $table->string('maps_url', 500)->nullable()->after('phone'); // link Google Maps dari admin
         });

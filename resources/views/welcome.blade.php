@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="{{ app()->getLocale() }}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>New Armada – Company Profile</title>
+<title>{{ ($site['site_name'] ?? 'New Armada') }} – Company Profile</title>
+<meta name="description" content="{{ \App\Models\Setting::tr('meta_description') }}">
+@if (!empty($site['meta_keywords']))<meta name="keywords" content="{{ $site['meta_keywords'] }}">@endif
+<meta property="og:title" content="{{ ($site['site_name'] ?? 'New Armada') }} – Company Profile">
+<meta property="og:description" content="{{ \App\Models\Setting::tr('meta_description') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
@@ -39,6 +43,11 @@ nav a:not(.btn):hover{color:var(--red-primary)}
 nav a:not(.btn):hover::after{width:100%}
 .lang{font-size:13px;font-weight:600;color:#fff;background:rgba(255,255,255,.14);padding:6px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.35)}
 @media(max-width:900px){nav a:not(.btn):not(.lang){display:none}}
+
+.brand{display:flex;align-items:center;gap:12px;color:#fff}
+.brand img{display:block;height:52px;width:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.35))}
+.brand-text{font:800 26px/1 var(--hd);letter-spacing:.03em;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+@media(max-width:560px){.brand-text{display:none}}
 
 /* WRAPPER + WARNA LATAR */
 .hero-product-wrapper{position:relative;width:100%;background:#fff}
@@ -101,6 +110,15 @@ nav a:not(.btn):hover::after{width:100%}
 .bu-media-wrap::before{content:"";position:absolute;inset:22px -20px -20px 22px;border:2px solid var(--red-primary);border-radius:16px;z-index:0}
 .bu-media{position:relative;z-index:1;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:linear-gradient(135deg,#0b1a38,#0c4a7a 55%,#0284c7);box-shadow:0 30px 70px rgba(12,74,122,.28);display:grid;place-items:center;color:#fff}
 .bu-media::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0 2px,transparent 2px 22px)}
+.bu-media.has-video{cursor:pointer}
+.bu-media.has-video::before{display:none}
+.bu-thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.bu-media.has-video::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,15,32,.55),rgba(8,15,32,.1) 55%);pointer-events:none;transition:opacity .3s}
+.bu-media.has-video:hover .bu-thumb{transform:scale(1.04)}
+.bu-media.has-video .bu-play{z-index:2;transition:transform .3s ease,background-color .3s ease}
+.bu-media.has-video:hover .bu-play{transform:scale(1.1);background:var(--red-primary);border-color:var(--red-primary)}
+.bu-media.has-video small{z-index:2}
+.bu-media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:3;background:#000}
 .bu-play{position:relative;width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.7);backdrop-filter:blur(6px);display:grid;place-items:center}
 .bu-play svg{width:28px;height:28px;fill:#fff;margin-left:4px}
 .bu-media small{position:absolute;left:24px;bottom:20px;font-size:14px;color:rgba(255,255,255,.85)}
@@ -134,7 +152,7 @@ nav a:not(.btn):hover::after{width:100%}
 .ig-carousel{position:relative;max-width:1000px;margin:0 auto}
 .ig-rail{position:relative}
 .ig-rail::before{content:"";display:block;padding-top:calc(44.444% - 13.333px)}
-.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#000;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform .7s cubic-bezier(.25,1,.3,1),opacity .7s ease,box-shadow .3s ease}
+.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#0b172c;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform .7s cubic-bezier(.25,1,.3,1),opacity .7s ease,box-shadow .3s ease}
 .ig-card[data-slot="-1"]{--s:-1;--sc:.92;opacity:.35;pointer-events:auto}
 .ig-card[data-slot="0"]{--s:0;opacity:1;pointer-events:auto}
 .ig-card[data-slot="1"]{--s:1;opacity:1;pointer-events:auto}
@@ -142,9 +160,14 @@ nav a:not(.btn):hover::after{width:100%}
 .ig-card[data-slot="3"]{--s:3;opacity:1;pointer-events:auto}
 .ig-card[data-slot="4"]{--s:4;--sc:.92;opacity:.35;pointer-events:auto}
 .ig-card:hover{box-shadow:0 28px 50px rgba(8,15,32,.5)}
-.ig-card video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
-.ig-card:hover video{transform:scale(1.05)}
-.ig-icon{position:absolute;top:10px;right:10px;width:24px;height:24px;stroke:#fff;fill:none;stroke-width:1.8;z-index:2;filter:drop-shadow(0 1px 4px rgba(0,0,0,.5));pointer-events:none}
+/* iframe embed Instagram: ukuran asli 400px, lalu diperbesar/digeser lewat JS supaya hanya area video yang terlihat */
+.ig-frame{position:absolute;top:0;left:0;width:400px;height:760px;border:0;display:block;background:#000;transform-origin:0 0}
+.ig-hit{position:absolute;inset:0;z-index:5;pointer-events:none}
+.ig-card[data-slot="-1"] .ig-hit,.ig-card[data-slot="4"] .ig-hit{pointer-events:auto;cursor:pointer}
+.ig-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;text-align:center;background:linear-gradient(160deg,#12274d,#0a7bb8);color:#fff}
+.ig-empty .logo-icon{width:12px;height:18px}
+.ig-empty strong{font:800 24px/1 var(--hd);text-transform:uppercase}
+.ig-empty span{font-size:12px;color:rgba(255,255,255,.8);max-width:18ch}
 .ig-ctrl{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:32px}
 .ig-arrows{display:flex;gap:12px}
 .ig-arrows button{width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);backdrop-filter:blur(4px);color:#fff;font-size:20px;cursor:pointer;transition:all .3s ease}
@@ -154,6 +177,8 @@ nav a:not(.btn):hover::after{width:100%}
   .ig-card{width:calc((100% - 10px)/2)}
   .ig-card[data-slot="2"]{--sc:.92;opacity:.35}
   .ig-card[data-slot="3"],.ig-card[data-slot="4"]{opacity:0;pointer-events:none}
+  .ig-card[data-slot="2"] .ig-hit{pointer-events:auto;cursor:pointer}
+  .ig-card[data-slot="3"] .ig-hit,.ig-card[data-slot="4"] .ig-hit{pointer-events:none}
 }
 
 /* BERITA */
@@ -169,9 +194,9 @@ nav a:not(.btn):hover::after{width:100%}
 .news-card{flex:0 0 calc((100% - 56px)/3);scroll-snap-align:start;background:#fff;border-radius:14px;overflow:hidden;box-shadow:8px 8px 0 rgba(15,23,42,.14);display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease}
 .news-card:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 rgba(15,23,42,.18)}
 .news-date{padding:18px 24px 14px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
-.news-img{position:relative;aspect-ratio:11/5;background:var(--bg);display:grid;place-items:center;overflow:hidden}
+.news-img{aspect-ratio:11/5;background:var(--bg);display:grid;place-items:center;overflow:hidden}
 .news-img img{width:72%;height:auto;filter:drop-shadow(0 16px 18px rgba(0,0,0,.35))}
-.news-img.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:none}
+.news-img.cover img{width:100%;height:100%;object-fit:cover;filter:none}
 .news-body{padding:20px 24px 22px;display:flex;flex-direction:column;flex:1}
 .news-body h3{font:800 21px/1.2 var(--bd);letter-spacing:-.01em;margin:0 0 10px}
 .news-body p{margin:0 0 16px;color:var(--ink-muted);font-size:14px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -214,20 +239,29 @@ footer a:hover{color:var(--red-primary)}
 .footer-bottom{margin-top:50px;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);font-size:14px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* penyesuaian Laravel: gambar sampul berita memenuhi kartu */
+.news-img{position:relative}
+.news-img.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:none}
 </style>
+<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
 
 <header id="siteHeader">
   <div class="wrap nav">
-    <a class="logo" href="#"><span class="logo-icon"></span>NEW ARMADA</a>
+    <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
+        <img src="{{ asset('storage/images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
+        <span class="brand-text">NEW ARMADA</span>
+      </a>
     <nav>
-      <a href="#produk">Produk</a>
-      <a href="#unit">Bisnis Unit</a>
-      <a href="#berita">Berita</a>
-      <a href="#plant">Lokasi</a>
-      <span class="lang">ID | EN</span>
-      <a class="btn btn-red" href="{{ url('/kontak') }}">Hubungi Kami</a>
+      <a href="#produk">{{ __('site.products') }}</a>
+      <a href="#unit">{{ __('site.business_unit') }}</a>
+      <a href="#berita">{{ __('site.news') }}</a>
+      <a href="#plant">{{ __('site.location') }}</a>
+      <button type="button" class="lang icon" data-search-open aria-label="{{ __('site.search') }}"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      <x-lang-switcher />
+      <a class="btn btn-red" href="{{ url('/kontak') }}">{{ __('site.contact_us') }}</a>
     </nav>
   </div>
 </header>
@@ -247,7 +281,7 @@ footer a:hover{color:var(--red-primary)}
                     @forelse($banners as $index => $banner)
                         <div class="slide {{ $index === 0 ? 'active' : '' }}">
                             @if($banner->image_path)
-                                <img class="slide-bg" src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title }}">
+                                <img class="slide-bg" src="{{ $banner->imageUrl() }}" alt="{{ $banner->title }}">
                             @else
                                 <div class="slide-bg alt"></div>
                             @endif
@@ -268,18 +302,26 @@ footer a:hover{color:var(--red-primary)}
                             </div>
                         </div>
                     @empty
-                        <!-- Fallback kalau database banner masih kosong -->
-                        <div class="slide active">
-                            <div class="slide-bg alt"></div>
-                            <div class="wrap hero-cap">
-                                <div class="hero-text">
-                                    <span class="tag">New Armada</span>
-                                    <h1>Belum ada banner <span class="gradient-text">yang aktif</span></h1>
-                                    <p>Silakan tambahkan banner melalui panel admin.</p>
-                                </div>
-                            </div>
-                        </div>
-                    @endforelse
+                        <!-- Bila banner di database kosong: pakai slide bawaan dari prototype -->
+          <div class="slide active">
+            <img class="slide-bg" src="{{ asset('storage/images/skylander-r25.jpeg') }}" alt="New Armada Skylander R25 di tepi pantai">
+            <div class="wrap hero-cap"><div class="hero-text">
+              <span class="tag">New Armada Karoseri</span>
+              <h1>Karoseri Bus dari Magelang <span class="gradient-text">untuk Indonesia</span></h1>
+              <p>Together we are strong. Menghadirkan kenyamanan, keamanan, dan keandalan berkelas internasional.</p>
+              <a class="btn" href="#produk">{{ __('site.view_categories') }}</a>
+            </div></div>
+          </div>
+          <div class="slide">
+            <div class="slide-bg alt" role="img"></div>
+            <div class="wrap hero-cap"><div class="hero-text">
+              <span class="tag">Inovasi Manufaktur</span>
+              <h1>Dirakit Teliti Dengan <span class="gradient-text">Standar Kualitas Presisi</span></h1>
+              <p>Fasilitas manufaktur modern yang siap melayani kebutuhan armada pariwisata &amp; antarkota di seluruh Indonesia.</p>
+              <a class="btn btn-red" href="#plant">{{ __('site.explore_plants') }}</a>
+            </div></div>
+          </div>
+          @endforelse
                 </div>
 
                 <div class="hero-ctrl">
@@ -293,7 +335,7 @@ footer a:hover{color:var(--red-primary)}
 
     <section class="sec-product-fullscreen" id="produk">
     <div class="wrap">
-        <div class="sec-head center"><h2>Kategori</h2></div>
+        <div class="sec-head center"><h2>{{ __('site.categories') }}</h2></div>
     </div>
 
     <div class="cats-fullscreen">
@@ -303,15 +345,15 @@ footer a:hover{color:var(--red-primary)}
         @foreach ($cats as $c)
         @php
             $bg    = $c->color_bg ?: '#12274d';
-            $short = $c->short_text ?: explode(' ', $c->name)[0];
+            $short = $c->short_text ?: explode(' ', $c->t('name'))[0];
         @endphp
         <div class="cat-card" data-href="{{ route('product.index', ['kategori' => $c->slug]) }}" data-color="{{ $bg }}" style="--card-bg:{{ $bg }}">
         <div class="cat-top-meta"><span class="cat-brand-tag">New Armada</span></div>
-        @if ($c->image_path)
-        <img class="cat-bus-poster" src="{{ asset('storage/' . $c->image_path) }}" alt="{{ $c->name }}">
+        @if ($c->posterUrl())
+        <img class="cat-bus-poster" src="{{ $c->posterUrl() }}" alt="{{ $c->t('name') }}">
         @endif
-        <span class="cat-big-text" data-short="{{ \Illuminate\Support\Str::upper($short) }}" data-full="{{ \Illuminate\Support\Str::upper($c->name) }}"></span>
-        <div class="cat-bottom-content"><span class="cat-meta">Kategori</span><h3>{{ $c->name }}</h3></div>
+        <span class="cat-big-text" data-short="{{ \Illuminate\Support\Str::upper($short) }}" data-full="{{ \Illuminate\Support\Str::upper($c->t('name')) }}"></span>
+        <div class="cat-bottom-content"><span class="cat-meta">{{ __('site.category') }}</span><h3>{{ $c->t('name') }}</h3></div>
         <span class="cat-arrow">→</span>
         </div>
         @endforeach
@@ -332,26 +374,28 @@ footer a:hover{color:var(--red-primary)}
   <section id="unit">
     <div class="wrap">
       <div class="bu-head">
-        <h2>Bisnis Unit</h2>
-        <p>Perusahaan yang bergerak di bidang karoseri sejak 1974.</p>
+        <h2>{{ __('site.business_unit') }}</h2>
+        <p>{{ __('site.business_unit_sub') }}</p>
       </div>
 
       <div class="bu-feature">
         <div>
           <h3>PT. Mekar Armada Jaya Div. Stamping &amp; Tools</h3>
           <p>Menjadi produsen bodi kendaraan, komponen, dan peralatan yang memenuhi standar kualitas internasional. Menciptakan kendaraan yang aman, nyaman, dan berkualitas tinggi demi kepuasan pelanggan, serta memproduksi komponen, suku cadang, dan peralatan kelas dunia yang berdaya saing global.</p>
-          <a class="btn" href="#layanan">Lihat produk dan layanan</a>
+          <a class="btn" href="#layanan">{{ __('site.view_products_services') }}</a>
         </div>
         <div class="bu-media-wrap">
-          <div class="bu-media" role="img" aria-label="Tempat video profil unit bisnis">
+          @php $ytId = preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($site['youtube_video_id'] ?? '')) ? $site['youtube_video_id'] : 'nYarnSGbWqE'; @endphp
+          <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
+            <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
             <span class="bu-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
-            <small>Video profil segera hadir</small>
+            <small>{{ __('site.play_video') }}</small>
           </div>
         </div>
       </div>
 
       <div class="bu-services-head" id="layanan">
-        <h3>Produk dan Layanan</h3>
+        <h3>{{ __('site.products_services') }}</h3>
         <p>PT. Mekar Armada Jaya Div. Stamping &amp; Tools</p>
       </div>
       <div class="svc-grid">
@@ -381,15 +425,15 @@ footer a:hover{color:var(--red-primary)}
     <div class="wrap">
         <div class="sec-head">
         <div>
-            <h2>Berita</h2>
+            <h2>{{ __('site.news') }}</h2>
         </div>
 
         <div class="news-ctrl">
             <a class="btn btn-red news-all" href="{{ route('news.index') }}">
-            Lihat Lainnya →
+            {{ __('site.see_other') }}
             </a>
-            <button id="newsPrev" aria-label="Sebelumnya">‹</button>
-            <button id="newsNext" aria-label="Berikutnya">›</button>
+            <button id="newsPrev" aria-label="{{ __('site.prev') }}">‹</button>
+            <button id="newsNext" aria-label="{{ __('site.next') }}">›</button>
         </div>
         </div>
 
@@ -400,7 +444,7 @@ footer a:hover{color:var(--red-primary)}
                 fn ($block) => ($block['type'] ?? 'p') === 'p'
             );
 
-            $summary = data_get($summaryBlock, 'text.id', '');
+            $summary = data_get($summaryBlock, 'text.'.app()->getLocale()) ?: data_get($summaryBlock, 'text.id', '');
             @endphp
 
             <article class="news-card">
@@ -413,7 +457,7 @@ footer a:hover{color:var(--red-primary)}
                 @if ($n->thumbnail_url)
                 <img
                     src="{{ $n->thumbnail_url }}"
-                    alt="{{ $n->tr('title', 'id') }}"
+                    alt="{{ $n->tr('title') }}"
                     loading="lazy"
                     onerror="this.remove()"
                 >
@@ -421,102 +465,53 @@ footer a:hover{color:var(--red-primary)}
             </div>
 
             <div class="news-body">
-                <h3>{{ $n->tr('title', 'id') }}</h3>
+                <h3>{{ $n->tr('title') }}</h3>
 
                 <p>
-                {{ $summary ?: 'Baca berita terbaru dari New Armada.' }}
+                {{ $summary ?: __('site.news_fallback') }}
                 </p>
 
                 <a class="news-more" href="{{ route('news.show', $n->slug) }}">
-                Baca Selengkapnya <span>→</span>
+                {{ __('site.read_more') }} <span>→</span>
                 </a>
             </div>
             </article>
         @empty
-            <p>Belum ada berita yang dipublikasikan.</p>
+            <p>{{ __('site.no_news') }}</p>
         @endforelse
         </div>
     </div>
     </section>
 
 
-  <!-- INSTAGRAM REELS -->
-  <section id="sosmed" class="ig-section">
-    <div class="wrap">
-      <div class="ig-brand">
-        <a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener"><span class="logo-icon"></span>NEW ARMADA</a>
-      </div>
-
-      <p class="ig-tagline">Intip keseharian di pabrik, unit terbaru, dan perjalanan armada kami.</p>
-      <ul class="ig-stats" aria-label="Statistik akun Instagram">
-        <li><strong>2.641</strong><span>Postingan</span></li>
-        <li><strong>109 rb</strong><span>Pengikut</span></li>
-        <li><strong>525</strong><span>Mengikuti</span></li>
-      </ul>
-
-      <div class="ig-carousel">
-        <div class="ig-rail" id="igRail">
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels1.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels2.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels3.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels4.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels5.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-          <a class="ig-card" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener" aria-label="Buka Instagram New Armada">
-            <video src="video/video-reels6.mp4" autoplay muted loop playsinline preload="metadata"></video>
-            <svg class="ig-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M3 9h18M8 3l3 6M14 3l3 6"/><path d="M10 13l4 2.5-4 2.5z"/></svg>
-          </a>
-        </div>
-        <div class="ig-ctrl">
-          <a class="btn btn-red" href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Follow Instagram</a>
-          <div class="ig-arrows">
-            <button id="igPrev" aria-label="Sebelumnya">‹</button>
-            <button id="igNext" aria-label="Berikutnya">›</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <!-- INSTAGRAM & SOSIAL MEDIA (embed dari link / kode oEmbed yang ditempel marketing di admin) -->
+  @include('partials.social-embeds')
 
   @php
     $plants = \App\Models\Plant::active()->orderBy('sort_order')->orderBy('id')->get();
   @endphp
   <section id="plant" class="plant-section">
     <div class="wrap">
-      <div class="sec-head"><div><h2>Lokasi Plant</h2></div><p>Klik lokasi untuk melihat posisinya di peta.</p></div>
+      <div class="sec-head"><div><h2>{{ __('site.plant_locations') }}</h2></div><p>{{ __('site.plant_hint') }}</p></div>
       <div class="plant-layout">
         <div class="plant-map-box">
-          <div id="plantMap" class="plant-map" role="region" aria-label="Peta lokasi plant"></div>
+          <div id="plantMap" class="plant-map" role="region" aria-label="{{ __('site.plant_locations') }}"></div>
         </div>
         <div class="plant-side">
           <div class="plant-list" id="plantList">
             @forelse ($plants as $p)
               <button type="button" class="plant-item">
-                <span class="pi-text"><strong>{{ $p->name }}</strong><span class="pi-addr">{{ $p->address }}</span></span>
+                <span class="pi-text"><strong>{{ $p->t('name') }}</strong><span class="pi-addr">{{ $p->t('address') }}</span></span>
                 <span class="pi-arrow">→</span>
               </button>
             @empty
-              <p style="color:var(--ink-muted)">Belum ada lokasi.</p>
+              <p style="color:var(--ink-muted)">{{ __('site.no_locations') }}</p>
             @endforelse
           </div>
           @if ($plants->isNotEmpty())
             <div class="plant-actions">
-              <a class="btn btn-red" id="plantGmaps" href="https://maps.google.com" target="_blank" rel="noopener">Buka di Google Maps</a>
-              <button class="plant-all" id="plantAll" type="button">Lihat semua lokasi</button>
+              <a class="btn btn-red" id="plantGmaps" href="https://maps.google.com" target="_blank" rel="noopener">{{ __('site.open_gmaps') }}</a>
+              <button class="plant-all" id="plantAll" type="button">{{ __('site.see_all_locations') }}</button>
             </div>
           @endif
         </div>
@@ -528,12 +523,42 @@ footer a:hover{color:var(--red-primary)}
 <footer>
   <div class="wrap">
     <div class="footer-grid">
-      <div><a class="logo" href="#" style="color:#fff"><span class="logo-icon"></span>NEW ARMADA</a><p style="max-width:32ch;margin-top:12px;font-size:15px">Produsen karoseri bus terkemuka untuk berbagai segmen transportasi di Indonesia.</p></div>
-      <div><h4>Produk</h4><ul><li><a href="{{ url('/produk?kategori=big-bus') }}">Big Bus</a></li><li><a href="{{ url('/produk?kategori=medium-bus') }}">Medium Bus</a></li><li><a href="{{ url('/produk?kategori=intercity') }}">Intercity</a></li><li><a href="{{ url('/produk?kategori=microbus') }}">Microbus</a></li><li><a href="{{ url('/produk?kategori=box-heavy-duty') }}">Box &amp; Heavy Duty</a></li></ul></div>
-      <div><h4>Perusahaan</h4><ul><li><a href="#">Tentang Kami</a></li><li><a href="#unit">Bisnis Unit</a></li><li><a href="#plant">Lokasi Plant</a></li><li><a href="#">Karier</a></li><li><a href="{{ route('news.index') }}">Berita</a></li><li><a href="{{ url('/kontak') }}">Kontak</a></li></ul></div>
-      <div><h4>Ikuti Kami</h4><ul><li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li><li><a href="#">YouTube</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+      <div>
+        <a class="logo" href="{{ url('/') }}" style="color:#fff">
+          @if (!empty($site['logo']))<img src="{{ asset('storage/'.$site['logo']) }}" alt="{{ $site['site_name'] ?? 'New Armada' }}" style="height:34px;width:auto;display:block">@else<span class="logo-icon"></span>NEW ARMADA @endif
+        </a>
+        <p style="max-width:32ch;margin-top:12px;font-size:15px">{{ __('site.footer_tagline') }}</p>
+        @if (!empty($site['address']))<p style="max-width:34ch;font-size:14px;margin:6px 0">{{ $site['address'] }}</p>@endif
+        @if (!empty($site['phone']))<p style="font-size:14px;margin:4px 0">{{ $site['phone'] }}</p>@endif
+        @if (!empty($site['email_marketing']))<p style="font-size:14px;margin:4px 0"><a href="mailto:{{ $site['email_marketing'] }}">{{ $site['email_marketing'] }}</a></p>@endif
+      </div>
+      <div><h4>{{ __('site.products') }}</h4><ul>
+        @foreach (($cats ?? collect()) as $fc)
+          <li><a href="{{ route('product.index', ['kategori' => $fc->slug]) }}">{{ $fc->t('name') }}</a></li>
+        @endforeach
+      </ul></div>
+      <div><h4>{{ __('site.company') }}</h4><ul>
+        <li><a href="#unit">{{ __('site.business_unit') }}</a></li>
+        <li><a href="#plant">{{ __('site.plant_locations') }}</a></li>
+        <li><a href="{{ route('news.index') }}">{{ __('site.news') }}</a></li>
+        <li><a href="#sosmed">{{ __('site.social_media') }}</a></li>
+        <li><a href="{{ url('/kontak') }}">{{ __('site.contact_us') }}</a></li>
+      </ul></div>
+      <div><h4>{{ __('site.follow_us') }}</h4><ul>
+        @php
+            $socials = ['instagram' => 'Instagram', 'facebook' => 'Facebook', 'youtube' => 'YouTube', 'tiktok' => 'TikTok', 'linkedin' => 'LinkedIn'];
+            $shown = 0;
+        @endphp
+        @foreach ($socials as $key => $label)
+          @if (!empty($site['social_'.$key]))
+            @php $shown++; @endphp
+            <li><a href="{{ $site['social_'.$key] }}" target="_blank" rel="noopener">{{ $label }}</a></li>
+          @endif
+        @endforeach
+        @if ($shown === 0)<li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li>@endif
+      </ul></div>
     </div>
-    <div class="footer-bottom"><span>© 2026 New Armada. Hak Cipta Dilindungi.</span><span>Company Profile Redesign</span></div>
+    <div class="footer-bottom"><span>© {{ date('Y') }} {{ $site['site_name'] ?? 'New Armada' }}. {{ __('site.rights') }}</span><span>Company Profile Redesign</span></div>
   </div>
 </footer>
 
@@ -572,7 +597,7 @@ footer a:hover{color:var(--red-primary)}
       m.setZIndexOffset(k===i?1000:0);
     });
     var p=places[i];
-    markers[i].getPopup().setContent('<strong>'+esc(p.name)+'</strong><br>'+esc(p.addr)+(p.phone?'<br>Telp: '+esc(p.phone):''));
+    markers[i].getPopup().setContent('<strong>'+esc(p.name)+'</strong><br>'+esc(p.addr)+(p.phone?'<br>'+esc(@json(__('site.phone_short')))+': '+esc(p.phone):''));
     document.getElementById('plantGmaps').href=(p.maps&&/^https?:\/\//i.test(p.maps))?p.maps:'https://www.google.com/maps/search/?api=1&query='+p.ll[0]+','+p.ll[1];
     if(fly){map.flyTo(p.ll,12,{duration:1.1});markers[i].openPopup()}
   }
@@ -629,11 +654,67 @@ footer a:hover{color:var(--red-primary)}
 })();
 
 
-// Carousel reels Instagram (looping, kartu pinggir fade)
+
+// Carousel berita
+(function(){
+  var t=document.getElementById('newsTrack'),p=document.getElementById('newsPrev'),n=document.getElementById('newsNext');
+  if(!t)return;
+  function step(){var c=t.querySelector('.news-card');return c.offsetWidth+28}
+  function upd(){p.disabled=t.scrollLeft<=2;n.disabled=t.scrollLeft+t.clientWidth>=t.scrollWidth-2}
+  p.addEventListener('click',function(){t.scrollBy({left:-step()})});
+  n.addEventListener('click',function(){t.scrollBy({left:step()})});
+  t.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd);upd();
+})();
+</script>
+@include('partials.search-overlay')
+<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
+<script>
+// Video YouTube (muncul setelah diklik supaya halaman tetap ringan)
+(function(){
+  var box=document.getElementById('buVideo');
+  if(!box)return;
+  function play(){
+    if(box.querySelector('iframe'))return;
+    var f=document.createElement('iframe');
+    f.src='https://www.youtube-nocookie.com/embed/'+box.dataset.yt+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+    f.title='Video profil New Armada';
+    f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
+    f.allowFullscreen=true;
+    box.appendChild(f);
+    box.removeAttribute('role');box.removeAttribute('tabindex');box.style.cursor='default';
+  }
+  box.addEventListener('click',play);
+  box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();play()}});
+})();
+// Carousel Instagram (looping, kartu pinggir memudar). Kartu dibuat server dari menu admin Instagram.
+// Kalau header Instagram masih terlihat / video terpotong, ubah angka di IG_CROP:
+//   header = tinggi header embed (px), reel = lebar video dibanding lebar embed (0-1)
+var IG_CROP={base:400,header:62,reel:0.69,overscan:1.03};
+var IG_AUTOROTATE=false; // true = geser otomatis (tidak disarankan, mengganggu saat video diputar)
 (function(){
   var rail=document.getElementById('igRail');
   if(!rail)return;
   var cards=[].slice.call(rail.querySelectorAll('.ig-card')),n=cards.length,start=0,timer;
+  if(!n)return;
+  // perbesar + geser iframe supaya hanya area video yang terlihat di kartu
+  function fit(){
+    cards.forEach(function(c){
+      var f=c.querySelector('.ig-frame');if(!f)return;
+      if(f.dataset.mode==='crop'){
+        var k=c.clientWidth/(IG_CROP.base*IG_CROP.reel)*IG_CROP.overscan;
+        var tx=-(IG_CROP.base*(1-IG_CROP.reel)/2)*k-(IG_CROP.base*IG_CROP.reel*k*(IG_CROP.overscan-1)/IG_CROP.overscan)/2;
+        f.style.width=IG_CROP.base+'px';f.style.height='760px';
+        f.style.transform='translate('+tx.toFixed(2)+'px,'+(-IG_CROP.header*k).toFixed(2)+'px) scale('+k.toFixed(4)+')';
+      }else{
+        // Facebook / TikTok / YouTube / postingan foto: skala memenuhi kartu, ditengahkan
+        var w=Number(f.dataset.w)||350,h=Number(f.dataset.h)||600,cw=c.clientWidth,ch=c.clientHeight;
+        var s=Math.max(cw/w,ch/h);
+        f.style.width=w+'px';f.style.height=h+'px';
+        f.style.transform='translate('+((cw-w*s)/2).toFixed(2)+'px,'+((ch-h*s)/2).toFixed(2)+'px) scale('+s.toFixed(4)+')';
+      }
+    });
+  }
   function slotOf(i){var m=((i-start)%n+n)%n;return m===n-1?-1:m}
   function render(){
     cards.forEach(function(c,i){
@@ -647,21 +728,15 @@ footer a:hover{color:var(--red-primary)}
   }
   function next(){start=(start+1)%n;render()}
   function prev(){start=(start-1+n)%n;render()}
-  function visibleCount(){return window.innerWidth<=900?2:4}
-
   document.getElementById('igNext').addEventListener('click',function(){next();restart()});
   document.getElementById('igPrev').addEventListener('click',function(){prev();restart()});
-
-  // klik kartu fade = geser; klik kartu biasa = buka Instagram
+  // klik kartu fade (lapisan transparan di atas iframe) = geser
   cards.forEach(function(c){
-    c.addEventListener('click',function(e){
-      var s=Number(c.dataset.slot);
-      if(s<0){e.preventDefault();prev();restart()}
-      else if(s>=visibleCount()){e.preventDefault();next();restart()}
+    c.querySelector('.ig-hit').addEventListener('click',function(){
+      Number(c.dataset.slot)<0?prev():next();restart();
     });
   });
-
-  // swipe di HP
+  // swipe di HP (di area selain video)
   var x0=null;
   rail.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
   rail.addEventListener('touchend',function(e){
@@ -669,25 +744,10 @@ footer a:hover{color:var(--red-primary)}
     var dx=e.changedTouches[0].clientX-x0;x0=null;
     if(Math.abs(dx)>40){dx<0?next():prev();restart()}
   });
-
-  // auto putar tiap 4,5 detik (berhenti saat di-hover)
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function restart(){clearInterval(timer);if(!reduce)timer=setInterval(next,4500)}
-  rail.addEventListener('mouseenter',function(){clearInterval(timer)});
-  rail.addEventListener('mouseleave',restart);
-
-  render();restart();
-})();
-// Carousel berita
-(function(){
-  var t=document.getElementById('newsTrack'),p=document.getElementById('newsPrev'),n=document.getElementById('newsNext');
-  if(!t)return;
-  function step(){var c=t.querySelector('.news-card');return c.offsetWidth+28}
-  function upd(){p.disabled=t.scrollLeft<=2;n.disabled=t.scrollLeft+t.clientWidth>=t.scrollWidth-2}
-  p.addEventListener('click',function(){t.scrollBy({left:-step()})});
-  n.addEventListener('click',function(){t.scrollBy({left:step()})});
-  t.addEventListener('scroll',upd,{passive:true});
-  window.addEventListener('resize',upd);upd();
+  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(next,4500)}
+  window.addEventListener('resize',fit);
+  render();fit();restart();
 })();
 </script>
 </body>

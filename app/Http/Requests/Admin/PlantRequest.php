@@ -25,7 +25,11 @@ class PlantRequest extends FormRequest
     {
         return [
             'name'       => ['required', 'string', 'max:100'],
+            'name_en'    => ['nullable', 'string', 'max:100'],
+            'name_zh'    => ['nullable', 'string', 'max:100'],
             'address'    => ['required', 'string', 'max:500'],
+            'address_en' => ['nullable', 'string', 'max:500'],
+            'address_zh' => ['nullable', 'string', 'max:500'],
             'phone'      => ['nullable', 'string', 'max:50'],
             'maps_url'   => ['nullable', 'url:http,https', 'max:500'],
             'lat'        => ['required', 'numeric', 'between:-90,90'],
@@ -39,7 +43,11 @@ class PlantRequest extends FormRequest
     {
         return [
             'name'       => 'Nama plant',
+            'name_en'    => 'Nama plant (EN)',
+            'name_zh'    => 'Nama plant (中文)',
             'address'    => 'Alamat',
+            'address_en' => 'Alamat (EN)',
+            'address_zh' => 'Alamat (中文)',
             'phone'      => 'Telepon',
             'maps_url'   => 'Link Google Maps',
             'lat'        => 'Latitude',

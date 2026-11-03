@@ -1,0 +1,47 @@
+/* ===== Tambahan admin (PIC Gustam): Sosial Media & Pengaturan. Memakai variabel dari admin.css ===== */
+.alert-error{padding:10px 14px;background:#fee2e2;color:#991b1b;border-radius:8px;margin-bottom:14px;font-weight:600}
+.sp-add .sp-row{display:flex;gap:10px;flex-wrap:wrap}
+.sp-add .sp-row input{flex:1;min-width:240px;margin-top:0}
+.sp-hint{color:var(--mu);font-size:13px;margin:10px 0 0}
+.sp-head{display:flex;align-items:center;gap:10px;margin:22px 0 10px;font-size:16px}
+.sp-ic{border-style:solid!important;font-weight:800;font-size:20px;color:#fff;border:0!important}
+.sp-instagram{background:linear-gradient(135deg,#f58529,#dd2a7b 55%,#8134af)}
+.sp-facebook{background:#1877f2}
+.sp-tiktok{background:#111}
+/* dropdown ⋯ */
+details.dd{position:relative}
+details.dd>summary{list-style:none;cursor:pointer}
+details.dd>summary::-webkit-details-marker{display:none}
+.dd-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;min-width:190px;background:#fff;border:1px solid var(--ln);border-radius:10px;padding:5px;box-shadow:0 12px 30px rgba(15,23,42,.16)}
+.dd-menu form{margin:0}
+.dd-menu a,.dd-menu button{display:block;width:100%;text-align:left;background:none;border:0;padding:8px 10px;border-radius:6px;font:inherit;font-weight:500;color:var(--tx);cursor:pointer}
+.dd-menu a:hover,.dd-menu button:hover{background:var(--bg)}
+.dd-menu .danger{color:#b91c1c}
+.dd-menu hr{border:0;border-top:1px solid var(--ln);margin:5px 0}
+/* dialog JSON */
+dialog.sp-dialog{border:0;border-radius:14px;padding:0;width:min(92vw,620px);box-shadow:0 30px 80px rgba(0,0,0,.3)}
+dialog.sp-dialog::backdrop{background:rgba(15,23,42,.55)}
+dialog.sp-dialog pre{margin:0;padding:16px 20px;max-height:60vh;overflow:auto;background:#0f172a;color:#bae6fd;font-size:12.5px;white-space:pre-wrap;word-break:break-all}
+/* pengaturan */
+.cardh{margin:0 0 12px;font-size:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.sp-save{position:sticky;bottom:0;display:flex;gap:10px;padding:14px 0;background:linear-gradient(transparent,var(--bg) 35%)}
+.logo-prev{max-height:56px;max-width:200px;background:#0b172c;padding:8px 12px;border-radius:8px;margin-top:6px}
+
+/* ---- Instagram & Sosial Media: input embed + editor JSON ---- */
+.sp-add textarea.sp-input{width:100%;margin-top:8px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;resize:vertical}
+.sp-add .sp-row2{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:10px}
+.sp-add .sp-row2 .sp-hint{margin:0}
+.sp-help{margin-top:12px;font-size:13px;color:var(--mu)}
+.sp-help summary{cursor:pointer;font-weight:600;color:var(--tx)}
+.sp-help ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+.sp-help code,.sp-dialog code{background:var(--bg);padding:1px 5px;border-radius:4px;font-size:12px}
+.sp-youtube{background:#ff0000}
+.sp-linkedin{background:#0a66c2}
+dialog.sp-dialog .dh{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--ln);font-weight:700}
+dialog.sp-dialog textarea.sp-json{display:block;width:calc(100% - 40px);margin:12px 20px 0;box-sizing:border-box;background:#0f172a;color:#bae6fd;font:12.5px/1.55 ui-monospace,Menlo,Consolas,monospace;padding:14px;border:0;border-radius:10px;resize:vertical;min-height:260px}
+.sp-jfoot{display:flex;align-items:center;gap:10px;padding:12px 20px 18px}
+.sp-jstate{margin-right:auto;font-size:13px;font-weight:600}
+.sp-jstate.ok{color:#15803d}.sp-jstate.bad{color:#b91c1c}
+.sp-pv{padding:16px 20px 20px;display:flex;justify-content:center;max-height:75vh;overflow:auto}

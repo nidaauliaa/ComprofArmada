@@ -66,7 +66,9 @@
 
         <div class="db">
             <label>Nama plant <em>*</em><input name="name" maxlength="100" autocomplete="off" placeholder="Contoh: Magelang (HQ)"></label>
+            <x-lang-tabs name="name" mode="suffix" id-base="pName" label="Terjemahan nama plant" :only="['en','zh']" />
             <label>Alamat <em>*</em><textarea name="address" rows="3" maxlength="500" placeholder="Alamat lengkap"></textarea></label>
+            <x-lang-tabs name="address" mode="suffix" id-base="pAddr" type="textarea" :rows="2" label="Terjemahan alamat" :only="['en','zh']" help="Kosong = website memakai Bahasa Indonesia." />
             <label>Telepon <small>opsional</small><input name="phone" maxlength="50" autocomplete="off" placeholder="Contoh: (0293) 364371"></label>
 
             <label>Link Google Maps <small>untuk tombol “Buka di Google Maps” di website</small>
