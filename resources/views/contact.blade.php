@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Hubungi Kami – New Armada</title>
+<title>{{ __('site.contact_us') }} – New Armada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -91,7 +91,20 @@ footer a:hover{color:var(--red-primary)}
 
 @include('partials.public-header', ['brand' => 'img', 'cur' => 'contact'])
 
-@php $mail = $site['email_marketing'] ?? 'marketing@newarmada.co.id'; @endphp
+@php
+    // Info kontak diambil dari lokasi plant yang bertanda HQ (diatur di admin: Lokasi Plant).
+    $hq        = \App\Models\Plant::headquarters();
+    $mail      = $hq?->email ?: ($site['email_marketing'] ?? 'marketing@newarmada.co.id');
+    $address   = $hq?->t('address') ?: ($site['address'] ?? '');
+    $hours     = $hq?->t('working_hours') ?: ($site['working_hours'] ?? '');
+    $phoneList = $hq ? $hq->phoneLinks() : [];
+    if (empty($phoneList) && !empty($site['phone'])) {
+        $phoneList = collect(explode(',', $site['phone']))
+            ->map(fn ($p) => trim($p))->filter()
+            ->map(fn ($p) => ['label' => $p, 'href' => 'tel:' . preg_replace('/[^0-9+]/', '', $p)])
+            ->all();
+    }
+@endphp
 <main>
   <section class="page-hero" style="padding-bottom:120px">
     <div class="wrap">
@@ -120,29 +133,39 @@ footer a:hover{color:var(--red-primary)}
 
         <aside class="c-card c-info">
           <h2>{{ __('site.head_office') }}</h2>
+
+          @if ($address !== '')
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-            <div><small>{{ __('site.f_address') }}</small><p>{{ $site['address'] ?? 'Jl. Mayjen Bambang Soegeng No. 7, Mertoyudan, Magelang, Jawa Tengah.' }}</p></div>
+            <div><small>{{ __('site.f_address') }}</small><p>{{ $address }}</p></div>
           </div>
+          @endif
+
+          @if (!empty($phoneList))
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span>
             <div><small>{{ __('site.f_phone') }}</small>
               <div class="c-phones">
-                @php $phones = !empty($site['phone']) ? array_filter(array_map('trim', explode(',', $site['phone']))) : ['(0293) 363591', '(0293) 364371']; @endphp
-                @foreach ($phones as $ph)
-                <a href="tel:{{ preg_replace('/[^0-9+]/', '', $ph) }}">{{ $ph }}</a>
+                @foreach ($phoneList as $ph)
+                <a href="{{ $ph['href'] }}">{{ $ph['label'] }}</a>
                 @endforeach
               </div>
             </div>
           </div>
+          @endif
+
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
             <div><small>Email</small><p><a href="mailto:{{ $mail }}">{{ $mail }}</a></p></div>
           </div>
+
+          @if ($hours !== '')
           <div class="c-item">
             <span class="c-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-            <div><small>{{ __('site.f_hours') }}</small><p>{{ $site['working_hours'] ?? 'Senin–Jumat, 08.00–16.00 WIB' }}</p></div>
+            <div><small>{{ __('site.f_hours') }}</small><p>{{ $hours }}</p></div>
           </div>
+          @endif
+
           <a class="btn" href="{{ url('/') }}#plant">{{ __('site.see_map') }}</a>
         </aside>
       </div>

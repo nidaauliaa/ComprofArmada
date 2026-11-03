@@ -26,7 +26,8 @@ class PlantController extends Controller
 
     public function store(PlantRequest $request): RedirectResponse
     {
-        Plant::create($this->payload($request));
+        $plant = Plant::create($this->payload($request));
+        $this->keepSingleHq($plant);
 
         return redirect()->route('admin.plants.index')
             ->with('success', 'Lokasi tersimpan. Website sudah diperbarui.');
@@ -35,6 +36,7 @@ class PlantController extends Controller
     public function update(PlantRequest $request, Plant $plant): RedirectResponse
     {
         $plant->update($this->payload($request, $plant));
+        $this->keepSingleHq($plant);
 
         return redirect()->route('admin.plants.index')
             ->with('success', 'Perubahan lokasi tersimpan. Website sudah diperbarui.');
@@ -59,8 +61,21 @@ class PlantController extends Controller
     {
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active');
+        $data['is_hq'] = $request->boolean('is_hq');
         $data['sort_order'] = $data['sort_order'] ?? ($plant?->sort_order ?? ((int) Plant::max('sort_order') + 1));
 
+        // nomor telepon: simpan daftar lengkap, kolom lama "phone" diisi nomor pertama
+        $data['phones'] = array_values($data['phones'] ?? []);
+        $data['phone'] = $data['phones'][0] ?? null;
+
         return $data;
+    }
+
+    /** Hanya satu lokasi yang boleh jadi kantor pusat (HQ). */
+    private function keepSingleHq(Plant $plant): void
+    {
+        if ($plant->is_hq) {
+            Plant::where('id', '!=', $plant->id)->where('is_hq', true)->update(['is_hq' => false]);
+        }
     }
 }

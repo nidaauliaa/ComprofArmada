@@ -1,13 +1,35 @@
-/* Admin Lokasi Plant: drawer tambah/ubah, tempel koordinat, saklar tayang, hapus 2 langkah. */
+/* Admin Lokasi Plant: drawer tambah/ubah, banyak nomor telepon, tempel koordinat, saklar tayang, hapus 2 langkah. */
 (function () {
   var C = window.PLANT_CFG;
   var $ = function (id) { return document.getElementById(id); };
-  var drawer = $('pDr'), ov = $('pOv'), form = $('pForm');
+  var drawer = $('pDr'), ov = $('pOv'), form = $('pForm'), phBox = $('pPhones');
 
   function toast(msg) {
     var t = $('tst'); t.textContent = msg; t.hidden = false;
     clearTimeout(toast.t); toast.t = setTimeout(function () { t.hidden = true; }, 3200);
   }
+
+  /* ---------- nomor telepon (bisa lebih dari satu) ---------- */
+  function phoneRow(v) {
+    var d = document.createElement('div');
+    d.className = 'phr';
+    d.innerHTML = '<input name="phones[]" maxlength="50" inputmode="tel" autocomplete="off" placeholder="Contoh: (0293) 364371">' +
+                  '<button type="button" class="b o s js-ph-del" title="Hapus nomor" aria-label="Hapus nomor"><svg class="i"><use href="#i-trash"/></svg></button>';
+    d.querySelector('input').value = v || '';
+    return d;
+  }
+  function setPhones(list) {
+    phBox.innerHTML = '';
+    (list && list.length ? list : ['']).forEach(function (v) { phBox.appendChild(phoneRow(v)); });
+  }
+  $('pPhoneAdd').addEventListener('click', function () {
+    var r = phoneRow(''); phBox.appendChild(r); r.querySelector('input').focus();
+  });
+  phBox.addEventListener('click', function (e) {
+    var b = e.target.closest('.js-ph-del'); if (!b) return;
+    var row = b.closest('.phr');
+    if (phBox.children.length > 1) row.remove(); else row.querySelector('input').value = '';
+  });
 
   /* ---------- buka / tutup drawer ---------- */
   function open(item) {
@@ -22,13 +44,18 @@
     form.elements.name_zh.value    = edit ? (item.name_zh || '') : '';
     form.elements.address_en.value = edit ? (item.address_en || '') : '';
     form.elements.address_zh.value = edit ? (item.address_zh || '') : '';
+    form.elements.working_hours.value    = edit ? (item.working_hours || '') : '';
+    form.elements.working_hours_en.value = edit ? (item.working_hours_en || '') : '';
+    form.elements.working_hours_zh.value = edit ? (item.working_hours_zh || '') : '';
     form.dispatchEvent(new Event('input', { bubbles: true }));
-    form.elements.phone.value      = edit ? (item.phone || '') : '';
+    setPhones(edit ? item.phones : []);
+    form.elements.email.value      = edit ? (item.email || '') : '';
     form.elements.maps_url.value   = edit ? (item.maps_url || '') : '';
     form.elements.lat.value        = edit ? item.lat : '';
     form.elements.lng.value        = edit ? item.lng : '';
     form.elements.sort_order.value = edit ? item.sort_order : C.next;
     form.elements.is_active.checked = edit ? !!item.is_active : true;
+    form.elements.is_hq.checked     = edit ? !!item.is_hq : false;
     $('pSave').disabled = false;
     drawer.classList.add('on'); ov.hidden = false;
   }

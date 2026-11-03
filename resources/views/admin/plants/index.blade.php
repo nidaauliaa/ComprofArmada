@@ -7,6 +7,11 @@
 @push('styles')
 {{-- memakai gaya yang sama dengan halaman Berita (kotak error, kolom 2, toast, dll) --}}
 <link rel="stylesheet" href="{{ asset('css/admin-news.css') }}?v={{ @filemtime(public_path('css/admin-news.css')) }}">
+<style>
+    .phr{display:flex;gap:8px;margin-bottom:8px}
+    .phr input{flex:1;margin:0}
+    .sec-t{margin:18px 0 8px;font-weight:700}
+</style>
 @endpush
 
 @section('content')
@@ -20,7 +25,7 @@
     <div class="ph">
         <div>
             <h1>Lokasi Plant</h1>
-            <p class="mu">Setiap lokasi menjadi pin di peta pada bagian Lokasi Plant di website.</p>
+            <p class="mu">Setiap lokasi menjadi pin di peta pada bagian Lokasi Plant di website. Lokasi bertanda HQ menjadi sumber info di halaman Kontak.</p>
         </div>
         <button type="button" class="b" id="plAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah lokasi</button>
     </div>
@@ -30,7 +35,7 @@
             <span class="ri"><svg class="i"><use href="#i-pin"/></svg></span>
 
             <div class="rt">
-                <b>{{ $p->name }}</b>
+                <b>{{ $p->name }} @if ($p->is_hq)<span class="bdg">HQ</span>@endif</b>
                 <small>{{ $p->address }}</small>
             </div>
 
@@ -69,7 +74,6 @@
             <x-lang-tabs name="name" mode="suffix" id-base="pName" label="Terjemahan nama plant" :only="['en','zh']" />
             <label>Alamat <em>*</em><textarea name="address" rows="3" maxlength="500" placeholder="Alamat lengkap"></textarea></label>
             <x-lang-tabs name="address" mode="suffix" id-base="pAddr" type="textarea" :rows="2" label="Terjemahan alamat" :only="['en','zh']" help="Kosong = website memakai Bahasa Indonesia." />
-            <label>Telepon <small>opsional</small><input name="phone" maxlength="50" autocomplete="off" placeholder="Contoh: (0293) 364371"></label>
 
             <label>Link Google Maps <small>untuk tombol “Buka di Google Maps” di website</small>
                 <input type="url" name="maps_url" maxlength="500" autocomplete="off" placeholder="https://maps.app.goo.gl/...">
@@ -86,6 +90,26 @@
                 Cara mengisi: buka Google Maps, klik kanan di titik lokasi, lalu klik angka koordinat paling atas untuk menyalinnya.
                 Tempel (paste) ke kolom Latitude, kolom Longitude terisi otomatis.
             </p>
+
+            {{-- KONTAK: dipakai di halaman /kontak (dari lokasi bertanda HQ) --}}
+            <div class="sec-t">Kontak <small class="mu">opsional, tampil di halaman Kontak jika lokasi ini HQ</small></div>
+
+            <div class="bk">
+                <b>Nomor telepon</b> <small class="mu">bisa lebih dari satu</small>
+                <div id="pPhones" style="margin-top:8px"></div>
+                <button type="button" class="b o s" id="pPhoneAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah nomor</button>
+            </div>
+
+            <label>Email <small>opsional, pesan dari form Kontak dikirim ke email ini</small>
+                <input type="email" name="email" maxlength="150" autocomplete="off" placeholder="marketing@newarmada.co.id">
+            </label>
+
+            <label>Jam kerja <small>opsional</small>
+                <input name="working_hours" maxlength="255" autocomplete="off" placeholder="Senin–Jumat, 08.00–16.00 WIB">
+            </label>
+            <x-lang-tabs name="working_hours" mode="suffix" id-base="pHours" label="Terjemahan jam kerja" :only="['en','zh']" help="Kosong = website memakai Bahasa Indonesia." />
+
+            <label class="ck"><input type="checkbox" name="is_hq" value="1"> Kantor pusat (HQ) <small>info Kontak diambil dari lokasi ini; hanya satu lokasi yang bisa HQ</small></label>
 
             <label>Urutan tampil <small>angka kecil tampil lebih atas</small><input type="number" name="sort_order" min="0" max="9999"></label>
 
