@@ -5,4 +5,8 @@ return [
     'svc_tooling'  => 'Design and manufacture of dies, jigs, and fixtures for producing vehicle body components.',
     'svc_stamping' => 'Sheet metal forming with press machines for precise bus body panels and frames.',
     'svc_plating'  => 'Surface coating of metal components for better corrosion resistance and a neat finish.',
+    'bisnis_unit'   => 'PT Mekar Armada Jaya, Stamping & Tools Division',
+    'prod_tooling'  => 'Tooling',
+    'prod_stamping' => 'Stamping',
+    'prod_plating'  => 'Plating',
 ];

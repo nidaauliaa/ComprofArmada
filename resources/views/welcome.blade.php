@@ -380,7 +380,7 @@ footer a:hover{color:var(--red-primary)}
 
       <div class="bu-feature">
         <div>
-          <h3>PT. Mekar Armada Jaya Div. Stamping &amp; Tools</h3>
+          <h3>{{ __('home.bisnis_unit') }}</h3>
           <p>{{ __('home.unit_desc') }}</p>
           <a class="btn" href="#layanan">{{ __('site.view_products_services') }}</a>
         </div>
@@ -396,22 +396,22 @@ footer a:hover{color:var(--red-primary)}
 
       <div class="bu-services-head" id="layanan">
         <h3>{{ __('site.products_services') }}</h3>
-        <p>PT. Mekar Armada Jaya Div. Stamping &amp; Tools</p>
+        <p>{{ __('home.bisnis_unit') }}</p>
       </div>
       <div class="svc-grid">
-        <article class="svc-card" data-word="Tooling" style="--g:linear-gradient(160deg,#12274d,#0a1730)">
+        <article class="svc-card" data-word={{ __('home.prod_tooling') }} style="--g:linear-gradient(160deg,#12274d,#0a1730)">
           <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="7"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11 11l4 4M33 33l4 4M37 11l-4 4M15 33l-4 4"/></svg>
-          <h4>Tooling</h4>
+          <h4>{{ __('home.prod_tooling') }}</h4>
           <p>{{ __('home.svc_tooling') }}</p>
         </article>
-        <article class="svc-card" data-word="Stamping" style="--g:linear-gradient(160deg,#0c4a7a,#083a62)">
+        <article class="svc-card" data-word={{ __('home.prod_stamping') }} style="--g:linear-gradient(160deg,#0c4a7a,#083a62)">
           <svg viewBox="0 0 48 48"><path d="M10 8h28M24 8v14"/><rect x="14" y="22" width="20" height="6" rx="1"/><path d="M8 40h32M12 34h24"/></svg>
-          <h4>Stamping</h4>
+          <h4>{{ __('home.prod_stamping') }}</h4>
           <p>{{ __('home.svc_stamping') }}</p>
         </article>
-        <article class="svc-card" data-word="Plating" style="--g:linear-gradient(160deg,#4a7fa3,#356585)">
+        <article class="svc-card" data-word={{ __('home.prod_plating') }} style="--g:linear-gradient(160deg,#4a7fa3,#356585)">
           <svg viewBox="0 0 48 48"><path d="M24 6c8 10 12 16 12 22a12 12 0 0 1-24 0c0-6 4-12 12-22z"/><path d="M18 30a6 6 0 0 0 6 6"/></svg>
-          <h4>Plating</h4>
+          <h4>{{ __('home.prod_plating') }}</h4>
           <p>{{ __('home.svc_plating') }}</p>
         </article>
       </div>
@@ -691,7 +691,7 @@ footer a:hover{color:var(--red-primary)}
 // Kalau header Instagram masih terlihat / video terpotong, ubah angka di IG_CROP:
 //   header = tinggi header embed (px), reel = lebar video dibanding lebar embed (0-1)
 var IG_CROP={base:400,header:62,reel:0.69,overscan:1.03};
-var IG_AUTOROTATE=false; // true = geser otomatis (tidak disarankan, mengganggu saat video diputar)
+var IG_AUTOROTATE=true; // true = geser otomatis (tidak disarankan, mengganggu saat video diputar)
 (function(){
   var rail=document.getElementById('igRail');
   if(!rail)return;
@@ -745,7 +745,7 @@ var IG_AUTOROTATE=false; // true = geser otomatis (tidak disarankan, mengganggu 
     if(Math.abs(dx)>40){dx<0?next():prev();restart()}
   });
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(next,4500)}
+  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(next,3500)}
   window.addEventListener('resize',fit);
   render();fit();restart();
 })();

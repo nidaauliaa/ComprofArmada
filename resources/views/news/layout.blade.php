@@ -102,10 +102,25 @@ nav a:not(.btn):hover::after,nav a.cur::after{width:100%}
 .art{background:#fff;padding:56px 0 70px}
 .art-body{max-width:760px;margin:0 auto}
 .art-body p{font-size:18px;line-height:1.85;color:#1e293b;margin:0 0 22px}
-.art-body figure{margin:30px 0}
-.art-body figure img{width:100%;height:auto;border-radius:12px;display:block}
-.art-body figcaption{font-size:14px;color:var(--ink-muted);margin-top:8px;text-align:center}
-
+.art-body figure{
+    margin:32px auto;
+    width:100%;
+    max-width:400px;
+}
+.art-body figure img{
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:300px;
+    object-fit:contain;
+    border-radius:12px;
+}
+.art-body figcaption{
+    font-size:14px;
+    color:var(--ink-muted);
+    margin-top:10px;
+    text-align:center;
+}
 @media(max-width:1000px){
   .nh{min-height:0;padding-top:100px}
   .nh-grid{grid-template-columns:1fr;gap:32px}

@@ -4,4 +4,8 @@ return [
     'svc_tooling'   => 'Perancangan dan pembuatan dies, jig, dan fixture untuk produksi komponen bodi kendaraan.',
     'svc_stamping'  => 'Pembentukan plat logam dengan mesin press untuk panel dan rangka bodi bus yang presisi.',
     'svc_plating'   => 'Pelapisan permukaan komponen logam agar lebih tahan korosi dan tampil rapi.',
+    'bisnis_unit'   => 'PT Mekar Armada Jaya, Div.Stamping & Tools',
+    'prod_tooling'  => 'Tooling',
+    'prod_stamping' => 'Stamping',
+    'prod_plating'  => 'Plating',
 ];

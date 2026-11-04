@@ -5,4 +5,8 @@ return [
     'svc_tooling'  => '设计并制造用于车身零部件生产的模具、夹具和治具。',
     'svc_stamping' => '使用冲压机对金属板材成形，制造精密的客车车身面板和骨架。',
     'svc_plating'  => '对金属零部件进行表面镀层，提高耐腐蚀性并使外观更整洁。',
+    'bisnis_unit'   => '印尼美卡阿尔玛达再也公司 冲压与模具部',
+    'prod_tooling'  => '模具',
+    'prod_stamping' => '冲压',
+    'prod_plating'  => '镀层',
 ];
