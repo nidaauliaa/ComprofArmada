@@ -12,7 +12,7 @@
     <div class="ph">
         <div>
             <h1>Instagram</h1>
-            <p class="mu">Tempel link atau kode embed dari Instagram, Facebook, TikTok, atau YouTube. Konten langsung tampil di Home.</p>
+            <p class="mu">Tempel link atau kode embed dari Instagram. Konten langsung tampil di Home.</p>
         </div>
     </div>
 
@@ -25,11 +25,9 @@
 
     <form class="card sp-add" method="POST" action="{{ route('admin.social.store') }}">
         @csrf
-        <label for="link">Link share atau kode embed (oEmbed)
-            <small>Bisa salah satu: link share · kode <b>&lt;iframe …&gt;</b> dari tombol Embed · JSON oEmbed</small>
-        </label>
+        <label for="link">Tempelkan link dibawah.</label>
         <textarea id="link" name="link" rows="4" class="sp-input" spellcheck="false" autocomplete="off" required
-            placeholder="https://www.instagram.com/reel/…   atau   &lt;iframe src=&quot;https://www.facebook.com/plugins/video.php?…&quot; …&gt;&lt;/iframe&gt;">{{ old('link') }}</textarea>
+            placeholder="https://www.instagram.com/reel/…">{{ old('link') }}</textarea>
         <div class="sp-row2">
             <button type="submit" class="b r"><svg class="i"><use href="#i-plus"/></svg> Tampilkan di web</button>
             <span class="sp-hint">Akun/konten harus <b>publik</b>. Tidak ada token yang disimpan.</span>
