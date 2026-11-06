@@ -75,6 +75,7 @@
                     <label>Teks gradasi (baris kedua)<input type="text" name="headline" id="headline"></label>
                     <label>Deskripsi<textarea name="description" id="description" rows="3"></textarea></label>
                     <label>Teks tombol<input type="text" name="button_text" id="button_text"></label>
+                    <p class="mu">Pastikan 'Teks tombol' dan 'Tombol mengarah ke' sesuai</p>
                 </div>
 
                 <!-- TAB BHS INGGRIS -->
@@ -84,6 +85,7 @@
                     <label>Teks gradasi (EN)<input type="text" name="headline_en" id="headline_en"></label>
                     <label>Deskripsi (EN)<textarea name="description_en" id="description_en" rows="3"></textarea></label>
                     <label>Teks tombol (EN)<input type="text" name="button_text_en" id="button_text_en"></label>
+                    <p class="mu">Pastikan 'Teks tombol' dan 'Tombol mengarah ke' sesuai</p>
                 </div>
 
                 <!-- TAB BHS MANDARIN -->
@@ -93,6 +95,7 @@
                     <label>Teks gradasi (ZH)<input type="text" name="headline_zh" id="headline_zh"></label>
                     <label>Deskripsi (ZH)<textarea name="description_zh" id="description_zh" rows="3"></textarea></label>
                     <label>Teks tombol (ZH)<input type="text" name="button_text_zh" id="button_text_zh"></label>
+                    <p class="mu">Pastikan 'Teks tombol' dan 'Tombol mengarah ke' sesuai</p>
                 </div>
 
                 <label>

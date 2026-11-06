@@ -13,8 +13,22 @@ button{font-family:inherit}
 .ap{display:flex;min-height:100vh}
 aside{width:220px;flex:none;background:#0b172c;color:#cbd5e1;transition:width .2s}
 aside>div{position:sticky;top:0;padding:20px 12px}
-.al{font:800 22px var(--hd);color:#fff;padding:0 10px 14px;display:flex;align-items:center;gap:8px}
-.al b{color:var(--rd)}
+.al{
+    font:800 22px var(--hd);
+    color:#fff;
+    padding:0 10px 14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.al .lt{
+    margin:0;
+}
+
+.al b{
+    color:var(--rd);
+}
 aside nav{display:flex;flex-direction:column;gap:4px}
 aside a{display:flex;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;font-weight:500;color:#cbd5e1;align-items:center;line-height:1.6;white-space:nowrap;overflow:hidden}
 aside a.on,aside a:hover{background:#1e3a8a;color:#fff}

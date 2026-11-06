@@ -19,7 +19,7 @@
     <div class="ph">
         <div>
             <h1>Berita &amp; Event</h1>
-            <p class="mu">Slider berita di Home. Thumbnail tampil di slider dan di daftar ini.</p>
+            <p class="mu">Tulis berita yang akan tampil di publik. Berita akan tampil di halaman Berita & Event.</p>
         </div>
         <button type="button" class="b" id="newsAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah berita</button>
     </div>
