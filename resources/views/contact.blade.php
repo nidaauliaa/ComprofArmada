@@ -85,7 +85,7 @@ footer a:hover{color:var(--red-primary)}
 @media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
-<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v={{ @filemtime(public_path('css/site.css')) }}">
 </head>
 <body>
 
@@ -191,6 +191,6 @@ footer a:hover{color:var(--red-primary)}
 })();
 </script>
 @include('partials.search-overlay')
-<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
+<script src="{{ asset('js/site.js') }}?v={{ @filemtime(public_path('js/site.js')) }}" defer></script>
 </body>
 </html>

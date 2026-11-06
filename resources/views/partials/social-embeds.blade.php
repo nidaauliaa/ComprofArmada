@@ -41,7 +41,10 @@
 <section id="sosmed" class="ig-section">
   <div class="wrap">
     <div class="ig-brand">
-      <a href="{{ $igUrl }}" target="_blank" rel="noopener"><span class="logo-icon"></span>NEW ARMADA</a>
+      <a class="brand" href="{{ $igUrl }}" target="_blank" rel="noopener" aria-label="New Armada Instagram">
+        <img src="{{ asset('storage/images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
+        <span class="brand-text">NEW ARMADA</span>
+      </a>
     </div>
 
     <p class="ig-tagline">{{ __('site.social_tagline') }}</p>
@@ -66,13 +69,11 @@
             <span class="ig-hit"></span>
           </div>
         @endforeach
+        <button id="igPrev" class="ig-nav prev" type="button" aria-label="{{ __('site.prev') }}">‹</button>
+        <button id="igNext" class="ig-nav next" type="button" aria-label="{{ __('site.next') }}">›</button>
       </div>
       <div class="ig-ctrl">
-        <a class="btn btn-red" href="{{ $igUrl }}" target="_blank" rel="noopener">{{ __('site.follow_instagram') }}</a>
-        <div class="ig-arrows">
-          <button id="igPrev" type="button" aria-label="{{ __('site.prev') }}">‹</button>
-          <button id="igNext" type="button" aria-label="{{ __('site.next') }}">›</button>
-        </div>
+        <a class="ig-follow" href="{{ $igUrl }}" target="_blank" rel="noopener"><span>{{ __('site.follow_instagram') }}</span></a>
       </div>
     </div>
   </div>

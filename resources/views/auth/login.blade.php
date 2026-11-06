@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Admin Login – New Armada</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
 <style>
 :root {
   --blue-dark: #12274d;
@@ -64,13 +64,17 @@ body {
 }
 
 .brand-logo {
-  font: 800 24px/1 'Barlow Condensed', sans-serif;
-  letter-spacing: .04em;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
   color: var(--blue-dark);
   margin-bottom: 36px;
+}
+.brand-logo img { display: block; height: 48px; width: auto; }
+.brand-logo span {
+  font: 700 19px/1 'Montserrat', 'Barlow', sans-serif;
+  letter-spacing: .2em;
+  text-transform: uppercase;
 }
 
 .brand-icon {
@@ -287,7 +291,8 @@ body {
   <!-- SISI KIRI: Form Login Admin -->
   <div class="form-side">
     <div class="brand-logo">
-      <span class="brand-icon"></span> NEW ARMADA
+      <img src="{{ asset('storage/images/logo-newarmada.png') }}" alt="New Armada" width="38" height="48">
+      <span>NEW ARMADA</span>
     </div>
 
     <h1>Selamat Datang <span>Admin</span></h1>

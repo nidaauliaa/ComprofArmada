@@ -85,7 +85,7 @@ class SocialAndLanguageTest extends TestCase
         $this->post('/admin/social', ['link' => 'https://www.facebook.com/newarmada/posts/12345?fbclid=xx'])->assertRedirect('/admin/social');
         $this->post('/admin/social', ['link' => 'https://www.tiktok.com/@newarmada/video/7123456789012345678'])->assertRedirect('/admin/social');
 
-        $this->assertDatabaseHas('social_posts', ['platform' => 'tiktok', 'title' => 'Video Armada', 'embed_url' => 'https://www.tiktok.com/embed/v2/7123456789012345678']);
+        $this->assertDatabaseHas('social_posts', ['platform' => 'tiktok', 'title' => 'Video Armada', 'embed_url' => \App\Services\OembedService::tiktokPlayerUrl('7123456789012345678')]);
         $fb = SocialPost::query()->where('platform', 'facebook')->firstOrFail();
         $this->assertStringNotContainsString('fbclid', $fb->embed_url);
     }
@@ -130,5 +130,27 @@ class SocialAndLanguageTest extends TestCase
 
         $this->get('/cari?q=Skylander')->assertOk()->assertSee('Skylander R25');
         $this->getJson('/cari/saran?q=Skyl')->assertOk()->assertJsonPath('0.title', 'Skylander R25');
+    }
+
+    public function test_kode_embed_tiktok_blockquote_jadi_pemutar_video(): void
+    {
+        Http::fake(['*' => Http::response('', 500)]);
+        $code = '<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@newarmada_karoseri/video/7666061255223840008" data-video-id="7666061255223840008" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" href="https://www.tiktok.com/@newarmada_karoseri?refer=embed">@newarmada_karoseri</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>';
+
+        $this->actingAs($this->admin())->post('/admin/social', ['link' => $code])->assertRedirect('/admin/social');
+
+        $p = SocialPost::query()->firstOrFail();
+        $this->assertSame('tiktok', $p->platform);
+        $this->assertStringStartsWith('https://www.tiktok.com/player/v1/7666061255223840008', $p->embed_url);
+    }
+
+    public function test_data_tiktok_lama_otomatis_memakai_pemutar_video(): void
+    {
+        $p = SocialPost::query()->create([
+            'platform' => 'tiktok', 'kind' => 'video', 'external_id' => '7666061255223840008',
+            'source_url' => 'https://www.tiktok.com/@a/video/7666061255223840008',
+            'embed_url' => 'https://www.tiktok.com/embed/v2/7666061255223840008', 'is_active' => true,
+        ]);
+        $this->assertStringStartsWith('https://www.tiktok.com/player/v1/7666061255223840008', $p->safeEmbedUrl());
     }
 }

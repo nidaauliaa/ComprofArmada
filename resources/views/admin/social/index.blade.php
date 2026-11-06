@@ -5,7 +5,7 @@
 @section('page_title', 'Instagram')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin-gustam.css') }}?v={{ @filemtime(public_path('css/admin-gustam.css')) }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-extra.css') }}?v={{ @filemtime(public_path('css/admin-extra.css')) }}">
 @endpush
 
 @section('content')

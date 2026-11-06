@@ -38,7 +38,7 @@ a{color:inherit;text-decoration:none}
 .model-link{font-weight:600;color:var(--ink-primary);display:inline-flex;align-items:center;gap:6px;position:relative}
 .model-link::after{content:"";position:absolute;bottom:-2px;left:0;width:100%;height:2px;background:var(--red-primary)}
 </style>
-<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}">
 <style>
 .sr-top{background:#12274d;color:#fff;padding:14px 0}
 .sr-top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
@@ -100,6 +100,6 @@ a{color:inherit;text-decoration:none}
 
   <p style="margin-top:36px"><a href="{{ url('/') }}" style="color:#2563eb;font-weight:600">← {{ __('site.back_home') }}</a></p>
 </div>
-<script src="{{ asset('js/gustam-public.js') }}" defer></script>
+<script src="{{ asset('js/site.js') }}" defer></script>
 </body>
 </html>

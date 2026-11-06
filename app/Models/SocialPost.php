@@ -22,7 +22,14 @@ class SocialPost extends Model
     /** URL embed hanya dipakai bila berasal dari domain resmi platform (mencegah iframe ke situs lain). */
     public function safeEmbedUrl(): ?string
     {
-        return OembedService::isAllowedEmbed($this->embed_url) ? (string) $this->embed_url : null;
+        $url = (string) $this->embed_url;
+
+        // Data TikTok lama (embed/v2, menampilkan "related videos") otomatis memakai pemutar resmi yang hanya menampilkan video.
+        if ($this->platform === 'tiktok' && preg_match('~tiktok\.com/(?:embed/(?:v\d/)?|player/v\d/)(\d{8,25})~', $url, $m)) {
+            return OembedService::tiktokPlayerUrl($m[1]);
+        }
+
+        return OembedService::isAllowedEmbed($url) ? $url : null;
     }
 
     public function embedWidth(): int

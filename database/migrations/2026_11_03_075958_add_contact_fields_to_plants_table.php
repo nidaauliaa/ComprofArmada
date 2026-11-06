@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasColumn('plants', 'phones')) {
+            return; // sudah dimigrasi
+        }
+
         Schema::table('plants', function (Blueprint $table) {
             $table->json('phones')->nullable()->after('phone');                 // daftar nomor telepon
             $table->string('email', 150)->nullable()->after('phones');

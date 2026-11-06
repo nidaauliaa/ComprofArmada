@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+
+/* ===== Logo header: tulisan NEW ARMADA (Montserrat, huruf kapital berjarak) ===== */
+.brand-text{font-family:'Montserrat','Barlow',system-ui,sans-serif;font-weight:700;font-size:19px;line-height:1;letter-spacing:.2em;text-transform:uppercase;text-shadow:0 1px 10px rgba(0,0,0,.3)}
+.brand{gap:14px}
+.brand img{height:48px}
+@media(max-width:560px){.brand-text{font-size:15px;letter-spacing:.16em}}
+
+/* ===== Fitur situs: pengalih bahasa, pencarian, sosial media embed ===== */
+
+/* pengalih bahasa & tombol cari (memakai gaya pill ".lang" milik tim) */
+.lang-wrap{position:relative;display:inline-block}
+.lang{cursor:pointer;font-family:inherit}
+button.lang.icon{display:inline-grid;place-items:center;width:36px;height:34px;padding:0}
+button.lang.icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lang-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:140px;background:#fff;border-radius:10px;padding:6px;box-shadow:0 18px 40px rgba(15,23,42,.25);display:none;z-index:50}
+.lang-wrap.open .lang-menu{display:block}
+.lang-menu a{display:block!important;padding:9px 12px!important;border-radius:6px;color:#0f172a!important;text-shadow:none!important;font-weight:600;font-size:14px}
+.lang-menu a.on,.lang-menu a:hover{background:#f1f5f9;color:#ff5733!important}
+.lang-menu a::after{display:none!important}
+@media(max-width:900px){.lang-wrap,.lang,button.lang.icon{display:inline-block}nav .lang-wrap{display:inline-block!important}}
+
+/* pencarian */
+.search-pop{position:fixed;inset:0;z-index:300;background:rgba(8,15,32,.78);backdrop-filter:blur(6px);padding:12vh 20px 0}
+.search-pop[hidden]{display:none}
+.search-box{max-width:680px;margin:0 auto;background:#fff;border-radius:14px;padding:18px;box-shadow:0 30px 80px rgba(0,0,0,.4);color:#0f172a}
+.search-box form{display:flex;gap:10px}
+.search-box input{flex:1;font:500 18px 'Barlow',sans-serif;padding:14px 16px;border:1px solid #cbd5e1;border-radius:10px}
+.search-box input:focus{outline:3px solid rgba(59,130,246,.35);border-color:#3b82f6}
+.sug{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px}
+.sug a{display:flex;justify-content:space-between;gap:12px;padding:10px 12px;border-radius:8px;color:#0f172a}
+.sug a:hover{background:#f1f5f9}
+.sug small{color:#64748b;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+
+
+/* ===== Carousel Instagram: logo, tombol geser samping, tombol Follow ===== */
+.ig-brand .brand{gap:16px}
+.ig-brand .brand img{height:clamp(52px,6vw,68px);width:auto}
+.ig-brand .brand-text{font-size:clamp(24px,3.2vw,36px)}
+
+/* tombol geser: kiri & kanan, agak transparan, isi putih membesar dari tengah saat kursor di atasnya */
+.ig-nav{position:absolute;top:50%;z-index:20;width:54px;height:54px;margin-top:-27px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.7);background:rgba(255,255,255,.16);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+  color:#fff;font:400 28px/1 'Barlow',sans-serif;padding:0 0 3px;cursor:pointer;display:grid;place-items:center;
+  overflow:hidden;isolation:isolate;transition:color .35s ease,border-color .35s ease,transform .25s ease}
+.ig-nav::before{content:"";position:absolute;inset:0;border-radius:50%;background:#fff;transform:scale(0);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);z-index:-1}
+.ig-nav:hover::before,.ig-nav:focus-visible::before{transform:scale(1)}
+.ig-nav:hover,.ig-nav:focus-visible{color:#0a7bb8;border-color:#fff}
+.ig-nav:active{transform:scale(.92)}
+.ig-nav.prev{left:-37px}
+.ig-nav.next{right:-37px}
+@media(max-width:700px){.ig-nav{width:42px;height:42px;margin-top:-21px;font-size:22px}.ig-nav.prev{left:6px}.ig-nav.next{right:6px}}
+
+/* tombol Follow: di tengah, isi putih naik dari bawah saat kursor di atasnya */
+.ig-ctrl{justify-content:center}
+.ig-follow{position:relative;overflow:hidden;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;
+  padding:15px 38px;border-radius:8px;border:2px solid var(--red-primary,#ff5733);background:var(--red-primary,#ff5733);color:#fff;
+  font:600 15px/1 var(--bd,'Barlow',sans-serif);box-shadow:0 4px 14px rgba(255,87,51,.3);cursor:pointer;
+  transition:color .4s ease,box-shadow .3s ease}
+.ig-follow::before{content:"";position:absolute;left:0;right:0;bottom:0;height:100%;background:#fff;
+  transform:translateY(101%);transition:transform .45s cubic-bezier(.4,0,.2,1);z-index:-1}
+.ig-follow:hover::before,.ig-follow:focus-visible::before{transform:translateY(0)}
+.ig-follow:hover,.ig-follow:focus-visible{color:var(--red-primary,#ff5733);box-shadow:0 8px 22px rgba(0,0,0,.25)}
+
+/* Carousel & tombolnya tetap beranimasi walau Windows/HP memakai "kurangi animasi" (halaman ini sengaja dibuat bergerak).
+   Hapus blok ini bila ingin patuh penuh pada pengaturan tersebut. */
+@media(prefers-reduced-motion:reduce){
+  .ig-card{transition:transform 1s cubic-bezier(.45,.05,.2,1),opacity 1s ease,box-shadow .3s ease!important}
+  .ig-nav,.ig-follow{transition:color .35s ease,border-color .35s ease,transform .25s ease,box-shadow .3s ease!important}
+  .ig-nav::before{transition:transform .4s cubic-bezier(.4,0,.2,1)!important}
+  .ig-follow::before{transition:transform .45s cubic-bezier(.4,0,.2,1)!important}
+}

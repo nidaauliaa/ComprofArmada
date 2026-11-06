@@ -1,7 +1,7 @@
-# Catatan update (Gustam) — penggabungan `comprof` ke `ComprofArmada`
+# Catatan pengembangan — penggabungan fitur `comprof` ke `ComprofArmada`
 
-Basis = **ComprofArmada terbaru** (branch `main`, sudah berisi plant, kontak, halaman berita, kategori/produk). Fitur milik Gustam dari folder `comprof` digabungkan ke dalamnya.
-Perubahan belum di-commit: lihat `git status` / `git diff`, lalu commit di branch sendiri (mis. `feature/gustam-pic`).
+Basis = **ComprofArmada terbaru** (branch `main`, sudah berisi plant, kontak, halaman berita, kategori/produk). Fitur dari folder `comprof` digabungkan ke dalamnya.
+Perubahan belum di-commit: lihat `git status` / `git diff`, lalu commit di branch sendiri (mis. `feature/social-bahasa`).
 
 ## 1. Instagram & Sosial Media (API Management)
 - Menu sidebar **Instagram** (`/admin/social`). Satu kotak input menerima: **link share**, **kode embed/oEmbed (`<iframe …>` / blockquote)**, atau **JSON oEmbed**.
@@ -70,3 +70,24 @@ php artisan db:seed --class=CatalogSeeder
 php artisan storage:link                       # bila public/storage berupa folder biasa, hapus dulu
 php artisan optimize:clear
 ```
+
+
+## 6. TikTok, geser otomatis, logo (revisi keempat)
+- TikTok memakai **pemutar resmi** `tiktok.com/player/v1/ID` (hanya video, tanpa "related videos"/judul/musik), jadi kartunya bersih seperti Instagram. Data TikTok lama (embed/v2) otomatis memakai pemutar ini. Kode embed `<blockquote class="tiktok-embed" …>` dan link share sama-sama diterima.
+- Catatan: pemutar TikTok hanya jalan untuk video yang diizinkan pemiliknya untuk di-embed. Jika kartu tetap kosong, buka video asli → ⋯ → pastikan "Allow embed"/"Izinkan sematkan" aktif.
+- Carousel Instagram **bergeser otomatis** tiap 4,5 detik dengan transisi 1 detik. Berhenti saat kursor berada di atas carousel, saat disentuh di HP, saat tab tidak aktif, atau carousel tidak terlihat. Ubah di `welcome.blade.php`: `IG_AUTOROTATE`, `IG_INTERVAL`.
+- Tulisan logo "NEW ARMADA" di header memakai Montserrat Bold, huruf kapital, jarak antar huruf lebar (`public/css/site.css`, kelas `.brand-text`).
+
+
+## 7. Digabung dengan update tim (commit `9c028dd`) + penggantian nama file
+- Basis sekarang = update tim: kontak plant (`phones`, `email`, `working_hours`, `is_hq`), lang `home.php`, halaman Kontak dari data HQ, gambar artikel berita, teks admin Instagram yang disederhanakan.
+- Perubahan tim dipertahankan. Tambahan kecil: `data-word` pada kartu layanan diberi tanda kutip (tanpa kutip, teks bahasa lain bisa merusak atribut), migration plant tim dibuat aman diulang, carousel Instagram memakai jeda 3,5 detik sesuai pengaturan tim.
+- File ditata ulang dengan nama netral: `public/css/site.css`, `public/js/site.js`, `public/css/admin-extra.css` (sebelumnya memakai nama pribadi). Semua view sudah diperbarui; hapus file lama bila masih ada di repo lokal: `public/css/gustam-public.css`, `public/js/gustam-public.js`, `public/css/admin-gustam.css`.
+
+
+## 8. Carousel Instagram: tombol & logo (revisi kelima)
+- Tombol geser manual ada di sisi kiri dan kanan carousel, agak transparan; saat kursor diarahkan, isi putih membesar dari tengah (`.ig-nav` di `public/css/site.css`).
+- Tombol "Follow Instagram" di tengah; saat kursor diarahkan, isi putih naik dari bawah (`.ig-follow`).
+- Judul "NEW ARMADA" di section Instagram dan di halaman login admin sekarang memakai logo terbaru (gambar logo + Montserrat).
+- **Geser otomatis**: prototype punya aturan "kurangi animasi" (`prefers-reduced-motion`) yang mematikan semua transisi, dan skrip ikut membatalkan geser otomatis di perangkat yang mengaktifkannya (umum di Windows bila "Show animations" dimatikan). Sekarang carousel tetap bergeser; ubah `IG_RESPECT_REDUCED_MOTION=true` di `welcome.blade.php` (dan hapus blok `prefers-reduced-motion` di akhir `site.css`) bila ingin patuh penuh.
+- Geser berhenti sementara saat kursor di atas carousel, saat video diklik (12 detik), saat tab tidak aktif, atau carousel di luar layar.

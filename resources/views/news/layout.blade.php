@@ -150,7 +150,7 @@ footer a:hover{color:var(--red-primary)}
 @media(max-width:560px){.brand-text{display:none}}
 nav a.cur::after{width:100%}
 </style>
-<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v={{ @filemtime(public_path('css/site.css')) }}">
 </head>
 <body>
 
@@ -164,6 +164,6 @@ nav a.cur::after{width:100%}
 
 @stack('scripts')
 @include('partials.search-overlay')
-<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
+<script src="{{ asset('js/site.js') }}?v={{ @filemtime(public_path('js/site.js')) }}" defer></script>
 </body>
 </html>

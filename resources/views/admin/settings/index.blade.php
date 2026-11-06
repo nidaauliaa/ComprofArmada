@@ -5,7 +5,7 @@
 @section('page_title', 'Pengaturan Situs')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin-gustam.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-extra.css') }}">
 @endpush
 
 @section('content')

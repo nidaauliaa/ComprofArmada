@@ -1,4 +1,4 @@
-/* ===== Tambahan admin (PIC Gustam): Sosial Media & Pengaturan. Memakai variabel dari admin.css ===== */
+/* Tambahan admin: Instagram & Sosial Media dan Pengaturan Situs. Memakai variabel dari admin.css */
 .alert-error{padding:10px 14px;background:#fee2e2;color:#991b1b;border-radius:8px;margin-bottom:14px;font-weight:600}
 .sp-add .sp-row{display:flex;gap:10px;flex-wrap:wrap}
 .sp-add .sp-row input{flex:1;min-width:240px;margin-top:0}

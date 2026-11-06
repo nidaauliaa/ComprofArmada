@@ -1,4 +1,4 @@
-/* Tambahan fitur Gustam: dropdown bahasa, pencarian (saran langsung), rail sosial media */
+/* Fitur situs: dropdown bahasa, pencarian (saran langsung), carousel sosial media */
 (function () {
   'use strict';
   var $ = function (s, c) { return (c || document).querySelector(s); };

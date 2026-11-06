@@ -152,7 +152,7 @@ nav a:not(.btn):hover::after{width:100%}
 .ig-carousel{position:relative;max-width:1000px;margin:0 auto}
 .ig-rail{position:relative}
 .ig-rail::before{content:"";display:block;padding-top:calc(44.444% - 13.333px)}
-.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#0b172c;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform .7s cubic-bezier(.25,1,.3,1),opacity .7s ease,box-shadow .3s ease}
+.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#0b172c;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform 1s cubic-bezier(.45,.05,.2,1),opacity 1s ease,box-shadow .3s ease}
 .ig-card[data-slot="-1"]{--s:-1;--sc:.92;opacity:.35;pointer-events:auto}
 .ig-card[data-slot="0"]{--s:0;opacity:1;pointer-events:auto}
 .ig-card[data-slot="1"]{--s:1;opacity:1;pointer-events:auto}
@@ -244,7 +244,7 @@ footer a:hover{color:var(--red-primary)}
 .news-img{position:relative}
 .news-img.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;display:block;filter:none}
 </style>
-<link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
+<link rel="stylesheet" href="{{ asset('css/site.css') }}?v={{ @filemtime(public_path('css/site.css')) }}">
 </head>
 <body>
 
@@ -399,17 +399,17 @@ footer a:hover{color:var(--red-primary)}
         <p>{{ __('home.bisnis_unit') }}</p>
       </div>
       <div class="svc-grid">
-        <article class="svc-card" data-word={{ __('home.prod_tooling') }} style="--g:linear-gradient(160deg,#12274d,#0a1730)">
+        <article class="svc-card" data-word="{{ __('home.prod_tooling') }}" style="--g:linear-gradient(160deg,#12274d,#0a1730)">
           <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="7"/><path d="M24 6v6M24 36v6M6 24h6M36 24h6M11 11l4 4M33 33l4 4M37 11l-4 4M15 33l-4 4"/></svg>
           <h4>{{ __('home.prod_tooling') }}</h4>
           <p>{{ __('home.svc_tooling') }}</p>
         </article>
-        <article class="svc-card" data-word={{ __('home.prod_stamping') }} style="--g:linear-gradient(160deg,#0c4a7a,#083a62)">
+        <article class="svc-card" data-word="{{ __('home.prod_stamping') }}" style="--g:linear-gradient(160deg,#0c4a7a,#083a62)">
           <svg viewBox="0 0 48 48"><path d="M10 8h28M24 8v14"/><rect x="14" y="22" width="20" height="6" rx="1"/><path d="M8 40h32M12 34h24"/></svg>
           <h4>{{ __('home.prod_stamping') }}</h4>
           <p>{{ __('home.svc_stamping') }}</p>
         </article>
-        <article class="svc-card" data-word={{ __('home.prod_plating') }} style="--g:linear-gradient(160deg,#4a7fa3,#356585)">
+        <article class="svc-card" data-word="{{ __('home.prod_plating') }}" style="--g:linear-gradient(160deg,#4a7fa3,#356585)">
           <svg viewBox="0 0 48 48"><path d="M24 6c8 10 12 16 12 22a12 12 0 0 1-24 0c0-6 4-12 12-22z"/><path d="M18 30a6 6 0 0 0 6 6"/></svg>
           <h4>{{ __('home.prod_plating') }}</h4>
           <p>{{ __('home.svc_plating') }}</p>
@@ -668,7 +668,7 @@ footer a:hover{color:var(--red-primary)}
 })();
 </script>
 @include('partials.search-overlay')
-<script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
+<script src="{{ asset('js/site.js') }}?v={{ @filemtime(public_path('js/site.js')) }}" defer></script>
 <script>
 // Video YouTube (muncul setelah diklik supaya halaman tetap ringan)
 (function(){
@@ -691,7 +691,9 @@ footer a:hover{color:var(--red-primary)}
 // Kalau header Instagram masih terlihat / video terpotong, ubah angka di IG_CROP:
 //   header = tinggi header embed (px), reel = lebar video dibanding lebar embed (0-1)
 var IG_CROP={base:400,header:62,reel:0.69,overscan:1.03};
-var IG_AUTOROTATE=true; // true = geser otomatis (tidak disarankan, mengganggu saat video diputar)
+var IG_AUTOROTATE=true;      // geser otomatis halus (berhenti saat kursor di atas carousel / saat tab tidak aktif)
+var IG_INTERVAL=3500;        // jeda antar geseran (milidetik)
+var IG_RESPECT_REDUCED_MOTION=false; // true = berhenti geser otomatis bila perangkat memakai "kurangi animasi"
 (function(){
   var rail=document.getElementById('igRail');
   if(!rail)return;
@@ -744,8 +746,19 @@ var IG_AUTOROTATE=true; // true = geser otomatis (tidak disarankan, mengganggu s
     var dx=e.changedTouches[0].clientX-x0;x0=null;
     if(Math.abs(dx)>40){dx<0?next():prev();restart()}
   });
-  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(next,3500)}
+  var reduce=IG_RESPECT_REDUCED_MOTION&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var paused=false,visible=true,holdUntil=0;
+  function tick(){if(!paused&&visible&&!document.hidden&&Date.now()>holdUntil)next()}
+  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(tick,IG_INTERVAL)}
+  // jangan menggeser saat pengunjung mengarahkan kursor / menyentuh carousel (video sedang ditonton)
+  var box=rail.parentNode;
+  box.addEventListener('mouseenter',function(){paused=true});
+  box.addEventListener('mouseleave',function(){paused=false;restart()});
+  // pengunjung mengeklik video (fokus pindah ke iframe): jangan geser selama 12 detik
+  window.addEventListener('blur',function(){if(document.activeElement&&box.contains(document.activeElement))holdUntil=Date.now()+12000});
+  box.addEventListener('touchstart',function(){paused=true},{passive:true});
+  box.addEventListener('touchend',function(){setTimeout(function(){paused=false;restart()},6000)},{passive:true});
+  if('IntersectionObserver' in window){new IntersectionObserver(function(es){visible=es[0].isIntersecting},{threshold:.25}).observe(rail)}
   window.addEventListener('resize',fit);
   render();fit();restart();
 })();

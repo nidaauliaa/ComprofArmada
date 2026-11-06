@@ -26,12 +26,23 @@ class OembedService
         'https://www.instagram.com/',
         'https://www.facebook.com/plugins/',
         'https://www.tiktok.com/embed/',
+        'https://www.tiktok.com/player/',
         'https://www.youtube.com/embed/',
         'https://www.youtube-nocookie.com/embed/',
         'https://www.linkedin.com/embed/',
     ];
 
     public const PLATFORMS = ['instagram', 'facebook', 'tiktok', 'youtube', 'linkedin'];
+
+    /** Pemutar TikTok resmi (tiktok.com/player/v1/ID): hanya video, tanpa daftar "related videos", judul, atau info musik. */
+    public static function tiktokPlayerUrl(string $id): string
+    {
+        return 'https://www.tiktok.com/player/v1/'.$id.'?'.http_build_query([
+            'controls' => 1, 'progress_bar' => 1, 'play_button' => 1, 'volume_control' => 1, 'fullscreen_button' => 0,
+            'timestamp' => 0, 'music_info' => 0, 'description' => 0, 'rel' => 0, 'loop' => 1,
+            'native_context_menu' => 0, 'closed_caption' => 0,
+        ]);
+    }
 
     private const UA = 'Mozilla/5.0 (compatible; NewArmadaEmbed/1.0)';
 
@@ -220,12 +231,12 @@ class OembedService
 
         // ---- TikTok: /embed/v2/ID ----
         if (str_ends_with($host, 'tiktok.com')) {
-            if (! preg_match('~/embed/(?:v\d/)?(\d{8,25})~', $path, $m)) {
-                return [false, null, 'Alamat embed TikTok harus berbentuk https://www.tiktok.com/embed/v2/ID_VIDEO.'];
+            if (! preg_match('~/(?:embed/(?:v\d/)?|player/v\d/)(\d{8,25})~', $path, $m)) {
+                return [false, null, 'Alamat embed TikTok harus berbentuk https://www.tiktok.com/player/v1/ID_VIDEO atau https://www.tiktok.com/embed/v2/ID_VIDEO.'];
             }
-            $width = $this->clamp($w ?? 350, 200, 750);
-            $height = $this->clamp($h ?? 740, 200, 1400);
-            $embed = 'https://www.tiktok.com/embed/v2/'.$m[1];
+            $width = 360;
+            $height = 640;
+            $embed = self::tiktokPlayerUrl($m[1]);
             $real = $source ? $this->tiktokOembed($source) : null;
 
             return [true, $this->result('tiktok', 'video', $m[1], $source ?: 'https://www.tiktok.com/video/'.$m[1], $embed, $width, $height,
@@ -371,10 +382,10 @@ class OembedService
             $final = $resolved;
         }
         $source = strtok($final, '?') ?: $final;
-        $embed = 'https://www.tiktok.com/embed/v2/'.$m[1];
+        $embed = self::tiktokPlayerUrl($m[1]);
         $real = $this->tiktokOembed($source);
 
-        return [true, $this->result('tiktok', 'video', $m[1], $source, $embed, 350, 740,
+        return [true, $this->result('tiktok', 'video', $m[1], $source, $embed, 360, 640,
             $real['title'] ?? null, $real['author_name'] ?? null, $real['thumbnail_url'] ?? null, $real), null];
     }
 
