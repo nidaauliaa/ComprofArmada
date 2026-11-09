@@ -26,11 +26,13 @@
     }
 
     // Carousel looping butuh minimal 6 kartu: ulangi bila kurang.
-    $loop = $cards;
-    while ($loop->count() < 6) {
-        $loop = $loop->concat($cards);
+    $carouselCards = $cards;
+
+    while ($carouselCards->count() < 6 && $cards->isNotEmpty()) {
+        $carouselCards = $carouselCards->concat($cards);
     }
-    $loop = $loop->values();
+
+    $carouselCards = $carouselCards->values();
 
     $stats = array_filter([
         __('site.ig_posts') => $site['ig_posts'] ?? '',
@@ -57,7 +59,7 @@
 
     <div class="ig-carousel">
       <div class="ig-rail" id="igRail">
-        @foreach ($loop as $c)
+        @foreach ($carouselCards as $c)
           <div class="ig-card">
             <iframe class="ig-frame" src="{{ $c['src'] }}" loading="lazy" scrolling="no" allowfullscreen
                     data-mode="{{ $c['mode'] }}" data-w="{{ $c['w'] }}" data-h="{{ $c['h'] }}"

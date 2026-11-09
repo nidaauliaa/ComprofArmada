@@ -11,8 +11,8 @@
 @section('content')
     <div class="ph">
         <div>
-            <h1>Instagram</h1>
-            <p class="mu">Tempel link atau kode embed dari Instagram. Konten langsung tampil di Home.</p>
+            <h1>Media Sosial</h1>
+            <p class="mu">Kelola konten media sosial yang ditampilkan di halaman utama website.</p>
         </div>
     </div>
 
@@ -25,26 +25,56 @@
 
     <form class="card sp-add" method="POST" action="{{ route('admin.social.store') }}">
         @csrf
-        <label for="link">Tempelkan link dibawah.</label>
-        <textarea id="link" name="link" rows="4" class="sp-input" spellcheck="false" autocomplete="off" required
-            placeholder="https://www.instagram.com/reel/…">{{ old('link') }}</textarea>
+
+        <h3 class="cardh">Tambah Konten</h3>
+
+        <label for="link">Link konten</label>
+
+        <textarea
+            id="link"
+            name="link"
+            rows="2"
+            class="sp-input"
+            spellcheck="false"
+            autocomplete="off"
+            required
+            placeholder="Tempel link Instagram, Facebook, TikTok, atau YouTube di sini..."
+        >{{ old('link') }}</textarea>
+
+        <p class="sp-hint">
+            Salin link postingan, foto, atau video yang ingin ditampilkan di website.
+        </p>
+
         <div class="sp-row2">
-            <button type="submit" class="b r"><svg class="i"><use href="#i-plus"/></svg> Tampilkan di web</button>
-            <span class="sp-hint">Akun/konten harus <b>publik</b>. Tidak ada token yang disimpan.</span>
+            <button type="submit" class="b r">
+                <svg class="i"><use href="#i-plus"/></svg>
+                Tambahkan konten
+            </button>
         </div>
+
+        <div class="sp-note">
+            <svg class="i"><use href="#i-info"/></svg>
+            <span>
+                Pastikan akun atau konten dapat dilihat secara publik agar bisa ditampilkan di website.
+            </span>
+        </div>
+
         <details class="sp-help">
-            <summary>Dapat dari mana?</summary>
+            <summary>Bagaimana cara mendapatkan link?</summary>
+
             <ul>
-                <li><b>Instagram</b> — postingan/reel → ⋯ → Bagikan → Salin link <i>(atau</i> ⋯ → Sematkan → Salin kode<i>)</i>.</li>
-                <li><b>Facebook</b> — postingan/video/reel → Bagikan → Salin link. Bila link share gagal, buka ⋯ → <b>Embed / Sematkan</b>, salin kode <code>&lt;iframe …&gt;</code>, lalu tempel di sini.</li>
-                <li><b>TikTok</b> — video → Bagikan → Salin link <i>(atau</i> Embed → Copy code<i>)</i>.</li>
-                <li><b>YouTube</b> — Bagikan → Salin link, atau Sematkan → salin kode iframe.</li>
+                <li><b>Instagram:</b> Buka postingan atau Reel → Bagikan → Salin tautan.</li>
+                <li><b>Facebook:</b> Buka postingan atau video → Bagikan → Salin tautan.</li>
+                <li><b>TikTok:</b> Buka video → Bagikan → Salin tautan.</li>
+                <li><b>YouTube:</b> Buka video → Bagikan → Salin link.</li>
             </ul>
-            <p class="sp-hint">Demi keamanan, hanya alamat embed dari domain resmi platform yang diterima. Script dan HTML lain pada kode embed dibuang otomatis.</p>
         </details>
     </form>
 
-    <div class="sp-head"><b>Tampil di web</b> <span class="bdg">{{ $posts->where('is_active', true)->count() }} aktif</span></div>
+    <div class="sp-head">
+        <b>Konten di Website</b>
+        <span class="bdg">{{ $posts->where('is_active', true)->count() }} aktif</span>
+    </div>
 
     @forelse ($posts as $p)
         <div class="row">
@@ -93,7 +123,13 @@
             </form>
         </dialog>
     @empty
-        <div class="card mu">Belum ada konten. Tempel link atau kode embed di atas untuk memulai.</div>
+        <div class="card sp-empty">
+            <div class="sp-empty-icon">
+                <svg class="i"><use href="#i-image"/></svg>
+            </div>
+            <b>Belum ada konten</b>
+            <p class="mu">Konten yang kamu tambahkan nantinya akan ditampilkan di halaman utama website.</p>
+        </div>
     @endforelse
 
     <dialog class="sp-dialog" id="sp-preview">

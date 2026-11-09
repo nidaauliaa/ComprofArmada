@@ -16,7 +16,7 @@ class SettingController extends Controller
         'phone' => 'nullable|string|max:120',
         'email_marketing' => 'nullable|email|max:150',
         'working_hours' => 'nullable|string|max:150',
-        'youtube_video_id' => ['nullable', 'regex:/^[A-Za-z0-9_-]{11}$/'],
+        'youtube_video_id' => ['nullable', 'string', 'max:500'],
         'ig_posts' => 'nullable|string|max:20',
         'ig_followers' => 'nullable|string|max:20',
         'ig_following' => 'nullable|string|max:20',
@@ -39,6 +39,43 @@ class SettingController extends Controller
         ]);
     }
 
+    private function extractYoutubeId(?string $url): ?string
+    {
+        if (blank($url)) {
+            return null;
+        }
+
+        $host = strtolower(parse_url($url, PHP_URL_HOST) ?? '');
+        $path = trim(parse_url($url, PHP_URL_PATH) ?? '/', '/');
+
+        if (!in_array($host, [
+            'youtu.be',
+            'www.youtu.be',
+            'youtube.com',
+            'www.youtube.com',
+            'm.youtube.com',
+            'music.youtube.com',
+        ], true)) {
+            return null;
+        }
+
+        if (in_array($host, ['youtu.be', 'www.youtu.be'], true)) {
+            $id = explode('/', $path)[0] ?? '';
+        } else {
+            parse_str(parse_url($url, PHP_URL_QUERY) ?? '', $query);
+
+            if (str_starts_with($path, 'watch')) {
+                $id = $query['v'] ?? '';
+            } elseif (preg_match('#^(embed|shorts|live)/([A-Za-z0-9_-]{11})$#', $path, $matches)) {
+                $id = $matches[2];
+            } else {
+                $id = '';
+            }
+        }
+
+        return preg_match('/^[A-Za-z0-9_-]{11}$/', $id) ? $id : null;
+    }
+
     public function update(Request $request)
     {
         $rules = self::PLAIN + [
@@ -47,6 +84,24 @@ class SettingController extends Controller
             'meta_description.*' => 'nullable|string|max:300',
         ];
         $request->validate($rules);
+
+        $youtubeUrl = trim((string) $request->input('youtube_video_id'));
+
+        if ($youtubeUrl !== '') {
+            $youtubeId = $this->extractYoutubeId($youtubeUrl);
+
+            if (!$youtubeId) {
+                return back()
+                    ->withErrors([
+                        'youtube_video_id' => 'Link YouTube tidak valid. Periksa kembali link video.',
+                    ])
+                    ->withInput();
+            }
+
+            $request->merge([
+                'youtube_video_id' => $youtubeId,
+            ]);
+        }
 
         foreach (array_keys(self::PLAIN) as $key) {
             Setting::put($key, trim((string) $request->input($key, '')));

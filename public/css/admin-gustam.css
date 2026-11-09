@@ -45,3 +45,67 @@ dialog.sp-dialog textarea.sp-json{display:block;width:calc(100% - 40px);margin:1
 .sp-jstate{margin-right:auto;font-size:13px;font-weight:600}
 .sp-jstate.ok{color:#15803d}.sp-jstate.bad{color:#b91c1c}
 .sp-pv{padding:16px 20px 20px;display:flex;justify-content:center;max-height:75vh;overflow:auto}
+/* Social media settings - simplified UI */
+
+.sp-add .cardh {
+    margin-top: 0;
+}
+
+.sp-add .sp-hint {
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.sp-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 11px 13px;
+    background: #f5f7fa;
+    border-radius: 8px;
+    color: #596579;
+    font-size: 12px;
+}
+
+.sp-note .i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.sp-help {
+    margin-top: 16px;
+    font-size: 13px;
+}
+
+.sp-help summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--pr);
+}
+
+.sp-help ul {
+    padding-left: 20px;
+    line-height: 1.8;
+}
+
+.sp-empty {
+    text-align: center;
+    padding: 35px 20px;
+}
+
+.sp-empty-icon {
+    margin-bottom: 12px;
+    color: #8993a3;
+}
+
+.sp-empty-icon .i {
+    width: 32px;
+    height: 32px;
+}
+
+.sp-empty p {
+    margin: 7px 0 0;
+    font-size: 13px;
+}

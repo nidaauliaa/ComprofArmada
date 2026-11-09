@@ -12,7 +12,14 @@
 @endphp
 <aside>
     <div>
-        <div class="al"><span class="lgm"></span><span class="lt">NEW<b>ARMADA</b></span></div>
+        <div class="al">
+            <img
+                src="{{ asset('storage/images/logo-newarmada.png') }}"
+                alt="Logo New Armada"
+                class="admin-logo"
+            >
+            <span class="lt"><span class="brand-new">NEW</span><b>ARMADA</b></span>
+        </div>
         <nav>
             @foreach ($menu as $m)
                 <a href="{{ \Illuminate\Support\Facades\Route::has($m['route']) ? route($m['route']) : '#' }}"
