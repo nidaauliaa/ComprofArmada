@@ -26,6 +26,7 @@ class OembedService
         'https://www.instagram.com/',
         'https://www.facebook.com/plugins/',
         'https://www.tiktok.com/embed/',
+        'https://www.tiktok.com/player/v1/',
         'https://www.youtube.com/embed/',
         'https://www.youtube-nocookie.com/embed/',
         'https://www.linkedin.com/embed/',
@@ -218,18 +219,33 @@ class OembedService
             return [true, $this->result('instagram', $kind, $m[2], $source ?: $clean, $clean.'embed/', $width, $height, null, null, null), null];
         }
 
-        // ---- TikTok: /embed/v2/ID ----
+        // ---- TikTok: Embed Player / legacy embed ----
         if (str_ends_with($host, 'tiktok.com')) {
-            if (! preg_match('~/embed/(?:v\d/)?(\d{8,25})~', $path, $m)) {
-                return [false, null, 'Alamat embed TikTok harus berbentuk https://www.tiktok.com/embed/v2/ID_VIDEO.'];
+            if (! preg_match('~/(?:player/v1|embed/v2|embed/v\d)/(\d{8,25})~', $path, $m)) {
+                return [false, null, 'Alamat embed TikTok tidak dikenali.'];
             }
+
             $width = $this->clamp($w ?? 350, 200, 750);
-            $height = $this->clamp($h ?? 740, 200, 1400);
-            $embed = 'https://www.tiktok.com/embed/v2/'.$m[1];
+            $height = $this->clamp($h ?? 622, 200, 1400);
+
+            // Semua format lama dinormalisasi ke Embed Player terbaru.
+            $embed = $this->tiktokPlayerUrl($m[1]);
+
             $real = $source ? $this->tiktokOembed($source) : null;
 
-            return [true, $this->result('tiktok', 'video', $m[1], $source ?: 'https://www.tiktok.com/video/'.$m[1], $embed, $width, $height,
-                $real['title'] ?? null, $real['author_name'] ?? null, $real['thumbnail_url'] ?? null, $real), null];
+            return [true, $this->result(
+                'tiktok',
+                'video',
+                $m[1],
+                $source ?: 'https://www.tiktok.com/@unknown/video/'.$m[1],
+                $embed,
+                $width,
+                $height,
+                $real['title'] ?? null,
+                $real['author_name'] ?? null,
+                $real['thumbnail_url'] ?? null,
+                $real
+            ), null];
         }
 
         // ---- YouTube: /embed/ID ----
@@ -362,20 +378,53 @@ class OembedService
     private function tiktok(string $link, array $p, string $host): array
     {
         $final = $link;
+
         if (! preg_match('~/video/(\d{8,25})~', $p['path'] ?? '', $m)) {
-            $isShort = in_array($host, ['vm.tiktok.com', 'vt.tiktok.com'], true) || str_starts_with($p['path'] ?? '', '/t/');
+            $isShort = in_array($host, ['vm.tiktok.com', 'vt.tiktok.com'], true)
+                || str_starts_with($p['path'] ?? '', '/t/');
+
             $resolved = $isShort ? $this->resolve($link) : null;
+
             if (! $resolved || ! preg_match('~/video/(\d{8,25})~', $resolved, $m)) {
                 return [false, null, 'Link TikTok tidak dikenali. Pakai link video lengkap (tiktok.com/@akun/video/123…), link share pendek (vm.tiktok.com/…), atau tempel kode embed TikTok.'];
             }
+
             $final = $resolved;
         }
+
         $source = strtok($final, '?') ?: $final;
-        $embed = 'https://www.tiktok.com/embed/v2/'.$m[1];
+
+        $embed = $this->tiktokPlayerUrl($m[1]);
+
         $real = $this->tiktokOembed($source);
 
-        return [true, $this->result('tiktok', 'video', $m[1], $source, $embed, 350, 740,
-            $real['title'] ?? null, $real['author_name'] ?? null, $real['thumbnail_url'] ?? null, $real), null];
+        return [true, $this->result(
+            'tiktok',
+            'video',
+            $m[1],
+            $source,
+            $embed,
+            350,
+            622,
+            $real['title'] ?? null,
+            $real['author_name'] ?? null,
+            $real['thumbnail_url'] ?? null,
+            $real
+        ), null];
+    }
+
+    private function tiktokPlayerUrl(string $videoId): string
+    {
+        return 'https://www.tiktok.com/player/v1/'.$videoId.'?'.http_build_query([
+            'autoplay' => 1,
+            'muted' => 1,          // ganti dari force_muted
+            'loop' => 1,
+            'rel' => 0,
+            'controls' => 0,
+            'description' => 0,
+            'music_info' => 0,
+            'closed_caption' => 0,
+        ]);
     }
 
     private function youtube(string $link, array $p, string $host): array
