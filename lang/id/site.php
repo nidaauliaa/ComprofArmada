@@ -98,4 +98,10 @@ return [
     'ig_posts' => 'Postingan',
     'ig_followers' => 'Pengikut',
     'ig_following' => 'Mengikuti',
+    'contact_response_title' => 'Dapatkan Respons Hari Ini!',
+    'contact_intro_lead' => 'Kami senang terhubung dengan Anda.',
+    'contact_intro_rest' => 'Hubungi tim sales kami lewat WhatsApp, dan kami akan membalas secepat mungkin.',
+    'sales_wa' => 'Hubungi Sales via WhatsApp',
+    'wa_greeting' => 'Halo, saya tertarik dengan',
+    'no_sales' => 'Belum ada kontak sales.',
 ];

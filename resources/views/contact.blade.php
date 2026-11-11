@@ -2,6 +2,13 @@
     // Teks baru: memakai terjemahan kalau key-nya sudah ada di lang/*/site.php, kalau belum memakai teks bawaan.
     $tr = fn ($key, $default) => \Illuminate\Support\Facades\Lang::has('site.' . $key) ? __('site.' . $key) : $default;
 
+    // Teks halaman Kontak: isian admin (Kontak Sales > Teks halaman Kontak) didahulukan,
+    // kalau belum diisi memakai terjemahan bawaan di lang/*/site.php.
+    $txt = function (string $settingKey, string $langKey) {
+        $v = \App\Models\Setting::tr($settingKey);
+        return $v !== '' ? $v : __('site.' . $langKey);
+    };
+
     // Nomor -> link WhatsApp (0812... otomatis diubah jadi 62812...)
     $waLink = function (string $phone) {
         $d = preg_replace('/\D/', '', $phone);
@@ -117,7 +124,7 @@ footer a:hover{color:var(--red-primary)}
 </style>
 <link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
-<body class="contact-page" data-wa-greeting="{{ $tr('wa_greeting', 'Halo, saya tertarik dengan') }}">
+<body class="contact-page" data-wa-greeting="{{ $txt('contact_wa_greeting', 'wa_greeting') }}">
 
 @include('partials.public-header', ['brand' => 'img', 'cur' => 'contact'])
 
@@ -125,12 +132,12 @@ footer a:hover{color:var(--red-primary)}
   <section class="contact-hero">
     <div class="wrap">
       <div class="hero-center">
-        <h1>{{ $tr('contact_response_title', 'Dapatkan Respons Hari Ini!') }}</h1>
-        <p class="lead"><strong>{{ $tr('contact_intro_lead', 'Kami senang terhubung dengan Anda.') }}</strong>
-           {{ $tr('contact_intro_rest', 'Hubungi tim sales kami lewat WhatsApp, dan kami akan membalas secepat mungkin.') }}</p>
+        <h1>{{ $txt('contact_title', 'contact_response_title') }}</h1>
+        <p class="lead"><strong>{{ $txt('contact_lead', 'contact_intro_lead') }}</strong>
+           {{ $txt('contact_intro', 'contact_intro_rest') }}</p>
 
         <div class="sales">
-          <h2>{{ $tr('sales_wa', 'Hubungi Sales via WhatsApp') }}</h2>
+          <h2>{{ $txt('contact_sales_heading', 'sales_wa') }}</h2>
           <ul>
             @forelse ($salesContacts as $s)
             <li>
@@ -141,7 +148,7 @@ footer a:hover{color:var(--red-primary)}
               </a>
             </li>
             @empty
-            <li style="grid-template-columns:1fr"><span class="ph">Belum ada kontak sales.</span></li>
+            <li style="grid-template-columns:1fr"><span class="ph">{{ __('site.no_sales') }}</span></li>
             @endforelse
           </ul>
         </div>

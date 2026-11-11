@@ -99,4 +99,10 @@ return [
     'ig_posts' => 'Posts',
     'ig_followers' => 'Followers',
     'ig_following' => 'Following',
+    'contact_response_title' => 'Get a Response Today!',
+    'contact_intro_lead' => 'We love getting connected with you.',
+    'contact_intro_rest' => 'Contact our sales team via WhatsApp and we will get back to you as soon as possible.',
+    'sales_wa' => 'Contact Sales via WhatsApp',
+    'wa_greeting' => "Hello, I'm interested in",
+    'no_sales' => 'No sales contacts yet.',
 ];

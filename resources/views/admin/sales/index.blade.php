@@ -20,6 +20,12 @@
     .sc-st.on{background:#dcfce7;color:#166534}
     .sc-st.off{background:#e5e7eb;color:#4b5563}
     .sc-inline{margin:0}
+    .sc-texts{padding:20px;margin-top:28px;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
+    .sc-texts h3{margin:0 0 4px;font-size:16px}
+    .sc-texts .sc-hint{margin:0 0 16px;color:#64748b;font-size:14px}
+    .sc-texts .lt-label{font-size:14px}
+    .sc-texts .lt-pane input,.sc-texts .lt-pane textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px 12px;font:inherit;background:#fff}
+    .sc-texts .lt-pane textarea{resize:vertical}
 </style>
 @endpush
 
@@ -30,7 +36,7 @@
 
     @if ($errors->any())
         <div class="alert-error">
-            <b>Kontak belum tersimpan:</b>
+            <b>Belum tersimpan:</b>
             <ul>@foreach ($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
         </div>
     @endif
@@ -88,4 +94,25 @@
     @empty
         <div class="emp">Belum ada kontak sales. Isi form di atas untuk menambah.</div>
     @endforelse
+
+    {{-- Teks halaman Kontak: terjemahan diisi manual (ID | EN | 中文) --}}
+    <form method="POST" action="{{ route('admin.sales.texts') }}" class="sc-texts">
+        @csrf
+        <h3>Teks halaman Kontak</h3>
+        <p class="sc-hint">Terjemahan diisi manual lewat tab ID, EN, dan 中文. Titik oranye berarti terjemahannya belum diisi; website memakai Bahasa Indonesia untuk bagian itu.</p>
+
+        <x-lang-tabs name="contact_title" label="Judul halaman"
+                     :values="$texts['contact_title']" />
+        <x-lang-tabs name="contact_lead" label="Kalimat pembuka (cetak tebal)"
+                     :values="$texts['contact_lead']" />
+        <x-lang-tabs name="contact_intro" label="Paragraf pengantar" type="textarea" :rows="3"
+                     :values="$texts['contact_intro']" />
+        <x-lang-tabs name="contact_sales_heading" label="Judul daftar sales"
+                     :values="$texts['contact_sales_heading']" />
+        <x-lang-tabs name="contact_wa_greeting" label="Awal pesan WhatsApp"
+                     help="Nama produk ditambahkan di belakang teks ini saat pengunjung datang dari halaman produk."
+                     :values="$texts['contact_wa_greeting']" />
+
+        <button type="submit" class="b">Simpan teks</button>
+    </form>
 @endsection
