@@ -42,7 +42,6 @@ class SalesContactController extends Controller
         if (! $hq) {
             return back()->withErrors(['hq' => 'Belum ada Plant yang ditandai HQ. Centang "Kantor pusat (HQ)" di menu Lokasi Plant dulu.']);
         }
-
         $rawPhones = (array) $request->input('phones', []);
         $rawNames  = (array) $request->input('phone_names', []);
         $phones = $names = [];

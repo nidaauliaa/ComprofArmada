@@ -30,7 +30,10 @@ class PlantRequest extends FormRequest
             $phones[] = $v;
             $names[]  = trim((string) ($rawNames[$i] ?? ''));
         }
-        $this->merge(['phones' => $phones, 'phone_names' => $names]);
+        $this->merge(['phones' => $phones]);
+        if ($this->has('phone_names')) {
+            $this->merge(['phone_names' => $names]);
+        }
     }
 
     public function rules(): array

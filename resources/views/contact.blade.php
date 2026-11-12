@@ -140,9 +140,9 @@ footer a:hover{color:var(--red-primary)}
           <h2>{{ $txt('contact_sales_heading', 'sales_wa') }}</h2>
           <ul>
             @php $entries = $hq ? $hq->phoneEntries() : []; @endphp
-            @forelse ($entries as $s)
+            @forelse ($entries as $i => $s)
             <li>
-              <span class="nm">{{ $s['name'] !== '' ? $s['name'] : $hq->t('name') }}</span>
+              <span class="nm">{{ $s['name'] !== '' ? $s['name'] : 'Sales '.($i + 1) }}</span>
               <span class="ph">{{ $s['phone'] }}</span>
               <a class="wa" href="{{ $waLink($s['phone']) }}" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/></svg>WhatsApp

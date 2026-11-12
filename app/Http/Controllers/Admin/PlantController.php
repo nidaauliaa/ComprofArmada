@@ -66,7 +66,9 @@ class PlantController extends Controller
 
         // nomor telepon: simpan daftar lengkap, kolom lama "phone" diisi nomor pertama
         $data['phones'] = array_values($data['phones'] ?? []);
-        $data['phone_names'] = array_values($data['phone_names'] ?? []);
+        if (array_key_exists('phone_names', $data)) {
+            $data['phone_names'] = array_values($data['phone_names'] ?? []);
+        }
         $data['phone'] = $data['phones'][0] ?? null;
 
         return $data;

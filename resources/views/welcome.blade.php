@@ -259,7 +259,7 @@ footer a:hover{color:var(--red-primary)}
       <a href="#unit">{{ __('site.business_unit') }}</a>
       <a href="#berita">{{ __('site.news') }}</a>
       <a href="#plant">{{ __('site.location') }}</a>
-      <button type="button" class="lang icon" data-search-open aria-label="{{ __('site.search') }}"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
+      {{-- <button type="button" class="lang icon" data-search-open aria-label="{{ __('site.search') }}"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button> --}}
       <x-lang-switcher />
       <a class="btn btn-red" href="{{ url('/kontak') }}">{{ __('site.contact_us') }}</a>
     </nav>

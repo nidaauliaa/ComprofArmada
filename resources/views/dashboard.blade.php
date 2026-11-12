@@ -13,6 +13,9 @@
     $newsCount     = \App\Models\News::where('is_active', 1)->count();
     $newsNoThumb   = \App\Models\News::where('is_active', 1)->whereNull('thumbnail_path')->count();
     $plantCount    = \App\Models\Plant::where('is_active', 1)->count();
+    $modelCount    = \App\Models\ProductModel::where('is_active', 1)
+    ->whereHas('category', fn ($q) => $q->where('is_active', 1))
+    ->count();
     $newsNoEnglish = \App\Models\News::where('is_active', 1)->where(function ($q) {
         $q->whereNull('title->en')->orWhere('title->en', '');
     })->count();
@@ -22,7 +25,7 @@
 
     <div class="qa">
         <a href="{{ $has('admin.banners.index') ? route('admin.banners.index') : '#' }}"><svg class="i"><use href="#i-image"/></svg>Ubah banner</a>
-        <a href="#"><svg class="i"><use href="#i-bus"/></svg>Kelola produk</a>
+        <a href="{{ $has('admin.products.index') ? route('admin.products.index') : '#' }}"><svg class="i"><use href="#i-bus"/></svg>Kelola produk</a>
         <a href="{{ $has('admin.news.index') ? route('admin.news.index', ['tambah' => 1]) : '#' }}"><svg class="i"><use href="#i-news"/></svg>Tulis berita</a>
         <a href="{{ $has('admin.plants.index') ? route('admin.plants.index') : '#' }}"><svg class="i"><use href="#i-pin"/></svg>Atur lokasi</a>
     </div>
@@ -31,8 +34,7 @@
         <h3 style="margin-top:0">Ringkasan</h3>
         <div class="st">
             <div><b>{{ $bannerCount }}</b>Banner tayang</div>
-            {{-- TODO: ganti angka di bawah dengan count() dari model masing-masing setelah modelnya dibuat --}}
-            <div><b>20</b>Model tayang</div>
+            <div><b>{{ $modelCount }}</b>Model tayang</div>
             <div><b>{{ $newsCount }}</b>Berita tayang</div>
             <div><b>{{ $plantCount }}</b>Lokasi tayang</div>
         </div>
