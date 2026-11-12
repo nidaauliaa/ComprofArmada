@@ -32,6 +32,12 @@
     .sc-texts .lt-label{font-size:14px}
     .sc-texts .lt-pane input,.sc-texts .lt-pane textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px 12px;font:inherit;background:#fff}
     .sc-texts .lt-pane textarea{resize:vertical}
+
+    /* Satu toggle bahasa untuk seluruh card teks */
+    .sc-text-card .sc-lang{display:inline-flex;align-items:center;border:1px solid #dbe2ea;border-radius:999px;padding:4px;background:#fff;margin:4px 0 18px}
+    .sc-text-card .sc-lang button{border:0;background:transparent;border-radius:999px;padding:8px 18px;font:inherit;font-size:14px;font-weight:600;color:#172033;cursor:pointer;min-width:54px}
+    .sc-text-card .sc-lang button.is-active{background:#3b82f6;color:#fff}
+    .sc-text-card .lt-tabs,.sc-text-card .lt-tab,.sc-text-card .lt-nav{display:none !important}
 </style>
 @endpush
 
@@ -99,11 +105,17 @@
         @endif
     </form>
 
-    {{-- Teks halaman Kontak: terjemahan diisi manual (ID | EN | 中文) --}}
-    <form method="POST" action="{{ route('admin.sales.texts') }}" class="sc-texts">
+    {{-- Teks halaman Kontak: satu toggle untuk semua field terjemahan --}}
+    <form method="POST" action="{{ route('admin.sales.texts') }}" class="sc-texts sc-text-card" id="scTextCard">
         @csrf
         <h3>Teks halaman Kontak</h3>
-        <p class="sc-hint">Terjemahan diisi manual lewat tab ID, EN, dan 中文. Titik oranye berarti terjemahannya belum diisi; website memakai Bahasa Indonesia untuk bagian itu.</p>
+        <p class="sc-hint">Pilih bahasa sekali saja. Semua kolom di bawah akan mengikuti bahasa yang dipilih. Terjemahan yang belum diisi akan menggunakan Bahasa Indonesia pada website.</p>
+
+        <div class="sc-lang" id="scTextLang" role="group" aria-label="Pilih bahasa">
+            <button type="button" class="is-active" data-lang="id" aria-pressed="true">ID</button>
+            <button type="button" data-lang="en" aria-pressed="false">EN</button>
+            <button type="button" data-lang="zh" aria-pressed="false">中文</button>
+        </div>
 
         <x-lang-tabs name="contact_title" label="Judul halaman"
                      :values="$texts['contact_title']" />
@@ -122,6 +134,50 @@
 @endsection
 
 @push('scripts')
+<script>
+(function () {
+  // Toggle ini hanya mengatur bahasa pada card Teks halaman Kontak.
+  var card = document.getElementById('scTextCard');
+  var toggle = document.getElementById('scTextLang');
+
+  if (card && toggle) {
+    var languages = ['id', 'en', 'zh'];
+
+    function setTextLanguage(lang) {
+      var index = languages.indexOf(lang);
+      if (index < 0) return;
+
+      toggle.querySelectorAll('button[data-lang]').forEach(function (button) {
+        var active = button.dataset.lang === lang;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+
+      // Setiap komponen x-lang-tabs memiliki tiga panel berurutan: ID, EN, 中文.
+      var parents = [];
+      card.querySelectorAll('.lt-pane').forEach(function (pane) {
+        if (parents.indexOf(pane.parentElement) === -1) {
+          parents.push(pane.parentElement);
+        }
+      });
+
+      parents.forEach(function (parent) {
+        parent.querySelectorAll(':scope > .lt-pane').forEach(function (pane, paneIndex) {
+          pane.style.setProperty('display', paneIndex === index ? 'block' : 'none', 'important');
+        });
+      });
+    }
+
+    toggle.addEventListener('click', function (event) {
+      var button = event.target.closest('button[data-lang]');
+      if (button) setTextLanguage(button.dataset.lang);
+    });
+
+    setTextLanguage('id');
+  }
+})();
+</script>
+
 <script>
 (function () {
   var box = document.getElementById('scPhones'); if (!box) return;
