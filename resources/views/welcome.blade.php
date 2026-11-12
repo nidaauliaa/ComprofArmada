@@ -152,7 +152,7 @@ nav a:not(.btn):hover::after{width:100%}
 .ig-carousel{position:relative;max-width:1000px;margin:0 auto}
 .ig-rail{position:relative}
 .ig-rail::before{content:"";display:block;padding-top:calc(44.444% - 13.333px)}
-.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#0b172c;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform 1s cubic-bezier(.45,.05,.2,1),opacity 1s ease,box-shadow .3s ease}
+.ig-card{position:absolute;top:0;left:0;width:calc((100% - 30px)/4);height:100%;border-radius:14px;overflow:hidden;background:#0b172c;display:block;isolation:isolate;box-shadow:0 22px 40px rgba(8,15,32,.35);opacity:0;pointer-events:none;transform:translateX(calc(var(--s,0)*(100% + 10px))) scale(var(--sc,1));transition:transform .7s cubic-bezier(.25,1,.3,1),opacity .7s ease,box-shadow .3s ease}
 .ig-card[data-slot="-1"]{--s:-1;--sc:.92;opacity:.35;pointer-events:auto}
 .ig-card[data-slot="0"]{--s:0;opacity:1;pointer-events:auto}
 .ig-card[data-slot="1"]{--s:1;opacity:1;pointer-events:auto}
@@ -691,9 +691,7 @@ footer a:hover{color:var(--red-primary)}
 // Kalau header Instagram masih terlihat / video terpotong, ubah angka di IG_CROP:
 //   header = tinggi header embed (px), reel = lebar video dibanding lebar embed (0-1)
 var IG_CROP={base:400,header:62,reel:0.69,overscan:1.03};
-var IG_AUTOROTATE=true;      // geser otomatis halus (berhenti saat kursor di atas carousel / saat tab tidak aktif)
-var IG_INTERVAL=3500;        // jeda antar geseran (milidetik)
-var IG_RESPECT_REDUCED_MOTION=false; // true = berhenti geser otomatis bila perangkat memakai "kurangi animasi"
+var IG_AUTOROTATE=true; // true = geser otomatis (tidak disarankan, mengganggu saat video diputar)
 (function(){
   var rail=document.getElementById('igRail');
   if(!rail)return;
@@ -746,19 +744,8 @@ var IG_RESPECT_REDUCED_MOTION=false; // true = berhenti geser otomatis bila pera
     var dx=e.changedTouches[0].clientX-x0;x0=null;
     if(Math.abs(dx)>40){dx<0?next():prev();restart()}
   });
-  var reduce=IG_RESPECT_REDUCED_MOTION&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var paused=false,visible=true,holdUntil=0;
-  function tick(){if(!paused&&visible&&!document.hidden&&Date.now()>holdUntil)next()}
-  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(tick,IG_INTERVAL)}
-  // jangan menggeser saat pengunjung mengarahkan kursor / menyentuh carousel (video sedang ditonton)
-  var box=rail.parentNode;
-  box.addEventListener('mouseenter',function(){paused=true});
-  box.addEventListener('mouseleave',function(){paused=false;restart()});
-  // pengunjung mengeklik video (fokus pindah ke iframe): jangan geser selama 12 detik
-  window.addEventListener('blur',function(){if(document.activeElement&&box.contains(document.activeElement))holdUntil=Date.now()+12000});
-  box.addEventListener('touchstart',function(){paused=true},{passive:true});
-  box.addEventListener('touchend',function(){setTimeout(function(){paused=false;restart()},6000)},{passive:true});
-  if('IntersectionObserver' in window){new IntersectionObserver(function(es){visible=es[0].isIntersecting},{threshold:.25}).observe(rail)}
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function restart(){clearInterval(timer);if(IG_AUTOROTATE&&!reduce)timer=setInterval(next,3500)}
   window.addEventListener('resize',fit);
   render();fit();restart();
 })();

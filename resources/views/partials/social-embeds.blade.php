@@ -1,36 +1,61 @@
 @php
-    // Carousel "Instagram" di Home — tampilan & transisi sama dengan prototype (company-profile/index.html).
-    // Isi kartu berasal dari menu admin Instagram (link share / kode embed oEmbed: Instagram, Facebook, TikTok, YouTube).
-    $igUrl = ! empty($site['social_instagram']) ? $site['social_instagram'] : 'https://instagram.com/newarmada.official';
+    // Carousel sosial media di Home.
+    $igUrl = ! empty($site['social_instagram'])
+        ? $site['social_instagram']
+        : 'https://instagram.com/newarmada.official';
 
     $cards = collect();
+
     try {
-        $cards = \App\Models\SocialPost::query()->visible()->limit(12)->get()
+        $cards = \App\Models\SocialPost::query()
+            ->visible()
+            ->limit(12)
+            ->get()
             ->filter(fn ($sp) => $sp->safeEmbedUrl())
             ->map(fn ($sp) => [
                 'src' => $sp->safeEmbedUrl(),
-                'w' => $sp->embedWidth(),
-                'h' => $sp->embedHeight(),
-                'mode' => ($sp->platform === 'instagram' && $sp->kind === 'reel') ? 'crop' : 'fit',
+                'platform' => $sp->platform,
+                'w' => $sp->platform === 'tiktok' ? 320 : $sp->embedWidth(),
+                'h' => $sp->platform === 'tiktok' ? 570 : $sp->embedHeight(),
+                'mode' => ($sp->platform === 'instagram' && $sp->kind === 'reel')
+                    ? 'crop'
+                    : 'fit',
                 'title' => $sp->title ?: ucfirst($sp->platform),
-            ])->values();
+                'link' => $sp->source_url,
+            ])
+            ->values();
     } catch (\Throwable $e) {
-        // tabel social_posts belum dimigrasi
+        // Tabel social_posts belum dimigrasi.
     }
 
-    // Belum ada konten di admin: tampilkan reel contoh dari prototype supaya tampilan tetap utuh.
+    // Konten contoh jika admin belum mengisi sosial media.
     if ($cards->isEmpty()) {
-        $cards = collect(['DfELll7SvLa', 'DfB_mr1yrc_', 'De_dstZSaaq', 'DejZHd7yW3U', 'DeqbjzdyRxo', 'DegBiAySwv-'])->map(fn ($c) => [
-            'src' => 'https://www.instagram.com/reel/'.$c.'/embed/', 'w' => 400, 'h' => 760, 'mode' => 'crop', 'title' => 'Instagram New Armada',
+        $cards = collect([
+            'DfELll7SvLa',
+            'DfB_mr1yrc_',
+            'De_dstZSaaq',
+            'DejZHd7yW3U',
+            'DeqbjzdyRxo',
+            'DegBiAySwv-',
+        ])->map(fn ($c) => [
+            'src' => 'https://www.instagram.com/reel/'.$c.'/embed/',
+            'platform' => 'instagram',
+            'w' => 400,
+            'h' => 760,
+            'mode' => 'crop',
+            'title' => 'Instagram New Armada',
+            'link' => 'https://www.instagram.com/reel/'.$c.'/',
         ]);
     }
 
-    // Carousel looping butuh minimal 6 kartu: ulangi bila kurang.
-    $loop = $cards;
-    while ($loop->count() < 6) {
-        $loop = $loop->concat($cards);
+    // Carousel looping membutuhkan minimal 6 kartu (slot -1 sampai 4): ulangi bila kurang.
+    $carouselCards = $cards;
+
+    while ($carouselCards->count() < 6 && $cards->isNotEmpty()) {
+        $carouselCards = $carouselCards->concat($cards);
     }
-    $loop = $loop->values();
+
+    $carouselCards = $carouselCards->values();
 
     $stats = array_filter([
         __('site.ig_posts') => $site['ig_posts'] ?? '',
@@ -38,6 +63,7 @@
         __('site.ig_following') => $site['ig_following'] ?? '',
     ]);
 @endphp
+
 <section id="sosmed" class="ig-section">
   <div class="wrap">
     <div class="ig-brand">
@@ -48,10 +74,14 @@
     </div>
 
     <p class="ig-tagline">{{ __('site.social_tagline') }}</p>
+
     @if ($stats)
       <ul class="ig-stats" aria-label="Instagram">
         @foreach ($stats as $label => $value)
-          <li><strong>{{ $value }}</strong><span>{{ $label }}</span></li>
+          <li>
+            <strong>{{ $value }}</strong>
+            <span>{{ $label }}</span>
+          </li>
         @endforeach
       </ul>
     @else
@@ -60,13 +90,14 @@
 
     <div class="ig-carousel">
       <div class="ig-rail" id="igRail">
-        @foreach ($loop as $c)
-          <div class="ig-card">
+        @foreach ($carouselCards as $c)
+          <div class="ig-card p-{{ $c['platform'] }}">
             <iframe class="ig-frame" src="{{ $c['src'] }}" loading="lazy" scrolling="no" allowfullscreen
-                    data-mode="{{ $c['mode'] }}" data-w="{{ $c['w'] }}" data-h="{{ $c['h'] }}"
+                    data-platform="{{ $c['platform'] }}" data-mode="{{ $c['mode'] }}" data-w="{{ $c['w'] }}" data-h="{{ $c['h'] }}"
                     title="{{ $c['title'] }}"
                     allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
-            <span class="ig-hit"></span>
+            {{-- Kartu redup di tepi: klik = geser carousel + buka link sumber (sama seperti versi tim) --}}
+            <a class="ig-hit" href="{{ $c['link'] ?? $igUrl }}" target="_blank" rel="noopener" aria-label="{{ $c['title'] }}"></a>
           </div>
         @endforeach
         <button id="igPrev" class="ig-nav prev" type="button" aria-label="{{ __('site.prev') }}">‹</button>

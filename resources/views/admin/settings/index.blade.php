@@ -25,34 +25,73 @@
 
         <div class="card">
             <h3 class="cardh">Identitas</h3>
-            <label>Nama perusahaan
-                <input type="text" name="site_name" value="{{ old('site_name', $v['site_name'] ?? '') }}">
-            </label>
+
             <div style="margin-bottom:14px">
-                <b>Logo</b> <small class="mu">PNG/JPG/WEBP/SVG, maks. 2 MB. Kosong = tulisan NEW ARMADA.</small>
+                <b>Logo New Armada</b>
+                <small class="mu">
+                    PNG/JPG/WEBP/SVG, maks. 2 MB.
+                </small>
+
                 @if (!empty($v['logo']))
-                    <div><img class="logo-prev" src="{{ asset('storage/'.$v['logo']) }}" alt="Logo"></div>
-                    <label style="font-weight:500;margin:8px 0 0"><input type="checkbox" name="remove_logo" value="1"> hapus logo</label>
+                    <div style="margin:12px 0">
+                        <img
+                            class="logo-prev"
+                            src="{{ asset('storage/'.$v['logo']) }}"
+                            alt="Logo New Armada"
+                        >
+                    </div>
+
+                    <label style="font-weight:500;margin:8px 0">
+                        <input type="checkbox" name="remove_logo" value="1">
+                        Hapus logo
+                    </label>
                 @endif
-                <input type="file" name="logo" accept="image/*">
+
+                <input type="file" name="logo"
+                    accept="image/png,image/jpeg,image/webp,image/svg+xml">
             </div>
+
+            <p class="mu" style="font-size:13px">
+                Tulisan NEW ARMADA tetap ditampilkan meskipun logo belum diunggah.
+            </p>
         </div>
 
         <div class="card">
-            <h3 class="cardh">Kontak</h3>
-            <label>Alamat
-                <textarea name="address" rows="2">{{ old('address', $v['address'] ?? '') }}</textarea>
+            <h3 class="cardh">Media & Instagram</h3>
+            <label>
+                Link video profil YouTube
+                <input
+                    type="url"
+                    name="youtube_video_id"
+                    value="{{ old('youtube_video_id') }}"
+                    placeholder="https://youtu.be/xxxxxxxxxxx"
+                >
+                <small class="mu">
+                    Masukkan link video YouTube lengkap.
+                </small>
             </label>
+
             <div class="grid2">
-                <label>Telepon <input type="text" name="phone" value="{{ old('phone', $v['phone'] ?? '') }}"></label>
-                <label>Email marketing <input type="text" name="email_marketing" value="{{ old('email_marketing', $v['email_marketing'] ?? '') }}"></label>
-            </div>
-            <label>Jam kerja <input type="text" name="working_hours" value="{{ old('working_hours', $v['working_hours'] ?? '') }}"></label>
-            <label>ID video profil YouTube <input type="text" name="youtube_video_id" maxlength="11" value="{{ old('youtube_video_id', $v['youtube_video_id'] ?? '') }}" placeholder="contoh: nYarnSGbWqE (11 karakter di link YouTube)"></label>
-            <div class="grid2">
-                <label>Instagram: jumlah postingan <input type="text" name="ig_posts" value="{{ old('ig_posts', $v['ig_posts'] ?? '') }}" placeholder="2.641"></label>
-                <label>Instagram: pengikut <input type="text" name="ig_followers" value="{{ old('ig_followers', $v['ig_followers'] ?? '') }}" placeholder="109 rb"></label>
-                <label>Instagram: mengikuti <input type="text" name="ig_following" value="{{ old('ig_following', $v['ig_following'] ?? '') }}" placeholder="525"></label>
+                <label>
+                    Instagram: jumlah postingan
+                    <input type="text" name="ig_posts"
+                        value="{{ old('ig_posts', $v['ig_posts'] ?? '') }}"
+                        placeholder="2.641">
+                </label>
+
+                <label>
+                    Instagram: pengikut
+                    <input type="text" name="ig_followers"
+                        value="{{ old('ig_followers', $v['ig_followers'] ?? '') }}"
+                        placeholder="109 rb">
+                </label>
+
+                <label>
+                    Instagram: mengikuti
+                    <input type="text" name="ig_following"
+                        value="{{ old('ig_following', $v['ig_following'] ?? '') }}"
+                        placeholder="525">
+                </label>
             </div>
         </div>
 

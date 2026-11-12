@@ -91,3 +91,18 @@ php artisan optimize:clear
 - Judul "NEW ARMADA" di section Instagram dan di halaman login admin sekarang memakai logo terbaru (gambar logo + Montserrat).
 - **Geser otomatis**: prototype punya aturan "kurangi animasi" (`prefers-reduced-motion`) yang mematikan semua transisi, dan skrip ikut membatalkan geser otomatis di perangkat yang mengaktifkannya (umum di Windows bila "Show animations" dimatikan). Sekarang carousel tetap bergeser; ubah `IG_RESPECT_REDUCED_MOTION=true` di `welcome.blade.php` (dan hapus blok `prefers-reduced-motion` di akhir `site.css`) bila ingin patuh penuh.
 - Geser berhenti sementara saat kursor di atas carousel, saat video diklik (12 detik), saat tab tidak aktif, atau carousel di luar layar.
+
+## 10. Klik kartu carousel Instagram: putar dulu, klik lagi buka sumber (sesuai tim)
+- **Klik 1** pada kartu = memutar video (klik terjadi di dalam iframe Instagram/TikTok/Facebook/YouTube). Skrip mendeteksi fokus pindah ke iframe, lalu kartu berstatus `playing`: geser otomatis berhenti dan muncul tombol "Buka di <platform> ↗" di bawah kartu.
+- **Klik 2** pada kartu = membuka link sumber asli di tab baru (lapisan `.ig-open`, link dari `source_url` di menu admin).
+- Video dihentikan (iframe dimuat ulang) saat carousel digeser, saat link dibuka, atau 15 detik setelah kursor meninggalkan carousel.
+- Klik kartu redup di tepi tetap hanya menggeser carousel.
+- Catatan: browser tidak mengizinkan membaca klik di dalam iframe lintas situs, jadi "klik 1" dideteksi lewat perpindahan fokus; di sebagian browser (mis. Safari iOS) deteksi ini bisa tidak terpicu — klik 2 lalu tetap berada di dalam iframe.
+
+## 11. Carousel Instagram — versi akhir (rotasi & klik ikut tim, tombol ikut lokal)
+- **Rotasi, geser otomatis (3,5 detik), swipe, dan klik kartu**: sama persis dengan commit terbaru tim (carousel looping 4 kartu + 2 kartu redup di tepi, 6 kartu). Klik kartu redup di tepi menggeser carousel dan membuka link sumber (`<a class="ig-hit">`; link dari `source_url` postingan di admin). Klik pada kartu utama ditangani embed (putar/jeda).
+- **Tombol geser manual**: di sisi kiri & kanan carousel, agak transparan, isi putih membesar dari tengah saat kursor diarahkan (`.ig-nav` di `public/css/site.css`; di layar ≤ 900 px tombol berada di dalam area carousel).
+- **Tombol Follow Instagram**: di tengah, isi putih naik dari bawah saat kursor diarahkan (`.ig-follow`).
+- Logo "NEW ARMADA" di section ini = logo terbaru (gambar + Montserrat).
+- **Hover kartu profil Instagram (Safari)**: area kiri-bawah kartu Instagram ditutup lapisan transparan (`.ig-card.p-instagram::after`, ukuran `--shield-w` / `--shield-h`) agar kartu profil bawaan Instagram tidak muncul.
+- Dibatalkan: carousel silinder 3D, geser tak berujung + antrean spam, klik 1 putar / klik 2 buka, dan klik cepat 2x membuka sumber.

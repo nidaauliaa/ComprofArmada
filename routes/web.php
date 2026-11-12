@@ -16,6 +16,8 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\Admin\SocialPostController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SalesContactController;
+use App\Models\SalesContact;
 
 
 Route::get('/', function () {
@@ -37,7 +39,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::view('/kontak', 'contact')->name('contact');
+Route::get('/kontak', function () {
+    $salesContacts = SalesContact::active()->ordered()->get();
+    return view('contact', compact('salesContacts'));
+})->name('contact');
 
 // Bahasa (ID/EN/中文), pencarian, JSON sosial media
 Route::get('/bahasa/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');
@@ -100,6 +105,13 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Pengaturan Situs
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
+
+    // Kontak Sales (WhatsApp)
+    Route::get('sales', [SalesContactController::class, 'index'])->name('sales.index');
+    Route::post('sales', [SalesContactController::class, 'store'])->name('sales.store');
+    Route::put('sales/{salesContact}', [SalesContactController::class, 'update'])->name('sales.update');
+    Route::patch('sales/{salesContact}/toggle', [SalesContactController::class, 'toggle'])->name('sales.toggle');
+    Route::delete('sales/{salesContact}', [SalesContactController::class, 'destroy'])->name('sales.destroy');
 
 });
 

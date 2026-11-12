@@ -66,8 +66,20 @@ button.lang.icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke
 /* Carousel & tombolnya tetap beranimasi walau Windows/HP memakai "kurangi animasi" (halaman ini sengaja dibuat bergerak).
    Hapus blok ini bila ingin patuh penuh pada pengaturan tersebut. */
 @media(prefers-reduced-motion:reduce){
-  .ig-card{transition:transform 1s cubic-bezier(.45,.05,.2,1),opacity 1s ease,box-shadow .3s ease!important}
+  .ig-card{transition:transform .7s cubic-bezier(.25,1,.3,1),opacity .7s ease,box-shadow .3s ease!important}
   .ig-nav,.ig-follow{transition:color .35s ease,border-color .35s ease,transform .25s ease,box-shadow .3s ease!important}
   .ig-nav::before{transition:transform .4s cubic-bezier(.4,0,.2,1)!important}
   .ig-follow::before{transition:transform .45s cubic-bezier(.4,0,.2,1)!important}
 }
+
+
+/* Tombol geser pada layar sempit/tablet (<= 900px): carousel selebar layar, jadi tombol berada di dalam, tidak terpotong tepi layar */
+@media(max-width:900px){
+  .ig-nav{width:44px;height:44px;margin-top:-22px;font-size:24px}
+  .ig-nav.prev{left:8px}
+  .ig-nav.next{right:8px}
+}
+
+/* Instagram menampilkan kartu profil (hover card) saat kursor melewati nama akun di sudut kiri-bawah video.
+   Area itu ditutup lapisan transparan supaya hover tidak sampai ke embed; sisanya tetap bisa diklik (putar/jeda). */
+.ig-card.p-instagram::after{content:"";position:absolute;left:0;bottom:0;width:var(--shield-w,70%);height:var(--shield-h,26%);z-index:4}

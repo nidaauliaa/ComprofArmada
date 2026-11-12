@@ -99,4 +99,10 @@ return [
     'ig_posts' => '帖子',
     'ig_followers' => '粉丝',
     'ig_following' => '关注',
+    'contact_response_title' => '今天就获得回复！',
+    'contact_intro_lead' => '我们很高兴与您取得联系。',
+    'contact_intro_rest' => '请通过 WhatsApp 联系我们的销售团队，我们会尽快回复您。',
+    'sales_wa' => '通过 WhatsApp 联系销售',
+    'wa_greeting' => '您好，我想咨询',
+    'no_sales' => '暂无销售联系人。',
 ];

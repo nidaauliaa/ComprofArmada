@@ -32,7 +32,7 @@
     <div class="ph">
         <div>
             <h1>{{ $category->name }}</h1>
-            <p class="mu">Produk di kategori ini. Yang aktif tampil di halaman Produk website.</p>
+            <p class="mu">Produk dari kategori ini akan aktif tampil di halaman Produk website.</p>
         </div>
         <button type="button" class="b js-add"><svg class="i"><use href="#i-plus"/></svg> Tambah produk</button>
     </div>
@@ -122,7 +122,7 @@
 
                 <div>
                     <b>Galeri foto</b>
-                    <p class="gh" id="mGalHint">Foto yang sudah ada. Klik ✕ untuk menghapus.</p>
+                    <p class="gh" id="mGalHint">Upload foto Interior dan Exterior. Klik (✕) untuk menghapus.</p>
                     <div class="gl" id="mGalOld"></div>
                     <button type="button" class="b o s" id="mGalBtn"><svg class="i"><use href="#i-plus"/></svg> Tambah foto galeri</button>
                     <input type="file" name="galleries[]" id="mGalFile" accept="image/*" multiple hidden>
