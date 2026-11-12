@@ -10,25 +10,27 @@
   }
 
   /* ---------- nomor telepon (bisa lebih dari satu) ---------- */
-  function phoneRow(v) {
+  function phoneRow(v, nm) {
     var d = document.createElement('div');
     d.className = 'phr';
-    d.innerHTML = '<input name="phones[]" maxlength="50" inputmode="tel" autocomplete="off" placeholder="Contoh: (0293) 364371">' +
+    d.innerHTML = '<input name="phone_names[]" maxlength="100" autocomplete="off" placeholder="Label / nama (opsional)" style="max-width:38%">' +
+                  '<input name="phones[]" maxlength="50" inputmode="tel" autocomplete="off" placeholder="Contoh: 0857 8787 8787">' +
                   '<button type="button" class="b o s js-ph-del" title="Hapus nomor" aria-label="Hapus nomor"><svg class="i"><use href="#i-trash"/></svg></button>';
-    d.querySelector('input').value = v || '';
+    var ins = d.querySelectorAll('input');
+    ins[0].value = nm || ''; ins[1].value = v || '';
     return d;
   }
-  function setPhones(list) {
+  function setPhones(list, names) {
     phBox.innerHTML = '';
-    (list && list.length ? list : ['']).forEach(function (v) { phBox.appendChild(phoneRow(v)); });
+    (list && list.length ? list : ['']).forEach(function (v, i) { phBox.appendChild(phoneRow(v, names && names[i])); });
   }
   $('pPhoneAdd').addEventListener('click', function () {
-    var r = phoneRow(''); phBox.appendChild(r); r.querySelector('input').focus();
+    var r = phoneRow('', ''); phBox.appendChild(r); r.querySelector('input').focus();
   });
   phBox.addEventListener('click', function (e) {
     var b = e.target.closest('.js-ph-del'); if (!b) return;
     var row = b.closest('.phr');
-    if (phBox.children.length > 1) row.remove(); else row.querySelector('input').value = '';
+    if (phBox.children.length > 1) row.remove(); else row.querySelectorAll('input').forEach(function (i) { i.value = ''; });
   });
 
   /* ---------- buka / tutup drawer ---------- */
@@ -48,7 +50,7 @@
     form.elements.working_hours_en.value = edit ? (item.working_hours_en || '') : '';
     form.elements.working_hours_zh.value = edit ? (item.working_hours_zh || '') : '';
     form.dispatchEvent(new Event('input', { bubbles: true }));
-    setPhones(edit ? item.phones : []);
+    setPhones(edit ? item.phones : [], edit ? item.phone_names : []);
     form.elements.email.value      = edit ? (item.email || '') : '';
     form.elements.maps_url.value   = edit ? (item.maps_url || '') : '';
     form.elements.lat.value        = edit ? item.lat : '';

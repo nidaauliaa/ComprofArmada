@@ -17,7 +17,7 @@ use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\Admin\SocialPostController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SalesContactController;
-use App\Models\SalesContact;
+
 
 
 Route::get('/', function () {
@@ -40,8 +40,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/kontak', function () {
-    $salesContacts = SalesContact::active()->ordered()->get();
-    return view('contact', compact('salesContacts'));
+    $hq = \App\Models\Plant::headquarters(); // nomor kontak = nomor Plant HQ (satu sumber dengan Lokasi Plant)
+    return view('contact', compact('hq'));
 })->name('contact');
 
 // Bahasa (ID/EN/中文), pencarian, JSON sosial media
@@ -106,12 +106,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingController::class, 'update'])->name('settings.update');
 
-    // Kontak Sales (WhatsApp)
+    // Kontak (WhatsApp / telepon): nomornya = nomor Plant HQ, jadi bisa diubah dari sini maupun dari Lokasi Plant
     Route::get('sales', [SalesContactController::class, 'index'])->name('sales.index');
-    Route::post('sales', [SalesContactController::class, 'store'])->name('sales.store');
-    Route::put('sales/{salesContact}', [SalesContactController::class, 'update'])->name('sales.update');
-    Route::patch('sales/{salesContact}/toggle', [SalesContactController::class, 'toggle'])->name('sales.toggle');
-    Route::delete('sales/{salesContact}', [SalesContactController::class, 'destroy'])->name('sales.destroy');
+    Route::put('sales/hq', [SalesContactController::class, 'updateHq'])->name('sales.hq');
+    Route::post('sales/texts', [SalesContactController::class, 'updateTexts'])->name('sales.texts');
 
 });
 

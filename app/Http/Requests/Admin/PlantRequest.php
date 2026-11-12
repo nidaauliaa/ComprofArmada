@@ -20,11 +20,17 @@ class PlantRequest extends FormRequest
             }
         }
 
-        $phones = array_values(array_filter(
-            array_map(fn ($v) => trim((string) $v), (array) $this->input('phones', [])),
-            fn ($v) => $v !== ''
-        ));
-        $this->merge(['phones' => $phones]);
+        // Pasangkan nomor dengan labelnya (urutan sama), lalu buang baris yang nomornya kosong
+        $rawPhones = (array) $this->input('phones', []);
+        $rawNames  = (array) $this->input('phone_names', []);
+        $phones = $names = [];
+        foreach ($rawPhones as $i => $v) {
+            $v = trim((string) $v);
+            if ($v === '') { continue; }
+            $phones[] = $v;
+            $names[]  = trim((string) ($rawNames[$i] ?? ''));
+        }
+        $this->merge(['phones' => $phones, 'phone_names' => $names]);
     }
 
     public function rules(): array
@@ -38,6 +44,8 @@ class PlantRequest extends FormRequest
             'address_zh'       => ['nullable', 'string', 'max:500'],
             'phones'           => ['nullable', 'array', 'max:10'],
             'phones.*'         => ['string', 'max:50'],
+            'phone_names'      => ['nullable', 'array', 'max:10'],
+            'phone_names.*'    => ['nullable', 'string', 'max:100'],
             'email'            => ['nullable', 'email', 'max:150'],
             'working_hours'    => ['nullable', 'string', 'max:255'],
             'working_hours_en' => ['nullable', 'string', 'max:255'],

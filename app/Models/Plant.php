@@ -11,14 +11,15 @@ class Plant extends Model
 
     protected $fillable = [
         'name', 'name_en', 'name_zh', 'address', 'address_en', 'address_zh',
-        'phone', 'phones', 'email', 'working_hours', 'working_hours_en', 'working_hours_zh',
+        'phone', 'phones', 'phone_names', 'email', 'working_hours', 'working_hours_en', 'working_hours_zh',
         'maps_url', 'lat', 'lng', 'is_active', 'is_hq', 'sort_order',
     ];
 
     protected $casts = [
         'lat'        => 'float',
         'lng'        => 'float',
-        'phones'     => 'array',
+        'phones'      => 'array',
+        'phone_names' => 'array',
         'is_active'  => 'boolean',
         'is_hq'      => 'boolean',
         'sort_order' => 'integer',
@@ -40,15 +41,30 @@ class Plant extends Model
             ?? static::active()->orderBy('sort_order')->orderBy('id')->first();
     }
 
-    /** Daftar nomor telepon (tanpa yang kosong). Jatuh ke kolom lama "phone" bila daftar kosong. */
+    /** Nomor + label (mis. nama sales). Satu sumber untuk menu Kontak, form Plant, peta, dan halaman /kontak. */
+    public function phoneEntries(): array
+    {
+        $names = $this->phone_names ?? [];
+        $out = [];
+
+        foreach (($this->phones ?? []) as $i => $v) {
+            $v = trim((string) $v);
+            if ($v === '') { continue; }
+            $out[] = ['name' => trim((string) ($names[$i] ?? '')), 'phone' => $v];
+        }
+
+        // kolom lama "phone" bila daftar kosong
+        if (! $out && $this->phone) {
+            $out[] = ['name' => '', 'phone' => trim($this->phone)];
+        }
+
+        return $out;
+    }
+
+    /** Daftar nomor telepon (tanpa yang kosong). */
     public function phoneList(): array
     {
-        $list = array_values(array_filter(
-            array_map(fn ($v) => trim((string) $v), $this->phones ?? []),
-            fn ($v) => $v !== ''
-        ));
-
-        return $list ?: ($this->phone ? [trim($this->phone)] : []);
+        return array_column($this->phoneEntries(), 'phone');
     }
 
     /** Nomor telepon beserta link tel: untuk ditampilkan di halaman Kontak. */
@@ -86,6 +102,7 @@ class Plant extends Model
             'address_en'       => $this->address_en,
             'address_zh'       => $this->address_zh,
             'phones'           => $this->phoneList(),
+            'phone_names'      => array_column($this->phoneEntries(), 'name'),
             'email'            => $this->email,
             'working_hours'    => $this->working_hours,
             'working_hours_en' => $this->working_hours_en,

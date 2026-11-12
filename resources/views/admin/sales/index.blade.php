@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 
-@section('title', 'Kontak Sales')
+@section('title', 'Kontak')
 @section('page_icon', 'phone')
-@section('page_title', 'Kontak Sales')
+@section('page_title', 'Kontak')
 
 @push('styles')
 {{-- memakai gaya yang sama dengan halaman Berita / Lokasi Plant --}}
@@ -23,6 +23,12 @@
     .sc-texts{padding:20px;margin-top:28px;border:1px solid #e5e7eb;border-radius:12px;background:#fff}
     .sc-texts h3{margin:0 0 4px;font-size:16px}
     .sc-texts .sc-hint{margin:0 0 16px;color:#64748b;font-size:14px}
+    .sc-hqphones{display:grid;gap:8px;margin-bottom:14px}
+    .sc-prow{display:flex;gap:8px}
+    .sc-prow input{flex:1}
+    .sc-prow input.sc-pn{flex:0 0 36%}
+    .sc-hqphones input,.sc-hql input{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px 12px;font:inherit;background:#fff}
+    .sc-hql{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px;margin-bottom:12px}
     .sc-texts .lt-label{font-size:14px}
     .sc-texts .lt-pane input,.sc-texts .lt-pane textarea{width:100%;box-sizing:border-box;border:1px solid #d1d5db;border-radius:8px;padding:9px 12px;font:inherit;background:#fff}
     .sc-texts .lt-pane textarea{resize:vertical}
@@ -43,57 +49,55 @@
 
     <div class="ph">
         <div>
-            <h1>Kontak Sales</h1>
-            <p class="mu">Nomor WhatsApp yang tampil di halaman Kontak website. Nomor boleh diawali 0812… atau +62 812…, link WhatsApp dibuat otomatis.</p>
+            <h1>Kontak</h1>
+            <p class="mu">Nomor di sini <b>sama persis</b> dengan nomor Plant HQ di menu Lokasi Plant. Diubah dari sini atau dari sana hasilnya sama, dan tampil di halaman Kontak, peta, serta popup lokasi. Nomor boleh diawali 0812… atau +62 812…, link WhatsApp dibuat otomatis.</p>
         </div>
     </div>
 
-    {{-- Tambah kontak --}}
-    <form method="POST" action="{{ route('admin.sales.store') }}" class="sc-add">
-        @csrf
-        <label>Nama sales
-            <input type="text" name="name" maxlength="100" required value="{{ old('name') }}" placeholder="Contoh: Budi Santoso">
-        </label>
-        <label>Nomor WhatsApp
-            <input type="tel" name="phone" required value="{{ old('phone') }}" placeholder="+62 812 3456 7890">
-        </label>
-        <label class="sc-sm">Urutan
-            <input type="number" name="sort_order" min="0" max="9999" placeholder="Auto">
-        </label>
-        <button type="submit" class="b"><svg class="i"><use href="#i-plus"/></svg> Tambah</button>
-    </form>
+    <form method="POST" action="{{ route('admin.sales.hq') }}" class="sc-texts sc-hq" style="margin-top:0">
+        @csrf @method('PUT')
+        <h3>Nomor &amp; info Kantor Pusat (HQ)@if ($hq) · {{ $hq->name }}@endif</h3>
 
-    {{-- Daftar kontak --}}
-    @forelse ($contacts as $c)
-        <div class="row">
-            <span class="ri"><svg class="i"><use href="#i-phone"/></svg></span>
+        @if ($errors->has('hq'))
+            <div class="alert-error">{{ $errors->first('hq') }}</div>
+        @elseif (! $hq)
+            <div class="emp">Belum ada Plant yang ditandai HQ. Centang "Kantor pusat (HQ)" di menu Lokasi Plant.</div>
+        @else
+            @php
+                $oldPhones = old('phones');
+                $rows = $oldPhones !== null
+                    ? collect($oldPhones)->map(fn ($v, $i) => ['name' => old('phone_names.'.$i, ''), 'phone' => $v])->all()
+                    : $hq->phoneEntries();
+                if (! $rows) { $rows = [['name' => '', 'phone' => '']]; }
+            @endphp
 
-            <div class="sc-f">
-                <input form="edit-{{ $c->id }}" type="text" name="name" value="{{ $c->name }}" maxlength="100" required aria-label="Nama sales">
-                <input form="edit-{{ $c->id }}" type="tel" name="phone" value="{{ $c->phone }}" required aria-label="Nomor WhatsApp">
-                <input form="edit-{{ $c->id }}" type="number" name="sort_order" value="{{ $c->sort_order }}" min="0" max="9999" class="sc-n" title="Urutan tampil" aria-label="Urutan">
+            <div class="sc-hqphones" id="scPhones">
+                <b>Nomor telepon / WhatsApp <small class="mu">label (mis. nama sales) boleh dikosongkan</small></b>
+                @foreach ($rows as $r)
+                    <div class="sc-prow">
+                        <input class="sc-pn" name="phone_names[]" value="{{ $r['name'] }}" maxlength="100" placeholder="Label / nama sales">
+                        <input type="tel" name="phones[]" value="{{ $r['phone'] }}" maxlength="50" placeholder="0857 8787 8787 atau +62 857 …">
+                        <button type="button" class="b o s js-sc-del" aria-label="Hapus nomor"><svg class="i"><use href="#i-trash"/></svg></button>
+                    </div>
+                @endforeach
             </div>
+            <button type="button" class="b o s" id="scAdd" style="margin-bottom:16px"><svg class="i"><use href="#i-plus"/></svg> Tambah nomor</button>
 
-            <span class="sc-st {{ $c->is_active ? 'on' : 'off' }}">{{ $c->is_active ? 'Tampil' : 'Disembunyikan' }}</span>
-
-            <form id="edit-{{ $c->id }}" method="POST" action="{{ route('admin.sales.update', $c) }}" class="sc-inline">
-                @csrf @method('PUT')
-                <button type="submit" class="b s">Simpan</button>
-            </form>
-
-            <form method="POST" action="{{ route('admin.sales.toggle', $c) }}" class="sc-inline">
-                @csrf @method('PATCH')
-                <button type="submit" class="b o s">{{ $c->is_active ? 'Sembunyikan' : 'Tampilkan' }}</button>
-            </form>
-
-            <form method="POST" action="{{ route('admin.sales.destroy', $c) }}" class="sc-inline" onsubmit="return confirm('Hapus kontak ini?')">
-                @csrf @method('DELETE')
-                <button type="submit" class="b o s"><svg class="i"><use href="#i-trash"/></svg> Hapus</button>
-            </form>
-        </div>
-    @empty
-        <div class="emp">Belum ada kontak sales. Isi form di atas untuk menambah.</div>
-    @endforelse
+            <label class="sc-hql">Email
+                <input type="email" name="email" maxlength="150" value="{{ old('email', $hq->email) }}" placeholder="marketing@newarmada.co.id">
+            </label>
+            <label class="sc-hql">Jam kerja (ID)
+                <input name="working_hours" maxlength="255" value="{{ old('working_hours', $hq->working_hours) }}">
+            </label>
+            <label class="sc-hql">Jam kerja (EN)
+                <input name="working_hours_en" maxlength="255" value="{{ old('working_hours_en', $hq->working_hours_en) }}">
+            </label>
+            <label class="sc-hql">Jam kerja (中文)
+                <input name="working_hours_zh" maxlength="255" value="{{ old('working_hours_zh', $hq->working_hours_zh) }}">
+            </label>
+            <button type="submit" class="b">Simpan</button>
+        @endif
+    </form>
 
     {{-- Teks halaman Kontak: terjemahan diisi manual (ID | EN | 中文) --}}
     <form method="POST" action="{{ route('admin.sales.texts') }}" class="sc-texts">
@@ -116,3 +120,26 @@
         <button type="submit" class="b">Simpan teks</button>
     </form>
 @endsection
+
+@push('scripts')
+<script>
+(function () {
+  var box = document.getElementById('scPhones'); if (!box) return;
+  function rowHtml() {
+    return '<input class="sc-pn" name="phone_names[]" maxlength="100" placeholder="Label / nama sales">' +
+           '<input type="tel" name="phones[]" maxlength="50" placeholder="0857 8787 8787 atau +62 857 …">' +
+           '<button type="button" class="b o s js-sc-del" aria-label="Hapus nomor"><svg class="i"><use href="#i-trash"/></svg></button>';
+  }
+  document.getElementById('scAdd').addEventListener('click', function () {
+    var d = document.createElement('div'); d.className = 'sc-prow'; d.innerHTML = rowHtml();
+    box.appendChild(d); d.querySelectorAll('input')[1].focus();
+  });
+  box.addEventListener('click', function (e) {
+    var b = e.target.closest('.js-sc-del'); if (!b) return;
+    var rows = box.querySelectorAll('.sc-prow');
+    if (rows.length > 1) b.closest('.sc-prow').remove();
+    else b.closest('.sc-prow').querySelectorAll('input').forEach(function (i) { i.value = ''; });
+  });
+})();
+</script>
+@endpush

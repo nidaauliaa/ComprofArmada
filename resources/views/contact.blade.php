@@ -139,11 +139,12 @@ footer a:hover{color:var(--red-primary)}
         <div class="sales">
           <h2>{{ $txt('contact_sales_heading', 'sales_wa') }}</h2>
           <ul>
-            @forelse ($salesContacts as $s)
+            @php $entries = $hq ? $hq->phoneEntries() : []; @endphp
+            @forelse ($entries as $s)
             <li>
-              <span class="nm">{{ $s->name }}</span>
-              <span class="ph">{{ $s->phone }}</span>
-              <a class="wa" href="{{ $waLink($s->phone) }}" target="_blank" rel="noopener">
+              <span class="nm">{{ $s['name'] !== '' ? $s['name'] : $hq->t('name') }}</span>
+              <span class="ph">{{ $s['phone'] }}</span>
+              <a class="wa" href="{{ $waLink($s['phone']) }}" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/></svg>WhatsApp
               </a>
             </li>
@@ -152,6 +153,20 @@ footer a:hover{color:var(--red-primary)}
             @endforelse
           </ul>
         </div>
+
+        @if (!empty($hq) && ($hq->email || $hq->t('working_hours')))
+        <div class="sales hq">
+          <h2>{{ __('site.head_office') }}</h2>
+          <ul>
+            @if ($hq->email)
+            <li style="grid-template-columns:8em 1fr"><span class="nm">Email</span><a class="ph" href="mailto:{{ $hq->email }}">{{ $hq->email }}</a></li>
+            @endif
+            @if ($hq->t('working_hours'))
+            <li style="grid-template-columns:8em 1fr"><span class="nm">Jam</span><span class="ph">{{ $hq->t('working_hours') }}</span></li>
+            @endif
+          </ul>
+        </div>
+        @endif
       </div>
     </div>
   </section>
