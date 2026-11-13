@@ -58,18 +58,31 @@
 
         <div class="card">
             <h3 class="cardh">Media & Instagram</h3>
-            <label>
-                Link video profil YouTube
-                <input
-                    type="url"
-                    name="youtube_video_id"
-                    value="{{ old('youtube_video_id') }}"
-                    placeholder="https://youtu.be/xxxxxxxxxxx"
-                >
-                <small class="mu">
-                    Masukkan link video YouTube lengkap.
-                </small>
-            </label>
+            <div style="margin-bottom:14px">
+                <b>Upload video profil</b>
+                <small class="mu">MP4 (disarankan), WebM, atau MOV. Maks. 300 MB. Kalau diisi, video ini yang tampil dan link YouTube diabaikan.</small>
+
+                @if (!empty($v['profile_video']))
+                    <video src="{{ asset('storage/'.$v['profile_video']) }}" controls preload="metadata"
+                        style="display:block;max-width:360px;width:100%;margin:12px 0;border-radius:8px"></video>
+                    <label style="font-weight:500;margin:8px 0">
+                        <input type="checkbox" name="remove_profile_video" value="1"> Hapus video
+                    </label>
+                @endif
+
+                <input type="file" name="profile_video" accept="video/mp4,video/webm,video/quicktime">
+            </div>
+
+<label>
+    Atau pakai link video YouTube
+    <input
+        type="url"
+        name="youtube_video_id"
+        value="{{ old('youtube_video_id', !empty($v['youtube_video_id']) ? 'https://youtu.be/'.$v['youtube_video_id'] : '') }}"
+        placeholder="https://youtu.be/xxxxxxxxxxx"
+    >
+    <small class="mu">Dipakai kalau tidak ada video yang diupload.</small>
+</label>
 
             <div class="grid2">
                 <label>

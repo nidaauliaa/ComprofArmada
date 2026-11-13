@@ -385,7 +385,19 @@ footer a:hover{color:var(--red-primary)}
           <a class="btn" href="#layanan">{{ __('site.view_products_services') }}</a>
         </div>
         <div class="bu-media-wrap">
-          @php $ytId = preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($site['youtube_video_id'] ?? '')) ? $site['youtube_video_id'] : 'nYarnSGbWqE'; @endphp
+        @php
+            $ytId = preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($site['youtube_video_id'] ?? '')) ? $site['youtube_video_id'] : 'nYarnSGbWqE';
+            $upVideo = !empty($site['profile_video']) ? asset('storage/'.$site['profile_video']) : null;
+        @endphp
+        <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" @if ($upVideo) data-src="{{ $upVideo }}" @endif role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
+        @if ($upVideo)
+            <video class="bu-thumb" src="{{ $upVideo }}#t=0.5" preload="metadata" muted playsinline></video>
+        @else
+            <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
+        @endif
+        <span class="bu-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
+        <small>{{ __('site.play_video') }}</small>
+        </div>
           <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
             <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
             <span class="bu-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
@@ -525,7 +537,7 @@ footer a:hover{color:var(--red-primary)}
     <div class="footer-grid">
       <div>
         <a class="logo" href="{{ url('/') }}" style="color:#fff">
-          @if (!empty($site['logo']))<img src="{{ asset('storage/'.$site['logo']) }}" alt="{{ $site['site_name'] ?? 'New Armada' }}" style="height:34px;width:auto;display:block">@else<span class="logo-icon"></span>NEW ARMADA @endif
+          @if (!empty($site['logo']))<img src="{{ asset('storage/'.$site['logo']) }}" alt="" style="height:34px;width:auto;display:block">@else<span class="logo-icon"></span>@endif<span>NEW ARMADA</span>
         </a>
         <p style="max-width:32ch;margin-top:12px;font-size:15px">{{ __('site.footer_tagline') }}</p>
         @if (!empty($site['address']))<p style="max-width:34ch;font-size:14px;margin:6px 0">{{ $site['address'] }}</p>@endif
@@ -558,7 +570,7 @@ footer a:hover{color:var(--red-primary)}
         @if ($shown === 0)<li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li>@endif
       </ul></div>
     </div>
-    <div class="footer-bottom"><span>© {{ date('Y') }} {{ $site['site_name'] ?? 'New Armada' }}. {{ __('site.rights') }}</span><span>Company Profile Redesign</span></div>
+    <div class="footer-bottom"><span>© {{ date('Y') }} PT Mekar Armada Jaya. Designed by Business Development Team. Powered by IT Team.</span></div>
   </div>
 </footer>
 
@@ -670,19 +682,29 @@ footer a:hover{color:var(--red-primary)}
 @include('partials.search-overlay')
 <script src="{{ asset('js/gustam-public.js') }}?v={{ @filemtime(public_path('js/gustam-public.js')) }}" defer></script>
 <script>
-// Video YouTube (muncul setelah diklik supaya halaman tetap ringan)
+// Video profil: file upload (kalau ada) atau YouTube. Baru dimuat setelah diklik supaya halaman ringan.
 (function(){
   var box=document.getElementById('buVideo');
   if(!box)return;
+  var started=false;
   function play(){
-    if(box.querySelector('iframe'))return;
+    if(started)return; started=true;
+    box.removeAttribute('role');box.removeAttribute('tabindex');box.style.cursor='default';
+    if(box.dataset.src){
+      var v=box.querySelector('video');
+      v.muted=false; v.controls=true; v.currentTime=0;
+      v.style.objectFit='contain'; v.style.background='#000'; v.style.zIndex=3;
+      box.classList.remove('has-video');
+      [].forEach.call(box.querySelectorAll('.bu-play,small'),function(el){el.remove()});
+      v.play();
+      return;
+    }
     var f=document.createElement('iframe');
     f.src='https://www.youtube-nocookie.com/embed/'+box.dataset.yt+'?autoplay=1&rel=0&modestbranding=1&playsinline=1';
     f.title='Video profil New Armada';
     f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
     f.allowFullscreen=true;
     box.appendChild(f);
-    box.removeAttribute('role');box.removeAttribute('tabindex');box.style.cursor='default';
   }
   box.addEventListener('click',play);
   box.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();play()}});

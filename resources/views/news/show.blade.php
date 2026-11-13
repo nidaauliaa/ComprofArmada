@@ -16,18 +16,45 @@
 <section class="art">
     <div class="wrap">
         <div class="art-body">
-            @forelse ($news->blocks ?? [] as $b)
-                @if (($b['type'] ?? 'p') === 'i')
-                    @php $src = \App\Models\News::fileUrl($b['image'] ?? null); $cap = $news->localized($b['caption'] ?? []); @endphp
-                    @if ($src)
-                        <figure>
-                            <img src="{{ $src }}" alt="{{ $cap }}" loading="lazy" onerror="this.closest('figure').remove()">
-                            @if ($cap !== '')<figcaption>{{ $cap }}</figcaption>@endif
-                        </figure>
-                    @endif
+            @php
+                // gabungkan gambar yang berurutan jadi satu kelompok (satu baris)
+                $groups = [];
+                foreach ($news->blocks ?? [] as $b) {
+                    if (($b['type'] ?? 'p') === 'i') {
+                        $src = \App\Models\News::fileUrl($b['image'] ?? null);
+                        if (! $src) { continue; }
+                        $img = ['src' => $src, 'cap' => $news->localized($b['caption'] ?? [])];
+                        $last = count($groups) - 1;
+                        if ($last >= 0 && $groups[$last]['type'] === 'imgs') {
+                            $groups[$last]['items'][] = $img;
+                        } else {
+                            $groups[] = ['type' => 'imgs', 'items' => [$img]];
+                        }
+                    } else {
+                        $txt = $news->localized($b['text'] ?? []);
+                        if ($txt !== '') { $groups[] = ['type' => 'p', 'text' => $txt]; }
+                    }
+                }
+            @endphp
+
+            @forelse ($groups as $g)
+                @if ($g['type'] === 'p')
+                    <p>{!! nl2br(e($g['text'])) !!}</p>
+                @elseif (count($g['items']) === 1)
+                    @php $it = $g['items'][0]; @endphp
+                    <figure>
+                        <img src="{{ $it['src'] }}" alt="{{ $it['cap'] }}" loading="lazy" onerror="this.closest('figure').remove()">
+                        @if ($it['cap'] !== '')<figcaption>{{ $it['cap'] }}</figcaption>@endif
+                    </figure>
                 @else
-                    @php $txt = $news->localized($b['text'] ?? []); @endphp
-                    @if ($txt !== '')<p>{!! nl2br(e($txt)) !!}</p>@endif
+                    <div class="fig-row {{ count($g['items']) > 2 ? 'many' : '' }}" style="--n:{{ min(count($g['items']), 4) }}">
+                        @foreach ($g['items'] as $it)
+                            <figure>
+                                <img src="{{ $it['src'] }}" alt="{{ $it['cap'] }}" loading="lazy" onerror="this.closest('figure').remove()">
+                                @if ($it['cap'] !== '')<figcaption>{{ $it['cap'] }}</figcaption>@endif
+                            </figure>
+                        @endforeach
+                    </div>
                 @endif
             @empty
                 <p>{{ __('site.news_empty') }}</p>

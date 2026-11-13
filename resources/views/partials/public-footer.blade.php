@@ -10,7 +10,7 @@
     <div class="footer-grid">
       <div>
         <a class="logo" href="{{ url('/') }}" style="color:#fff">
-          @if (!empty($site['logo']))<img src="{{ asset('storage/'.$site['logo']) }}" alt="{{ $site['site_name'] ?? 'New Armada' }}" style="height:34px;width:auto;display:block">@else<span class="logo-icon"></span>NEW ARMADA @endif
+          @if (!empty($site['logo']))<img src="{{ asset('storage/'.$site['logo']) }}" alt="" style="height:34px;width:auto;display:block">@else<span class="logo-icon"></span>@endif<span>NEW ARMADA</span>
         </a>
         <p style="max-width:32ch;margin-top:12px;font-size:15px">{{ __('site.footer_tagline') }}</p>
         @if (!empty($site['address']))<p style="max-width:34ch;font-size:14px;margin:6px 0">{{ $site['address'] }}</p>@endif
@@ -39,6 +39,6 @@
         @if ($shown === 0)<li><a href="https://instagram.com/newarmada.official" target="_blank" rel="noopener">Instagram</a></li>@endif
       </ul></div>
     </div>
-    <div class="footer-bottom"><span>© {{ date('Y') }} {{ $site['site_name'] ?? 'New Armada' }}. {{ __('site.rights') }}</span><span>Company Profile Redesign</span></div>
+    <div class="footer-bottom"><span>© {{ date('Y') }} PT Mekar Armada Jaya. Designed by Business Development Team. Powered by IT Team.</span></div>
   </div>
 </footer>

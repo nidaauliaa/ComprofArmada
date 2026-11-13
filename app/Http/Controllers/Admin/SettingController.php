@@ -80,10 +80,15 @@ class SettingController extends Controller
     {
         $rules = self::PLAIN + [
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+            'profile_video' => 'nullable|file|mimetypes:video/mp4,video/webm,video/quicktime|max:307200',
             'meta_description' => 'nullable|array',
             'meta_description.*' => 'nullable|string|max:300',
         ];
-        $request->validate($rules);
+        $request->validate($rules, [
+            'profile_video.mimetypes' => 'Format video harus MP4, WebM, atau MOV.',
+            'profile_video.max'       => 'Ukuran video maksimal 300 MB.',
+            'profile_video.uploaded'  => 'Video gagal diunggah. Kemungkinan melebihi batas upload PHP (upload_max_filesize / post_max_size).',
+        ]);
 
         $youtubeUrl = trim((string) $request->input('youtube_video_id'));
 
@@ -126,7 +131,19 @@ class SettingController extends Controller
             }
             Setting::put('logo', null);
         }
-
+        if ($request->hasFile('profile_video')) {
+            $old = Setting::get('profile_video');
+            if ($old) {
+                Storage::disk('public')->delete($old);
+            }
+            Setting::put('profile_video', $request->file('profile_video')->store('branding/video', 'public'));
+        } elseif ($request->boolean('remove_profile_video')) {
+            $old = Setting::get('profile_video');
+            if ($old) {
+                Storage::disk('public')->delete($old);
+            }
+            Setting::put('profile_video', null);
+        }
         return back()->with('success', 'Pengaturan tersimpan.');
     }
 }

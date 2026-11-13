@@ -121,6 +121,30 @@ nav a:not(.btn):hover::after,nav a.cur::after{width:100%}
     margin-top:10px;
     text-align:center;
 }
+.art-body .fig-row{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:12px;
+    margin:32px auto;
+    max-width:min(100%, calc(var(--n) * 300px));
+}
+.art-body .fig-row figure{
+    margin:0;
+    width:auto;
+    max-width:none;
+    flex:0 1 calc((100% - (var(--n) - 1) * 12px) / var(--n));
+}
+.art-body .fig-row figure img{
+    width:100%;
+    height:auto;
+    max-height:none;
+    aspect-ratio:4/3;
+    object-fit:cover;
+}
+@media(max-width:640px){
+    .art-body .fig-row.many figure{flex-basis:calc((100% - 12px) / 2)}
+}
 @media(max-width:1000px){
   .nh{min-height:0;padding-top:100px}
   .nh-grid{grid-template-columns:1fr;gap:32px}
