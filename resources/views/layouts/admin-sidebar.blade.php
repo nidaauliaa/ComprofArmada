@@ -8,6 +8,7 @@
         ['route' => 'admin.social.index',   'active' => 'admin.social.*',    'icon' => 'ig',    'label' => 'Instagram'],
         ['route' => 'admin.settings.index', 'active' => 'admin.settings.*',  'icon' => 'gear',  'label' => 'Pengaturan Situs'],
         ['route' => 'admin.sales.index',    'active' => 'admin.sales.*',     'icon' => 'phone', 'label' => 'Kontak'],
+        ['route' => 'admin.about.edit',     'active' => 'admin.about.*',     'icon' => 'text',  'label' => 'Tentang Kami'],
     ];
 @endphp
 <aside>

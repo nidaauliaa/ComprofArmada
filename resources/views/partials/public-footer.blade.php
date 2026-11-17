@@ -23,6 +23,7 @@
         @endforeach
       </ul></div>
       <div><h4>{{ __('site.company') }}</h4><ul>
+        <li><a href="{{ route('about') }}">{{ __('site.about_us') }}</a></li>
         <li><a href="{{ url('/') }}#unit">{{ __('site.business_unit') }}</a></li>
         <li><a href="{{ url('/') }}#plant">{{ __('site.plant_locations') }}</a></li>
         <li><a href="{{ route('news.index') }}">{{ __('site.news') }}</a></li>

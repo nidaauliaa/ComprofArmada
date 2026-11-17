@@ -105,4 +105,7 @@ return [
     'sales_wa' => '通过 WhatsApp 联系销售',
     'wa_greeting' => '您好，我想咨询',
     'no_sales' => '暂无销售联系人。',
+    // lang/zh/site.php
+    'about_us' => '关于我们',
+    'back_home' => '返回首页',
 ];

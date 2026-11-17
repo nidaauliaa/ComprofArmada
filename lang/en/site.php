@@ -105,4 +105,7 @@ return [
     'sales_wa' => 'Contact Sales via WhatsApp',
     'wa_greeting' => "Hello, I'm interested in",
     'no_sales' => 'No sales contacts yet.',
+    // lang/en/site.php
+    'about_us' => 'About Us',
+    'back_home' => 'Back to Home',
 ];

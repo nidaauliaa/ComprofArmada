@@ -17,7 +17,8 @@ use App\Http\Controllers\SocialFeedController;
 use App\Http\Controllers\Admin\SocialPostController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SalesContactController;
-
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\Admin\AboutSettingController;
 
 
 Route::get('/', function () {
@@ -111,11 +112,18 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::put('sales/hq', [SalesContactController::class, 'updateHq'])->name('sales.hq');
     Route::post('sales/texts', [SalesContactController::class, 'updateTexts'])->name('sales.texts');
 
+    // Tentang Kami
+    Route::get('about', [AboutSettingController::class, 'edit'])->name('about.edit');
+    Route::put('about', [AboutSettingController::class, 'update'])->name('about.update');
+
 });
 
-// di bagian route publik (di luar grup admin):
 Route::get('/berita', [NewsPageController::class, 'index'])->name('news.index');
 Route::get('/berita/{slug}', [NewsPageController::class, 'show'])->name('news.show');
+
+// Tentang Kami
+Route::get('/tentang-kami', AboutController::class)->name('about');
+Route::redirect('/about', '/tentang-kami');
 
 
 require __DIR__.'/auth.php';

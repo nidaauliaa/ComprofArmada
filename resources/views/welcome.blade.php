@@ -255,6 +255,7 @@ footer a:hover{color:var(--red-primary)}
         <span class="brand-text">NEW ARMADA</span>
       </a>
     <nav>
+      <a href="{{ route('about') }}">{{ __('site.about_us') }}</a>
       <a href="#produk">{{ __('site.products') }}</a>
       <a href="#unit">{{ __('site.business_unit') }}</a>
       <a href="#berita">{{ __('site.news') }}</a>
@@ -385,21 +386,16 @@ footer a:hover{color:var(--red-primary)}
           <a class="btn" href="#layanan">{{ __('site.view_products_services') }}</a>
         </div>
         <div class="bu-media-wrap">
-        @php
-            $ytId = preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($site['youtube_video_id'] ?? '')) ? $site['youtube_video_id'] : 'nYarnSGbWqE';
-            $upVideo = !empty($site['profile_video']) ? asset('storage/'.$site['profile_video']) : null;
-        @endphp
-        <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" @if ($upVideo) data-src="{{ $upVideo }}" @endif role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
-        @if ($upVideo)
-            <video class="bu-thumb" src="{{ $upVideo }}#t=0.5" preload="metadata" muted playsinline></video>
-        @else
-            <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
-        @endif
-        <span class="bu-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
-        <small>{{ __('site.play_video') }}</small>
-        </div>
-          <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
-            <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
+          @php
+              $ytId = preg_match('/^[A-Za-z0-9_-]{11}$/', (string) ($site['youtube_video_id'] ?? '')) ? $site['youtube_video_id'] : 'nYarnSGbWqE';
+              $upVideo = !empty($site['profile_video']) ? asset('storage/'.$site['profile_video']) : null;
+          @endphp
+          <div class="bu-media has-video" id="buVideo" data-yt="{{ $ytId }}" @if ($upVideo) data-src="{{ $upVideo }}" @endif role="button" tabindex="0" aria-label="{{ __('site.play_video') }}">
+            @if ($upVideo)
+              <video class="bu-thumb" src="{{ $upVideo }}#t=0.5" preload="metadata" muted playsinline></video>
+            @else
+              <img class="bu-thumb" src="https://i.ytimg.com/vi/{{ $ytId }}/maxresdefault.jpg" alt="" loading="lazy" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/{{ $ytId }}/mqdefault.jpg'">
+            @endif
             <span class="bu-play"><svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></svg></span>
             <small>{{ __('site.play_video') }}</small>
           </div>
@@ -550,6 +546,7 @@ footer a:hover{color:var(--red-primary)}
         @endforeach
       </ul></div>
       <div><h4>{{ __('site.company') }}</h4><ul>
+        <li><a href="{{ route('about') }}">{{ __('site.about_us') }}</a></li>
         <li><a href="#unit">{{ __('site.business_unit') }}</a></li>
         <li><a href="#plant">{{ __('site.plant_locations') }}</a></li>
         <li><a href="{{ route('news.index') }}">{{ __('site.news') }}</a></li>

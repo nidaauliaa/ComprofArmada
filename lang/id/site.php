@@ -104,4 +104,7 @@ return [
     'sales_wa' => 'Hubungi Sales via WhatsApp',
     'wa_greeting' => 'Halo, saya tertarik dengan',
     'no_sales' => 'Belum ada kontak sales.',
+    // lang/id/site.php
+    'about_us' => 'Tentang Kami',
+    'back_home' => 'Kembali ke Beranda',
 ];

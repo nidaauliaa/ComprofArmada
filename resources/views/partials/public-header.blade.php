@@ -11,11 +11,11 @@
       </a>
     @endif
     <nav>
+      <a href="{{ route('about') }}" @class(['cur' => $cur === 'about'])>{{ __('site.about_us') }}</a>
       <a href="{{ url('/') }}#produk" @class(['cur' => $cur === 'products'])>{{ __('site.products') }}</a>
       <a href="{{ url('/') }}#unit">{{ __('site.business_unit') }}</a>
       <a href="{{ route('news.index') }}" @class(['cur' => $cur === 'news'])>{{ __('site.news') }}</a>
       <a href="{{ url('/') }}#plant">{{ __('site.location') }}</a>
-      {{-- <button type="button" class="lang icon" data-search-open aria-label="{{ __('site.search') }}"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button> --}}
       <x-lang-switcher />
       <a class="btn btn-red" href="{{ url('/kontak') }}">{{ __('site.contact_us') }}</a>
     </nav>
