@@ -11,22 +11,28 @@
         ['route' => 'admin.about.edit',     'active' => 'admin.about.*',     'icon' => 'text',  'label' => 'Tentang Kami'],
     ];
 @endphp
-<aside>
-    <div>
-        <div class="al">
+<aside class="as" id="adminSidebar" aria-label="Sidebar admin">
+    <div class="as-inner">
+        <a class="al" href="{{ route('dashboard') }}" aria-label="Beranda admin New Armada">
             <img
-                src="{{ asset('storage/images/logo-newarmada.png') }}"
-                alt="Logo New Armada"
+                src="{{ asset('storage/images/armada-logo-horizontal.png') }}"
+                alt=""
                 class="admin-logo"
             >
-            <span class="lt"><span class="brand-new">NEW</span><b>ARMADA</b></span>
-        </div>
-        <nav>
+            <img
+                src="{{ asset('storage/images/logo-newarmada.png') }}"
+                alt=""
+                class="admin-logo-mark"
+            >
+        </a>
+        <div class="as-label">Menu utama</div>
+        <nav aria-label="Navigasi utama">
             @foreach ($menu as $m)
                 <a href="{{ \Illuminate\Support\Facades\Route::has($m['route']) ? route($m['route']) : '#' }}"
-                   class="{{ request()->routeIs($m['active']) ? 'on' : '' }}"
-                   title="{{ $m['label'] }}">
-                    <svg class="i"><use href="#i-{{ $m['icon'] }}"/></svg><span>{{ $m['label'] }}</span>
+                   title="{{ $m['label'] }}"
+                   aria-label="{{ $m['label'] }}"
+                   @if (request()->routeIs($m['active'])) aria-current="page" @endif>
+                    <svg class="i" aria-hidden="true"><use href="#i-{{ $m['icon'] }}"/></svg><span>{{ $m['label'] }}</span>
                 </a>
             @endforeach
         </nav>

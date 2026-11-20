@@ -14,6 +14,7 @@
             <h1>Media Sosial</h1>
             <p class="mu">Kelola konten media sosial yang ditampilkan di halaman utama website.</p>
         </div>
+        <x-admin-view-page :href="url('/').'#sosmed'" page="Media Sosial" />
     </div>
 
     @if (session('error'))
@@ -26,9 +27,9 @@
     <form class="card sp-add" method="POST" action="{{ route('admin.social.store') }}">
         @csrf
 
-        <h3 class="cardh">Tambah Konten</h3>
+        <h3 class="cardh">Tambah Instagram Reel</h3>
 
-        <label for="link">Link konten</label>
+        <label for="link">Link Instagram Reel</label>
 
         <textarea
             id="link"
@@ -38,24 +39,24 @@
             spellcheck="false"
             autocomplete="off"
             required
-            placeholder="Tempel link Instagram, Facebook, TikTok, atau YouTube di sini..."
+            placeholder="Tempel link Instagram Reel di sini, contoh: https://www.instagram.com/reel/XXXX/"
         >{{ old('link') }}</textarea>
 
         <p class="sp-hint">
-            Salin link postingan, foto, atau video yang ingin ditampilkan di website.
+            Hanya link atau kode embed Instagram Reel publik yang diterima. Story, postingan biasa, profil, dan platform lain akan ditolak.
         </p>
 
         <div class="sp-row2">
-            <button type="submit" class="b r">
+            <button type="submit" class="b">
                 <svg class="i"><use href="#i-plus"/></svg>
-                Tambahkan konten
+                Tambahkan Reel
             </button>
         </div>
 
         <div class="sp-note">
             <svg class="i"><use href="#i-info"/></svg>
             <span>
-                Pastikan akun atau konten dapat dilihat secara publik agar bisa ditampilkan di website.
+                Pastikan Reel dapat dilihat secara publik agar thumbnail dan embed-nya bisa diambil.
             </span>
         </div>
 
@@ -63,10 +64,8 @@
             <summary>Bagaimana cara mendapatkan link?</summary>
 
             <ul>
-                <li><b>Instagram:</b> Buka postingan atau Reel → Bagikan → Salin tautan.</li>
-                <li><b>Facebook:</b> Buka postingan atau video → Bagikan → Salin tautan.</li>
-                <li><b>TikTok:</b> Buka video → Bagikan → Salin tautan.</li>
-                <li><b>YouTube:</b> Buka video → Bagikan → Salin link.</li>
+                <li><b>Instagram:</b> Buka Reel → Bagikan → Salin tautan.</li>
+                <li>Format link yang valid: <code>instagram.com/reel/KODE/</code>.</li>
             </ul>
         </details>
     </form>
@@ -74,14 +73,24 @@
     <div class="sp-head">
         <b>Konten di Website</b>
         <span class="bdg">{{ $posts->where('is_active', true)->count() }} aktif</span>
+        <span class="sp-hint">Tarik ikon ⋮⋮ untuk mengubah urutan. Perubahan urutan langsung disimpan.</span>
     </div>
 
+    <div class="sp-sort-list" id="spSortList">
     @forelse ($posts as $p)
+        <div class="sp-sort-item" data-sort-id="{{ $p->id }}" draggable="true">
         <div class="row">
-            <div class="ri sp-ic sp-{{ $p->platform }}">{{ strtoupper(substr($p->platform, 0, 1)) }}</div>
+            <span class="sp-drag" title="Tarik untuk mengurutkan" aria-hidden="true">⋮⋮</span>
+            <div class="ri sp-thumb">
+                @if ($p->thumbnail_url)
+                    <img src="{{ $p->thumbnail_url }}" alt="Thumbnail {{ $p->title ?: 'Instagram Reel' }}"
+                         loading="lazy" referrerpolicy="no-referrer"
+                         onerror="this.style.display='none'">
+                @endif
+            </div>
             <div class="rt">
-                <b>{{ $p->title ?: ucfirst($p->platform).' · '.($p->kind ?: 'konten') }}</b>
-                <small>{{ ucfirst($p->platform) }} · {{ $p->kind }}{{ $p->author ? ' · '.$p->author : '' }}</small>
+                <b>{{ $p->title ?: ucfirst($p->platform).' '.ucfirst($p->kind ?: 'reel') }}</b>
+                <small>{{ ucfirst($p->platform) }} {{ ucfirst($p->kind ?: 'reel') }}{{ $p->author ? ' · '.$p->author : '' }}</small>
             </div>
 
             <form method="POST" action="{{ route('admin.social.toggle', $p) }}">
@@ -97,8 +106,6 @@
                 <div class="dd-menu">
                     <button type="button" data-json="json-{{ $p->id }}">Edit JSON</button>
                     <button type="button" data-preview="{{ $p->safeEmbedUrl() }}" data-w="{{ $p->embedWidth() }}" data-h="{{ $p->embedHeight() }}">Pratinjau</button>
-                    <form method="POST" action="{{ route('admin.social.move', [$p, 'up']) }}">@csrf @method('PATCH')<button type="submit">↑ Naikkan</button></form>
-                    <form method="POST" action="{{ route('admin.social.move', [$p, 'down']) }}">@csrf @method('PATCH')<button type="submit">↓ Turunkan</button></form>
                     <a href="{{ $p->source_url }}" target="_blank" rel="noopener">Buka link asli ↗</a>
                     <hr>
                     <form method="POST" action="{{ route('admin.social.destroy', $p) }}" onsubmit="return confirm('Hapus konten ini dari web?')">@csrf @method('DELETE')<button type="submit" class="danger">Hapus</button></form>
@@ -112,16 +119,17 @@
                 <div class="dh"><span>Edit JSON — {{ $p->title ?: ucfirst($p->platform) }}</span><button type="button" class="b o s" data-close>Tutup</button></div>
                 <p class="sp-hint" style="margin:10px 20px 0">
                     Yang menentukan tampilan: <code>embed_url</code>, <code>width</code>, <code>height</code>, <code>title</code>, <code>author</code>, <code>source_url</code>.
-                    <code>embed_url</code> hanya boleh dari Instagram / Facebook / TikTok / YouTube / LinkedIn.
+                    <code>embed_url</code> hanya boleh berupa embed Instagram Reel.
                 </p>
                 <textarea name="json" class="sp-json" spellcheck="false" rows="18">{{ session('open_json') == $p->id ? old('json', $p->editableJsonText()) : $p->editableJsonText() }}</textarea>
                 <div class="sp-jfoot">
                     <span class="sp-jstate" data-jstate></span>
                     <button type="button" class="b o s" data-format>Rapikan</button>
-                    <button type="submit" class="b r s">Simpan JSON</button>
+                    <button type="submit" class="b s">Simpan JSON</button>
                 </div>
             </form>
         </dialog>
+        </div>
     @empty
         <div class="card sp-empty">
             <div class="sp-empty-icon">
@@ -131,6 +139,7 @@
             <p class="mu">Konten yang kamu tambahkan nantinya akan ditampilkan di halaman utama website.</p>
         </div>
     @endforelse
+    </div>
 
     <dialog class="sp-dialog" id="sp-preview">
         <div class="dh"><span>Pratinjau</span><button type="button" class="b o s" data-close>Tutup</button></div>
@@ -143,6 +152,92 @@
 @push('scripts')
 <script>
 (function () {
+  var CSRF = document.querySelector('meta[name="csrf-token"]').content;
+  var REORDER = "{{ route('admin.social.reorder') }}";
+  var sortList = document.getElementById('spSortList');
+
+  if (sortList) {
+    var dragging = null;
+    var dragArmed = false;
+    var initialOrder = '';
+    var items = function () {
+      return [].slice.call(sortList.querySelectorAll('.sp-sort-item'));
+    };
+    var order = function () {
+      return items().map(function (item) { return item.dataset.sortId; });
+    };
+
+    sortList.addEventListener('pointerdown', function (event) {
+      dragArmed = Boolean(event.target.closest('.sp-drag'));
+    });
+    sortList.addEventListener('pointerup', function () {
+      dragArmed = false;
+    });
+
+    sortList.addEventListener('dragstart', function (event) {
+      var item = event.target.closest('.sp-sort-item');
+      if (!item || !dragArmed) {
+        event.preventDefault();
+        return;
+      }
+
+      dragArmed = false;
+      dragging = item;
+      initialOrder = order().join(',');
+      item.classList.add('is-dragging');
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', item.dataset.sortId);
+    });
+
+    sortList.addEventListener('dragover', function (event) {
+      if (!dragging) return;
+
+      event.preventDefault();
+      var target = event.target.closest('.sp-sort-item');
+      if (!target || target === dragging) return;
+
+      [].slice.call(sortList.querySelectorAll('.is-drop-target')).forEach(function (item) {
+        item.classList.remove('is-drop-target');
+      });
+      target.classList.add('is-drop-target');
+
+      var rect = target.getBoundingClientRect();
+      sortList.insertBefore(dragging, event.clientY < rect.top + (rect.height / 2) ? target : target.nextSibling);
+    });
+
+    sortList.addEventListener('drop', function (event) {
+      if (dragging) event.preventDefault();
+    });
+
+    sortList.addEventListener('dragend', function () {
+      if (!dragging) return;
+
+      dragging.classList.remove('is-dragging');
+      [].slice.call(sortList.querySelectorAll('.is-drop-target')).forEach(function (item) {
+        item.classList.remove('is-drop-target');
+      });
+      dragging = null;
+
+      var ids = order();
+      if (ids.join(',') === initialOrder) return;
+
+      fetch(REORDER, {
+        method: 'PATCH',
+        headers: {
+          'X-CSRF-TOKEN': CSRF,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ids: ids })
+      }).then(function (response) {
+        if (!response.ok) throw new Error();
+      }).catch(function () {
+        alert('Gagal menyimpan urutan. Halaman akan dimuat ulang.');
+        window.location.reload();
+      });
+    });
+  }
+
   function closeMenus(except) {
     [].slice.call(document.querySelectorAll('details.dd[open]')).forEach(function (m) { if (!except || !m.contains(except)) m.removeAttribute('open'); });
   }

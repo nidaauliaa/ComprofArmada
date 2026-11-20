@@ -22,8 +22,13 @@
             <h1>Produk &amp; Kategori</h1>
             <p class="mu">Kartu kategori di Home. Klik “Buka” untuk mengelola produk di dalam kategori.</p>
         </div>
-        <button type="button" class="b js-add"><svg class="i"><use href="#i-plus"/></svg> Tambah kategori</button>
+        <div class="ph-actions">
+            <button type="button" class="b js-add"><svg class="i"><use href="#i-plus"/></svg> Tambah kategori</button>
+            <x-admin-view-page :href="route('product.index')" page="Produk" />
+        </div>
     </div>
+
+    <x-admin-locale-switch storage-key="na-products-locale" help="Pilihan ini berlaku untuk terjemahan nama kategori saat menambah atau mengubah data." />
 
     @forelse ($categories as $c)
         <div class="row">
@@ -75,6 +80,7 @@
             @csrf
             <input type="hidden" name="_method" value="PUT" id="cMethod" disabled>
             <div class="db">
+                <div data-admin-locale-drawer-host></div>
                 <label>
                     Nama kategori <small>wajib diisi</small>
                     <input type="text" name="name" id="cName" placeholder="Contoh: Medium Bus" required>

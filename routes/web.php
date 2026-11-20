@@ -1,25 +1,25 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\BannerController;
-use App\Http\Controllers\ProductFrontendController;
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\ProductModelController;
-use App\Http\Controllers\Admin\NewsController;
-use App\Models\News;
-use App\Http\Controllers\NewsPageController;
-use App\Http\Controllers\Admin\PlantController;
-use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\SearchController;
-use App\Http\Controllers\SocialFeedController;
-use App\Http\Controllers\Admin\SocialPostController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\SalesContactController;
 use App\Http\Controllers\AboutController;
 use App\Http\Controllers\Admin\AboutSettingController;
-
+use App\Http\Controllers\Admin\BannerController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\PlantController;
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\ProductModelController;
+use App\Http\Controllers\Admin\SalesContactController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SocialPostController;
+use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\NewsPageController;
+use App\Http\Controllers\ProductFrontendController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SocialFeedController;
+use App\Models\News;
+use App\Models\Plant;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $news = News::published()
@@ -41,7 +41,8 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/kontak', function () {
-    $hq = \App\Models\Plant::headquarters(); // nomor kontak = nomor Plant HQ (satu sumber dengan Lokasi Plant)
+    $hq = Plant::headquarters(); // nomor kontak = nomor Plant HQ (satu sumber dengan Lokasi Plant)
+
     return view('contact', compact('hq'));
 })->name('contact');
 
@@ -78,7 +79,6 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::delete('products/models/{productModel}', [ProductModelController::class, 'destroy'])->name('products.models.destroy');
     Route::delete('products/galleries/{gallery}', [ProductModelController::class, 'destroyGallery'])->name('products.galleries.destroy');
 
-
     // Berita & Event
     Route::resource('news', NewsController::class)
         ->except(['create', 'edit', 'show']);
@@ -98,9 +98,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Instagram & Sosial Media (link share / kode embed oEmbed / JSON -> tampil di Home)
     Route::get('social', [SocialPostController::class, 'index'])->name('social.index');
     Route::post('social', [SocialPostController::class, 'store'])->name('social.store');
+    Route::patch('social/reorder', [SocialPostController::class, 'reorder'])->name('social.reorder');
     Route::put('social/{post}', [SocialPostController::class, 'update'])->name('social.update');
     Route::patch('social/{post}/toggle', [SocialPostController::class, 'toggle'])->name('social.toggle');
-    Route::patch('social/{post}/move/{dir}', [SocialPostController::class, 'move'])->whereIn('dir', ['up', 'down'])->name('social.move');
     Route::delete('social/{post}', [SocialPostController::class, 'destroy'])->name('social.destroy');
 
     // Pengaturan Situs
@@ -125,6 +125,4 @@ Route::get('/berita/{slug}', [NewsPageController::class, 'show'])->name('news.sh
 Route::get('/tentang-kami', AboutController::class)->name('about');
 Route::redirect('/about', '/tentang-kami');
 
-
 require __DIR__.'/auth.php';
-

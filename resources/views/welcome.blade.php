@@ -9,13 +9,13 @@
 <meta property="og:title" content="{{ ($site['site_name'] ?? 'New Armada') }} – Company Profile">
 <meta property="og:description" content="{{ \App\Models\Setting::tr('meta_description') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-:root{--blue-primary:#3b82f6;--blue-hover:#2563eb;--red-primary:#ff5733;--red-hover:#e03e1b;--white:#fff;--bg-light:#f8fafc;--ink-primary:#0f172a;--ink-muted:#64748b;--line-color:rgba(226,232,240,.8);--hd:'Barlow Condensed','Arial Narrow',sans-serif;--bd:'Barlow',system-ui,sans-serif;box-sizing:border-box}
+:root{--blue-primary:#3b82f6;--blue-hover:#2563eb;--blue-action:#2563eb;--blue-action-hover:#1d4ed8;--red-primary:#ff5733;--red-hover:#e03e1b;--red-action:#c2410c;--red-action-hover:#9a3412;--white:#fff;--bg-light:#f9fafb;--ink-primary:#333;--ink-muted:#6b7280;--line-color:#e5e7eb;--surface:#fff;--border:#e5e7eb;--radius:.375rem;--font-sans:'Inter','Barlow',system-ui,sans-serif;--hd:'Barlow Condensed','Arial Narrow',sans-serif;--bd:'Barlow',system-ui,sans-serif;box-sizing:border-box}
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg-light);color:var(--ink-primary);font:400 16px/1.6 var(--bd);overflow-x:hidden}
+body{margin:0;background:var(--bg-light);color:var(--ink-primary);font:400 16px/1.6 var(--font-sans);overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit}
 .wrap{width:100%;max-width:1320px;margin:0 auto;padding:0 32px}
@@ -25,18 +25,20 @@ section{padding:90px 0}
 .sec-head p{margin:0;max-width:48ch;color:var(--ink-muted);font-size:16px}
 .sec-head.center{justify-content:center;text-align:center}
 .sec-head.center h2{color:var(--white)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--blue-primary);color:var(--white);padding:14px 30px;border-radius:8px;border:none;cursor:pointer;font:600 15px/1 var(--bd);transition:all .25s ease;box-shadow:0 4px 14px rgba(59,130,246,.25)}
-.btn:hover{background:var(--blue-hover);transform:translateY(-2px);box-shadow:0 6px 20px rgba(59,130,246,.35)}
-.btn.btn-red{background:var(--red-primary);box-shadow:0 4px 14px rgba(255,87,51,.25)}
-.btn.btn-red:hover{background:var(--red-hover);box-shadow:0 6px 20px rgba(255,87,51,.35)}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;gap:8px;background:var(--blue-action);color:var(--white);padding:13px 24px;border-radius:var(--radius);border:none;cursor:pointer;font:600 14px/1.2 var(--font-sans);transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}
+.btn:hover{background:var(--blue-action-hover);box-shadow:0 4px 12px rgba(37,99,235,.22)}
+.btn.btn-red{background:var(--red-action);box-shadow:0 4px 14px rgba(194,65,12,.2)}
+.btn.btn-red:hover{background:var(--red-action-hover);box-shadow:0 6px 20px rgba(154,52,18,.25)}
 a:focus-visible,button:focus-visible{outline:3px solid var(--red-primary);outline-offset:3px}
+.skip-link{position:fixed;top:8px;left:8px;z-index:400;padding:10px 14px;border-radius:var(--radius);background:var(--ink-primary);color:#fff;font:600 13px/1.2 var(--font-sans);transform:translateY(-160%)}
+.skip-link:focus{transform:translateY(0)}
 
 /* HEADER */
 header{position:absolute;top:0;left:0;right:0;z-index:100;background:transparent}
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px}
 .logo{font:800 26px/1 var(--hd);letter-spacing:.03em;display:flex;align-items:center;gap:10px;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.35)}
 .logo-icon{width:14px;height:18px;background:var(--red-primary);transform:skewX(-18deg);border-radius:2px}
-nav{display:flex;gap:32px;align-items:center;font-weight:600;font-size:15px}
+nav{display:flex;gap:28px;align-items:center;font:600 14px/1.4 var(--font-sans)}
 nav a:not(.btn){position:relative;color:#fff;text-shadow:0 1px 12px rgba(0,0,0,.4);padding:6px 0;transition:color .25s ease}
 nav a:not(.btn)::after{content:"";position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--red-primary);transition:width .3s ease}
 nav a:not(.btn):hover{color:var(--red-primary)}
@@ -139,16 +141,19 @@ nav a:not(.btn):hover::after{width:100%}
 .ig-section{position:relative;overflow:hidden;color:#fff;padding:90px 0;border:0;background:#0a7bb8}
 .ig-section::before{content:"INSTAGRAM";position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);font:800 clamp(120px,20vw,300px)/.85 var(--hd);color:rgba(255,255,255,.18);white-space:nowrap;pointer-events:none;user-select:none}
 .ig-section .wrap{position:relative;z-index:1}
-.ig-brand{display:flex;justify-content:center;margin:0 0 14px}
-.ig-brand a{display:flex;align-items:center;gap:12px;font:800 clamp(36px,4vw,52px)/1 var(--hd);text-transform:uppercase;color:#fff}
+.ig-brand{display:flex;justify-content:center;margin:0 0 clamp(14px,2vw,22px);padding-inline:clamp(12px,4vw,32px)}
+.ig-brand a{display:block;width:clamp(180px,28vw,304px);max-width:100%;border-radius:8px;line-height:0}
+.ig-brand a:focus-visible{outline:2px solid #fff;outline-offset:6px}
 .ig-brand .logo-icon{width:16px;height:24px}
+.ig-brand img{display:block;width:100%;height:auto;max-height:56px;object-fit:contain;filter:drop-shadow(0 8px 18px rgba(8,15,32,.18));transition:transform .25s ease}
+.ig-brand a:hover img{transform:scale(1.025)}
 .ig-tagline{text-align:center;margin:0 auto 26px;max-width:52ch;font-size:18px;color:rgba(255,255,255,.92)}
 .ig-stats{list-style:none;display:flex;justify-content:center;margin:0 0 48px;padding:0}
 .ig-stats li{display:flex;flex-direction:column;align-items:center;padding:0 36px;border-left:1px solid rgba(255,255,255,.3)}
 .ig-stats li:first-child{border-left:0}
 .ig-stats strong{font:800 clamp(30px,3.4vw,44px)/1 var(--hd)}
 .ig-stats span{font-size:14px;color:rgba(255,255,255,.85)}
-@media(max-width:600px){.ig-stats li{padding:0 18px}.ig-tagline{font-size:16px}}
+@media(max-width:600px){.ig-brand a{width:min(62vw,220px)}.ig-stats li{padding:0 18px}.ig-tagline{font-size:16px}}
 .ig-carousel{position:relative;max-width:1000px;margin:0 auto}
 .ig-rail{position:relative}
 .ig-rail::before{content:"";display:block;padding-top:calc(44.444% - 13.333px)}
@@ -182,7 +187,7 @@ nav a:not(.btn):hover::after{width:100%}
 }
 
 /* BERITA */
-.news-section{background:#e9eef5;padding:56px 0 52px}
+.news-section{background:var(--bg-light);padding:56px 0 52px}
 .news-section .sec-head{margin-bottom:28px}
 .news-ctrl{display:flex;align-items:center;gap:12px}
 .news-all{padding:12px 22px;font-size:14px;margin-right:8px}
@@ -191,8 +196,8 @@ nav a:not(.btn):hover::after{width:100%}
 .news-ctrl button:disabled{opacity:.35;cursor:default}
 .news-track{display:flex;gap:28px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:0 14px 18px 0}
 .news-track::-webkit-scrollbar{display:none}
-.news-card{flex:0 0 calc((100% - 56px)/3);scroll-snap-align:start;background:#fff;border-radius:14px;overflow:hidden;box-shadow:8px 8px 0 rgba(15,23,42,.14);display:flex;flex-direction:column;transition:transform .3s ease,box-shadow .3s ease}
-.news-card:hover{transform:translate(-3px,-3px);box-shadow:11px 11px 0 rgba(15,23,42,.18)}
+.news-card{flex:0 0 calc((100% - 56px)/3);scroll-snap-align:start;background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.04);display:flex;flex-direction:column;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+.news-card:hover{transform:translateY(-3px);border-color:#d1d5db;box-shadow:0 12px 28px rgba(15,23,42,.09)}
 .news-date{padding:18px 24px 14px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)}
 .news-img{aspect-ratio:11/5;background:var(--bg);display:grid;place-items:center;overflow:hidden}
 .news-img img{width:72%;height:auto;filter:drop-shadow(0 16px 18px rgba(0,0,0,.35))}
@@ -247,19 +252,20 @@ footer a:hover{color:var(--red-primary)}
 <link rel="stylesheet" href="{{ asset('css/gustam-public.css') }}?v={{ @filemtime(public_path('css/gustam-public.css')) }}">
 </head>
 <body>
+<a class="skip-link" href="#mainContent">Lewati ke konten</a>
 
 <header id="siteHeader">
   <div class="wrap nav">
     <a class="brand" href="{{ url('/') }}" aria-label="New Armada">
-        <img src="{{ asset('storage/images/logo-newarmada.png') }}" alt="New Armada" width="41" height="52">
-        <span class="brand-text">NEW ARMADA</span>
+        <img class="site-logo-horizontal" src="{{ asset('storage/images/armada-logo-horizontal.png') }}" alt="New Armada" width="200" height="28">
+        <!-- <span class="brand-text">NEW ARMADA</span> -->
       </a>
     <nav>
-      <a href="{{ route('about') }}">{{ __('site.about_us') }}</a>
       <a href="#produk">{{ __('site.products') }}</a>
       <a href="#unit">{{ __('site.business_unit') }}</a>
       <a href="#berita">{{ __('site.news') }}</a>
       <a href="#plant">{{ __('site.location') }}</a>
+      <a href="{{ route('about') }}">{{ __('site.about_us') }}</a>
       {{-- <button type="button" class="lang icon" data-search-open aria-label="{{ __('site.search') }}"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button> --}}
       <x-lang-switcher />
       <a class="btn btn-red" href="{{ url('/kontak') }}">{{ __('site.contact_us') }}</a>
@@ -267,7 +273,7 @@ footer a:hover{color:var(--red-primary)}
   </div>
 </header>
 
-<main>
+<main id="mainContent" tabindex="-1">
   <div class="hero-product-wrapper">
     <div class="spill" id="spill"></div>
 
@@ -769,5 +775,6 @@ var IG_AUTOROTATE=true; // true = geser otomatis (tidak disarankan, mengganggu s
   render();fit();restart();
 })();
 </script>
+<script src="{{ asset('js/public-header.js') }}" defer></script>
 </body>
 </html>

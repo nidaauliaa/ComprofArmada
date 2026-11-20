@@ -57,7 +57,7 @@ nav a:not(.btn):hover::after{width:100%}
 @media(max-width:560px){.brand-text{display:none}}
 
 /* Pastikan header tetap transparan & terang walau ada CSS lain yang menimpa */
-body.contact-page header{position:absolute!important;background:transparent!important;box-shadow:none!important}
+body.contact-page header{position:fixed!important;background:transparent;box-shadow:none}
 body.contact-page header .brand,
 body.contact-page header .brand-text,
 body.contact-page header nav a:not(.btn){color:var(--navy)!important;text-shadow:none!important}

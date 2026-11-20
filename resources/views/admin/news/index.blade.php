@@ -21,8 +21,13 @@
             <h1>Berita &amp; Event</h1>
             <p class="mu">Tulis berita yang akan tampil di publik. Berita akan tampil di halaman Berita & Event.</p>
         </div>
-        <button type="button" class="b" id="newsAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah berita</button>
+        <div class="ph-actions">
+            <button type="button" class="b" id="newsAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah berita</button>
+            <x-admin-view-page :href="route('news.index')" page="Berita" />
+        </div>
     </div>
+
+    <x-admin-locale-switch storage-key="na-news-locale" help="Pilihan ini berlaku untuk judul dan seluruh isi artikel." />
 
     @forelse ($news as $n)
         <div class="row">
@@ -92,11 +97,7 @@
         </div>
 
         <div class="db">
-            <div class="seg" role="tablist" aria-label="Bahasa isi">
-                <button type="button" data-lang="id" class="on">ID</button>
-                <button type="button" data-lang="en">EN</button>
-                <button type="button" data-lang="zh">中文</button>
-            </div>
+            <div data-admin-locale-drawer-host></div>
             <p class="mu" style="margin:0 0 14px;font-size:13px">Terjemahan diisi manual. Jika kosong, website memakai bahasa ID.</p>
 
             {{-- thumbnail --}}

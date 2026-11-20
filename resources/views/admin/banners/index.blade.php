@@ -10,8 +10,13 @@
             <h1>Banner Home</h1>
             <p class="mu">Slide di bagian atas halaman Home.</p>
         </div>
-        <button type="button" class="b" onclick="openDrawer()"><svg class="i"><use href="#i-plus"/></svg> Tambah banner</button>
+        <div class="ph-actions">
+            <button type="button" class="b" onclick="openDrawer()"><svg class="i"><use href="#i-plus"/></svg> Tambah banner</button>
+            <x-admin-view-page :href="url('/')" page="Banner" />
+        </div>
     </div>
+
+    <x-admin-locale-switch storage-key="na-banners-locale" help="Pilihan ini berlaku untuk seluruh teks banner dalam tiga bahasa." />
 
     @foreach($banners as $banner)
         <div class="row">
@@ -52,11 +57,7 @@
             @csrf
             <div id="methodField"></div>
             <div class="db">
-                <div class="seg">
-                    <button type="button" class="on" onclick="switchLang('id', this)">ID</button>
-                    <button type="button" onclick="switchLang('en', this)">EN</button>
-                    <button type="button" onclick="switchLang('zh', this)">中文</button>
-                </div>
+                <div data-admin-locale-drawer-host></div>
                 <p class="mu" style="font-size: 13px; margin-bottom: 14px;">Terjemahan diisi manual. Jika kosong, website memakai bahasa ID.</p>
 
                 <label>
@@ -69,7 +70,7 @@
                 </label>
 
                 <!-- TAB BHS INDONESIA -->
-                <div class="lang-group" id="lang-id">
+                <div class="lang-group" id="lang-id" data-admin-locale-pane="id">
                     <label>Label kecil<input type="text" name="tag" id="tag"></label>
                     <label>Judul *<input type="text" name="title" id="title" required></label>
                     <label>Teks gradasi (baris kedua)<input type="text" name="headline" id="headline"></label>
@@ -79,7 +80,7 @@
                 </div>
 
                 <!-- TAB BHS INGGRIS -->
-                <div class="lang-group" id="lang-en" style="display:none;">
+                <div class="lang-group" id="lang-en" data-admin-locale-pane="en" hidden>
                     <label>Label kecil (EN)<input type="text" name="tag_en" id="tag_en"></label>
                     <label>Judul (EN)<input type="text" name="title_en" id="title_en"></label>
                     <label>Teks gradasi (EN)<input type="text" name="headline_en" id="headline_en"></label>
@@ -89,7 +90,7 @@
                 </div>
 
                 <!-- TAB BHS MANDARIN -->
-                <div class="lang-group" id="lang-zh" style="display:none;">
+                <div class="lang-group" id="lang-zh" data-admin-locale-pane="zh" hidden>
                     <label>Label kecil (ZH)<input type="text" name="tag_zh" id="tag_zh"></label>
                     <label>Judul (ZH)<input type="text" name="title_zh" id="title_zh"></label>
                     <label>Teks gradasi (ZH)<input type="text" name="headline_zh" id="headline_zh"></label>
@@ -119,13 +120,6 @@
 
 @push('scripts')
 <script>
-        function switchLang(lang, btn) {
-            document.querySelectorAll('.seg button').forEach(b => b.classList.remove('on'));
-            btn.classList.add('on');
-            document.querySelectorAll('.lang-group').forEach(g => g.style.display = 'none');
-            document.getElementById('lang-' + lang).style.display = 'block';
-        }
-
         function openDrawer() {
             document.getElementById('drTitle').textContent = 'Tambah banner';
             document.getElementById('bannerForm').action = "{{ route('admin.banners.store') }}";

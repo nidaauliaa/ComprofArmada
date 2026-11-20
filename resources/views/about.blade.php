@@ -61,7 +61,7 @@ nav a:not(.btn):hover::after{width:100%}
 .brand img{display:block;height:52px;width:auto}
 .brand-text{font:800 26px/1 var(--hd);letter-spacing:.03em}
 @media(max-width:560px){.brand-text{display:none}}
-body.about-page header{position:absolute!important;background:transparent!important;box-shadow:none!important}
+body.about-page header{position:fixed!important;background:transparent;box-shadow:none}
 body.about-page header .brand,
 body.about-page header .brand-text,
 body.about-page header nav a:not(.btn){color:var(--navy)!important;text-shadow:none!important}

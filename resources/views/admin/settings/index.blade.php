@@ -17,7 +17,10 @@
             <h1>Pengaturan Situs</h1>
             <p class="mu">Data ini tampil di footer, halaman Kontak, video profil, hingga statistik media sosial.</p>
         </div>
+        <x-admin-view-page :href="url('/')" page="Beranda" />
     </div>
+
+    <x-admin-locale-switch storage-key="na-settings-locale" help="Pilihan ini berlaku untuk deskripsi SEO dalam tiga bahasa." />
 
     @if ($errors->any())
         <div class="alert-error">Ada isian yang belum benar: {{ $errors->first() }}</div>
@@ -66,7 +69,7 @@
 
             <div style="margin-bottom:18px">
                 <b>Upload video profil (MP4 / WebM / MOV)</b>
-                <small class="mu" style="display:block; margin-bottom: 8px;">Maks. 300 MB. Jika diisi, video ini yang akan diputar dan link YouTube di bawah akan diabaikan[cite: 9].</small>
+                <small class="mu" style="display:block; margin-bottom: 8px;">Maks. 300 MB. Jika diisi, video ini yang akan diputar dan link YouTube di bawah akan diabaikan</small>
 
                 @if (!empty($v['profile_video']))
                     <video src="{{ asset('storage/'.$v['profile_video']) }}" controls preload="metadata"
@@ -88,7 +91,7 @@
                     placeholder="https://youtu.be/xxxxxxxxxxx"
                     style="width:100%; box-sizing:border-box; border:1px solid #d1d5db; border-radius:8px; padding:9px 12px; margin-top:6px;"
                 >
-                <small class="mu" style="display:block; margin-top:4px;">Dipakai sebagai alternatif apabila tidak ada file video yang diunggah[cite: 9].</small>
+                <small class="mu" style="display:block; margin-top:4px;">Dipakai sebagai alternatif apabila tidak ada file video yang diunggah</small>
             </label>
         </div>
 

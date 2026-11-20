@@ -65,8 +65,11 @@
 <section id="sosmed" class="ig-section">
     <div class="wrap">
         <div class="ig-brand">
-            <a href="{{ $igUrl }}" target="_blank" rel="noopener">
-                <span class="logo-icon"></span>NEW ARMADA
+            <a href="{{ $igUrl }}" target="_blank" rel="noopener noreferrer"
+               aria-label="Buka Instagram New Armada @newarmada.official">
+                <img src="{{ asset('img/armada-logo-horizontal.png') }}"
+                     alt="Logo New Armada, Instagram @newarmada.official"
+                     width="2690" height="495" loading="lazy" decoding="async">
             </a>
         </div>
 

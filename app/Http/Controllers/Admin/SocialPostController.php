@@ -36,6 +36,9 @@ class SocialPostController extends Controller
         if (! $ok) {
             return back()->withInput()->with('error', $err);
         }
+        if (! $this->isInstagramReel($d)) {
+            return back()->withInput()->with('error', 'Hanya link atau kode embed Instagram Reel yang diperbolehkan. Story, postingan biasa, profil, dan platform lain ditolak.');
+        }
         if (SocialPost::query()->where('platform', $d['platform'])->where('external_id', $d['external_id'])->exists()) {
             return back()->with('error', 'Konten ini sudah ada di daftar.');
         }
@@ -53,10 +56,24 @@ class SocialPostController extends Controller
             'thumbnail_url' => $d['thumbnail_url'],
             'oembed' => $d['oembed'],
             'is_active' => true,
-            'sort_order' => ((int) SocialPost::query()->max('sort_order')) + 1,
+            'sort_order' => ((int) SocialPost::query()->min('sort_order')) - 1,
         ]);
 
         return redirect()->route('admin.social.index')->with('success', 'Berhasil! Konten sudah tampil di Home.');
+    }
+
+    public function reorder(Request $request)
+    {
+        $data = $request->validate([
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer|distinct',
+        ]);
+
+        foreach ($data['ids'] as $index => $id) {
+            SocialPost::query()->whereKey($id)->update(['sort_order' => $index + 1]);
+        }
+
+        return response()->json(['reordered' => true]);
     }
 
     /** Simpan hasil edit JSON manual. */
@@ -72,8 +89,8 @@ class SocialPostController extends Controller
         }
 
         $platform = strtolower(trim((string) ($j['platform'] ?? $post->platform)));
-        if (! in_array($platform, OembedService::PLATFORMS, true)) {
-            return $fail('"platform" harus salah satu dari: '.implode(', ', OembedService::PLATFORMS).'.');
+        if ($platform !== 'instagram') {
+            return $fail('"platform" hanya boleh "instagram". Halaman ini khusus Instagram Reel.');
         }
 
         $oe = isset($j['oembed']) && is_array($j['oembed']) ? $j['oembed'] : ($post->oembed ?: []);
@@ -90,13 +107,13 @@ class SocialPostController extends Controller
             }
         }
 
-        if (! OembedService::isAllowedEmbed($embed)) {
-            return $fail('"embed_url" harus berasal dari Instagram, Facebook, TikTok, YouTube, atau LinkedIn (https://…). Alamat lain ditolak demi keamanan.');
+        if (! OembedService::isAllowedEmbed($embed) || ! OembedService::isInstagramReelUrl($embed)) {
+            return $fail('"embed_url" harus berupa alamat embed Instagram Reel (/reel/KODE/embed/). Story, post, dan platform lain ditolak.');
         }
 
         $source = trim((string) ($j['source_url'] ?? $post->source_url));
-        if (! filter_var($source, FILTER_VALIDATE_URL) || ! preg_match('~^https?://~i', $source)) {
-            return $fail('"source_url" harus berupa link lengkap yang diawali https://');
+        if (! filter_var($source, FILTER_VALIDATE_URL) || ! preg_match('~^https?://~i', $source) || ! OembedService::isInstagramReelUrl($source)) {
+            return $fail('"source_url" harus berupa link Instagram Reel yang lengkap.');
         }
 
         $thumb = $j['thumbnail_url'] ?? null;
@@ -108,8 +125,8 @@ class SocialPostController extends Controller
         $height = max(150, min(1400, (int) ($j['height'] ?? $oe['height'] ?? $post->embedHeight())));
 
         $attrs = [
-            'platform' => $platform,
-            'kind' => mb_substr((string) ($j['kind'] ?? $post->kind), 0, 20) ?: null,
+            'platform' => 'instagram',
+            'kind' => 'reel',
             'title' => $this->str($j['title'] ?? null),
             'author' => $this->str($j['author'] ?? null),
             'source_url' => $source,
@@ -122,7 +139,7 @@ class SocialPostController extends Controller
         // Alamat embed berubah -> kenali ulang konten (supaya pencegah duplikat tetap benar).
         if ($embed !== (string) $post->embed_url) {
             [$ok, $d] = $oembed->convert(OembedService::iframeHtml($embed, $width, $height));
-            if ($ok) {
+            if ($ok && $this->isInstagramReel($d)) {
                 $dup = SocialPost::query()->where('platform', $d['platform'])->where('external_id', $d['external_id'])
                     ->where('id', '!=', $post->id)->exists();
                 if ($dup) {
@@ -130,7 +147,9 @@ class SocialPostController extends Controller
                 }
                 $attrs['platform'] = $d['platform'];
                 $attrs['external_id'] = $d['external_id'];
-                $attrs['kind'] = $attrs['kind'] ?: $d['kind'];
+                $attrs['kind'] = 'reel';
+            } elseif (! $ok || ! $this->isInstagramReel($d)) {
+                return $fail('Konten Reel ini tidak dapat diproses. Pastikan alamat embed dan link sumber menuju Reel Instagram yang sama.');
             }
         }
 
@@ -154,27 +173,6 @@ class SocialPostController extends Controller
         return back()->with('success', $post->is_active ? 'Konten ditampilkan di web.' : 'Konten disembunyikan dari web.');
     }
 
-    public function move(SocialPost $post, string $dir)
-    {
-        abort_unless(in_array($dir, ['up', 'down'], true), 404);
-
-        $list = SocialPost::query()->orderBy('sort_order')->orderBy('id')->get()->values();
-        $i = $list->search(fn ($p) => $p->id === $post->id);
-        $j = $dir === 'up' ? $i - 1 : $i + 1;
-
-        if ($i !== false && isset($list[$j])) {
-            $list = $list->all();
-            [$list[$i], $list[$j]] = [$list[$j], $list[$i]];
-            foreach ($list as $n => $p) {
-                if ((int) $p->sort_order !== $n + 1) {
-                    $p->update(['sort_order' => $n + 1]);
-                }
-            }
-        }
-
-        return back();
-    }
-
     public function destroy(SocialPost $post)
     {
         $post->delete();
@@ -190,5 +188,13 @@ class SocialPostController extends Controller
         $v = trim($v);
 
         return $v === '' ? null : mb_substr($v, 0, 250);
+    }
+
+    private function isInstagramReel(array $data): bool
+    {
+        return ($data['platform'] ?? null) === 'instagram'
+            && ($data['kind'] ?? null) === 'reel'
+            && OembedService::isInstagramReelUrl($data['source_url'] ?? null)
+            && OembedService::isInstagramReelUrl($data['embed_url'] ?? null);
     }
 }

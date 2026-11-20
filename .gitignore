@@ -1,8 +1,12 @@
 *.log
 .DS_Store
 .env
+.env.*
+!.env.example
 .env.backup
 .env.production
+.env.local
+.env.*.local
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -13,6 +17,8 @@
 /.vscode
 /.zed
 /auth.json
+/composer-auth.json
+.npmrc
 /node_modules
 /public/build
 /public/fonts-manifest.dev.json
@@ -25,3 +31,47 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+/.claude
+/.agents
+AGENTS.md
+
+# Local MCP / AI agent configuration that may contain credentials.
+/.mcp.json
+/boost.json
+
+# Secrets, certificates, and private keys.
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa*
+.ssh/
+
+# Local databases, dumps, and backups.
+*.sqlite
+*.sqlite3
+*.sql
+*.dump
+*.bak
+*.backup
+
+# Laravel runtime caches and logs.
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
+/storage/framework/cache/data/*
+!/storage/framework/cache/data/.gitignore
+/storage/framework/cache/locks/*
+!/storage/framework/cache/locks/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Cloudflare Tunnel credentials and temporary test scripts.
+/.cloudflared/
+/cloudflared/
+/.tmp-*

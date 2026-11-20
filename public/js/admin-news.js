@@ -1,6 +1,6 @@
 /* Admin Berita & Event: drawer tambah/ubah, penyusun isi artikel, saklar tayang, hapus 2 langkah. */
 (function () {
-  var C = window.NEWS_CFG, LG = ['id', 'en', 'zh'], cur = 'id', MAXMB = 20;
+  var C = window.NEWS_CFG, LG = ['id', 'en', 'zh'], cur = document.documentElement.dataset.adminLocale || 'id', MAXMB = 20;
   var $ = function (id) { return document.getElementById(id); };
   var drawer = $('nDr'), ov = $('nOv'), form = $('nForm'), blocks = $('nBlocks');
   var UP = '<svg class="i"><use href="#i-up"/></svg>';
@@ -16,6 +16,16 @@
   function applyLang() {
     drawer.querySelectorAll('[data-lg]').forEach(function (el) { el.hidden = el.dataset.lg !== cur; });
     drawer.querySelectorAll('.seg button').forEach(function (b) { b.classList.toggle('on', b.dataset.lang === cur); });
+  }
+
+  function setGlobalLocale(locale) {
+    var button = document.querySelector('[data-admin-locale-switch] [data-admin-locale="' + locale + '"]');
+    if (button && button.getAttribute('aria-pressed') !== 'true') {
+      button.click();
+      return;
+    }
+    cur = locale;
+    applyLang();
   }
 
   /* ---------- thumbnail ---------- */
@@ -86,7 +96,7 @@
   /* ---------- buka / tutup drawer ---------- */
   function open(item) {
     var edit = !!item;
-    form.reset(); blocks.innerHTML = ''; cur = 'id'; applyLang();
+    form.reset(); blocks.innerHTML = ''; cur = document.documentElement.dataset.adminLocale || 'id'; applyLang();
     $('nTitle').textContent = edit ? 'Ubah berita' : 'Tambah berita';
     form.action = edit ? item.update_url : C.store;
     $('nMethod').disabled = !edit;
@@ -110,8 +120,9 @@
   ov.addEventListener('click', close);
   drawer.querySelectorAll('[data-close]').forEach(function (b) { b.addEventListener('click', close); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-  drawer.querySelector('.seg').addEventListener('click', function (e) {
-    var b = e.target.closest('button'); if (!b) return; cur = b.dataset.lang; applyLang();
+  document.addEventListener('admin:locale', function (event) {
+    cur = event.detail.locale;
+    applyLang();
   });
   $('nThumb').addEventListener('change', function () {
     var f = checkSize(this);
@@ -127,7 +138,7 @@
 
   form.addEventListener('submit', function (e) {
     renumber();
-    if (!form.elements['title[id]'].value.trim()) { e.preventDefault(); cur = 'id'; applyLang(); toast('Isi judul (ID) dulu ya.'); return; }
+    if (!form.elements['title[id]'].value.trim()) { e.preventDefault(); setGlobalLocale('id'); toast('Isi judul (ID) dulu ya.'); return; }
     if (!form.elements.published_at.value) { e.preventDefault(); toast('Isi tanggal dulu ya.'); return; }
     $('nSave').disabled = true;   // cegah klik ganda
   });

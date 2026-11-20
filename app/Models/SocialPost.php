@@ -16,7 +16,11 @@ class SocialPost extends Model
 
     public function scopeVisible($q)
     {
-        return $q->where('is_active', true)->orderBy('sort_order')->orderBy('id');
+        return $q->where('is_active', true)
+            ->where('platform', 'instagram')
+            ->where('kind', 'reel')
+            ->orderBy('sort_order')
+            ->orderBy('id');
     }
 
     /** URL embed hanya dipakai bila berasal dari domain resmi platform (mencegah iframe ke situs lain). */

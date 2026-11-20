@@ -59,7 +59,7 @@ class OembedService
     }
 
     /* ------------------------------------------------------------------ */
-    /*  JSON                                                              */
+    /*  JSON */
     /* ------------------------------------------------------------------ */
 
     private function fromJsonString(string $json): array
@@ -82,6 +82,7 @@ class OembedService
             [$ok, $d, $err] = $this->fromHtml($html);
             if ($ok) {
                 $d = $this->overlay($d, $j);
+
                 return [true, $d, null];
             }
             if ($embedUrl === '' && $source === '') {
@@ -94,6 +95,7 @@ class OembedService
             if (! $ok) {
                 return [false, null, $err];
             }
+
             return [true, $this->overlay($d, $j), null];
         }
 
@@ -102,6 +104,7 @@ class OembedService
             if (! $ok) {
                 return [false, null, $err];
             }
+
             return [true, $this->overlay($d, $j), null];
         }
 
@@ -126,7 +129,7 @@ class OembedService
     }
 
     /* ------------------------------------------------------------------ */
-    /*  HTML (iframe / blockquote)                                        */
+    /*  HTML (iframe / blockquote) */
     /* ------------------------------------------------------------------ */
 
     private function fromHtml(string $html): array
@@ -145,6 +148,7 @@ class OembedService
             if ($ok) {
                 $d['oembed']['source'] = 'embed';
             }
+
             return [$ok, $d, $err];
         }
 
@@ -201,6 +205,7 @@ class OembedService
             $isVideo = str_contains($path, 'video.php');
             $width = $this->clamp($w ?? (int) ($q['width'] ?? 0) ?: 350, 200, 750);
             $height = $this->clamp($h ?? (int) ($q['height'] ?? 0) ?: ($isVideo ? 620 : 560), 200, 1400);
+
             // pakai ulang src asli (sudah terbukti jalan di Facebook), hanya tambahkan ukuran bila kosong
             return [true, $this->result('facebook', $isVideo ? 'video' : 'post', md5($href), $source ?: $href, $src, $width, $height, null, null, null), null];
         }
@@ -215,8 +220,21 @@ class OembedService
             $clean = 'https://www.instagram.com/'.$seg.'/'.$m[2].'/';
             $width = $this->clamp($w ?? 350, 200, 750);
             $height = $this->clamp($h ?? ($kind === 'post' ? 640 : 700), 200, 1400);
+            $real = $kind === 'reel' ? $this->instagramMetadata($m[2], $clean) : null;
 
-            return [true, $this->result('instagram', $kind, $m[2], $source ?: $clean, $clean.'embed/', $width, $height, null, null, null), null];
+            return [true, $this->result(
+                'instagram',
+                $kind,
+                $m[2],
+                $source ?: $clean,
+                $clean.'embed/',
+                $width,
+                $height,
+                $real['title'] ?? null,
+                $real['author'] ?? null,
+                $real['thumbnail_url'] ?? null,
+                $real
+            ), null];
         }
 
         // ---- TikTok: Embed Player / legacy embed ----
@@ -272,7 +290,7 @@ class OembedService
     }
 
     /* ------------------------------------------------------------------ */
-    /*  Link share biasa                                                  */
+    /*  Link share biasa */
     /* ------------------------------------------------------------------ */
 
     private function fromLink(string $link): array
@@ -319,8 +337,21 @@ class OembedService
         $seg = $m[1] === 'reels' ? 'reel' : $m[1];
         $kind = $seg === 'p' ? 'post' : 'reel';
         $source = 'https://www.instagram.com/'.$seg.'/'.$m[2].'/';
+        $real = $kind === 'reel' ? $this->instagramMetadata($m[2], $source) : null;
 
-        return [true, $this->result('instagram', $kind, $m[2], $source, $source.'embed/', 350, $kind === 'post' ? 640 : 700, null, null, null), null];
+        return [true, $this->result(
+            'instagram',
+            $kind,
+            $m[2],
+            $source,
+            $source.'embed/',
+            350,
+            $kind === 'post' ? 640 : 700,
+            $real['title'] ?? null,
+            $real['author'] ?? null,
+            $real['thumbnail_url'] ?? null,
+            $real
+        ), null];
     }
 
     private function facebook(string $link, array $p, string $host): array
@@ -452,7 +483,7 @@ class OembedService
     }
 
     /* ------------------------------------------------------------------ */
-    /*  Panggilan jaringan (semua opsional: gagal = tetap lanjut)          */
+    /*  Panggilan jaringan (semua opsional: gagal = tetap lanjut) */
     /* ------------------------------------------------------------------ */
 
     private function tiktokOembed(string $url): ?array
@@ -463,6 +494,99 @@ class OembedService
     private function youtubeOembed(string $url): ?array
     {
         return $this->publicOembed('https://www.youtube.com/oembed', $url, ['format' => 'json']);
+    }
+
+    /** Metadata publik Reel: caption, pemilik, dan gambar sampul dari halaman Instagram. */
+    private function instagramMetadata(string $id, string $source): ?array
+    {
+        $html = $this->instagramHtml($source)
+            ?: $this->instagramHtml('https://www.instagram.com/reel/'.$id.'/embed/captioned/');
+
+        if ($html === null) {
+            return null;
+        }
+
+        $rawTitle = $this->metaContent($html, 'og:title');
+        $thumbnail = $this->metaContent($html, 'og:image')
+            ?: $this->metaContent($html, 'twitter:image');
+
+        if (! $thumbnail && preg_match('~<img\b[^>]*class\s*=\s*(["\'])[^"\']*EmbeddedMediaImage[^"\']*\1[^>]*\bsrc\s*=\s*(["\'])(.*?)\2~is', $html, $m)) {
+            $thumbnail = html_entity_decode($m[3], ENT_QUOTES | ENT_HTML5);
+        }
+
+        $thumbnail = $thumbnail && filter_var($thumbnail, FILTER_VALIDATE_URL) ? $thumbnail : null;
+
+        $title = $this->instagramCaption($rawTitle);
+        $author = null;
+        if ($rawTitle && preg_match('~\(@([A-Za-z0-9._]+)\)~', $rawTitle, $m)) {
+            $author = '@'.$m[1];
+        } elseif ($rawTitle && preg_match('~^(.+?)\s+on Instagram~i', $rawTitle, $m)) {
+            $author = trim($m[1]);
+        }
+
+        if (! $title && ! $thumbnail && ! $author) {
+            return null;
+        }
+
+        return [
+            'title' => $title,
+            'author' => $author,
+            'thumbnail_url' => $thumbnail,
+            'provider_name' => 'Instagram',
+            'type' => 'video',
+            'url' => $source,
+        ];
+    }
+
+    private function instagramHtml(string $url): ?string
+    {
+        try {
+            $response = Http::timeout(8)
+                ->withHeaders([
+                    'User-Agent' => self::UA,
+                    'Accept-Language' => 'en-US,en;q=0.8',
+                ])
+                ->get($url);
+
+            return $response->successful() ? $response->body() : null;
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
+    private function metaContent(string $html, string $name): ?string
+    {
+        if (! preg_match_all('~<meta\b[^>]*>~is', $html, $tags)) {
+            return null;
+        }
+
+        foreach ($tags[0] as $tag) {
+            if (! preg_match('~(?:property|name)\s*=\s*(["\'])'.preg_quote($name, '~').'\1~i', $tag)) {
+                continue;
+            }
+
+            if (preg_match('~\bcontent\s*=\s*(["\'])(.*?)\1~is', $tag, $m)) {
+                return html_entity_decode(trim($m[2]), ENT_QUOTES | ENT_HTML5);
+            }
+        }
+
+        return null;
+    }
+
+    private function instagramCaption(?string $value): ?string
+    {
+        if (! $value) {
+            return null;
+        }
+
+        $value = trim(preg_replace('~\s+~u', ' ', html_entity_decode(strip_tags($value), ENT_QUOTES | ENT_HTML5)));
+        if (preg_match('~Instagram[^:]*:\s*["“]?(.+?)["”]?$~iu', $value, $m)) {
+            $value = $m[1];
+        }
+
+        $value = trim($value, " \t\n\r\0\x0B\"'“”");
+
+        return $value === '' ? null : mb_substr($value, 0, 250);
     }
 
     private function publicOembed(string $endpoint, string $url, array $extra = []): ?array
@@ -488,6 +612,7 @@ class OembedService
             $hist = $res->header('X-Guzzle-Redirect-History');
             if ($hist) {
                 $parts = array_values(array_filter(array_map('trim', explode(',', $hist))));
+
                 return end($parts) ?: null;
             }
         } catch (\Throwable $e) {
@@ -497,7 +622,7 @@ class OembedService
     }
 
     /* ------------------------------------------------------------------ */
-    /*  Bentuk seragam                                                    */
+    /*  Bentuk seragam */
     /* ------------------------------------------------------------------ */
 
     /** Bentuk seragam + dokumen oEmbed (JSON) yang disimpan. */
@@ -552,6 +677,20 @@ class OembedService
         }
 
         return false;
+    }
+
+    public static function isInstagramReelUrl(?string $url): bool
+    {
+        $parts = parse_url(trim((string) $url));
+        if (! is_array($parts)) {
+            return false;
+        }
+
+        $host = strtolower((string) ($parts['host'] ?? ''));
+        $host = preg_replace('/^(www|m|mobile|web)\./', '', $host);
+
+        return ($host === 'instagram.com' || str_ends_with($host, '.instagram.com'))
+            && (bool) preg_match('~^/reels?/[A-Za-z0-9_-]{5,}(?:/|$)~', (string) ($parts['path'] ?? ''));
     }
 
     private function clamp(int $v, int $min, int $max): int

@@ -27,8 +27,13 @@
             <h1>Lokasi Plant</h1>
             <p class="mu">Setiap lokasi menjadi pin di peta pada bagian Lokasi Plant di website. Lokasi bertanda HQ menjadi sumber info di halaman Kontak.</p>
         </div>
-        <button type="button" class="b" id="plAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah lokasi</button>
+        <div class="ph-actions">
+            <button type="button" class="b" id="plAdd"><svg class="i"><use href="#i-plus"/></svg> Tambah lokasi</button>
+            <x-admin-view-page :href="url('/').'#plant'" page="Lokasi Plant" />
+        </div>
     </div>
+
+    <x-admin-locale-switch storage-key="na-plants-locale" help="Pilihan ini berlaku untuk terjemahan nama, alamat, dan jam kerja lokasi." />
 
     @forelse ($plants as $p)
         <div class="row">
@@ -70,6 +75,7 @@
         </div>
 
         <div class="db">
+            <div data-admin-locale-drawer-host></div>
             <label>Nama plant <em>*</em><input name="name" maxlength="100" autocomplete="off" placeholder="Contoh: Magelang (HQ)"></label>
             <x-lang-tabs name="name" mode="suffix" id-base="pName" label="Terjemahan nama plant" :only="['en','zh']" />
             <label>Alamat <em>*</em><textarea name="address" rows="3" maxlength="500" placeholder="Alamat lengkap"></textarea></label>
